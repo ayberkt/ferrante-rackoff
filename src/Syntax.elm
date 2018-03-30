@@ -12,9 +12,10 @@ type RatPred =
   | Greater Expr Expr
 
 type Prop =
-    RatPred
+    Pred RatPred
   | Top
   | Bot
+  | Neg Prop
   | Conj Prop Prop
   | Disj Prop Prop
   | Forall Prop
