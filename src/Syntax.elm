@@ -10,6 +10,7 @@ type Expr =
 type RatPred =
     Eq      Expr Expr
   | Greater Expr Expr
+  | Less    Expr Expr
 
 type Prop =
     Pred RatPred
