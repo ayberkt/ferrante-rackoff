@@ -1,6 +1,6 @@
 all: index.html
 
-index.html: src/Main.elm src/Syntax.elm src/NNF.elm
+index.html: src/Main.elm src/Syntax.elm src/NNF.elm src/OmitNegations.elm
 	elm-make $^
 
 clean:
