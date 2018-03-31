@@ -1,4 +1,4 @@
-module Syntax exposing (Prop(..), RatPred(..), linearize)
+module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize)
 
 
 type Expr
