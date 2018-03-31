@@ -4,8 +4,8 @@ module Syntax exposing (Prop(..), RatPred(..), linearize)
 type Expr
     = Zero
     | One
-    | Plus
-    | Minus
+    | Plus Expr Expr
+    | Minus Expr Expr
     | Var Int String
 
 
@@ -26,9 +26,36 @@ type Prop
     | Exists Prop
 
 
+linearizeExpr : Expr -> String
+linearizeExpr e =
+    case e of
+        Zero ->
+            "0"
+
+        One ->
+            "1"
+
+        Plus e1 e2 ->
+            linearizeExpr e1 ++ "+" ++ linearizeExpr e2
+
+        Minus e1 e2 ->
+            linearizeExpr e1 ++ "-" ++ linearizeExpr e2
+
+        Var n x ->
+            "x@" ++ toString n
+
+
 linearizeRatPred : RatPred -> String
 linearizeRatPred rp =
-    "TODO"
+    case rp of
+        Eq e1 e2 ->
+            linearizeExpr e1 ++ "=" ++ linearizeExpr e2
+
+        Greater e1 e2 ->
+            linearizeExpr e1 ++ ">" ++ linearizeExpr e2
+
+        Less e1 e2 ->
+            linearizeExpr e1 ++ "<" ++ linearizeExpr e2
 
 
 linearize : Prop -> String
