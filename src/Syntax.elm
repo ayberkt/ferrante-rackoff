@@ -17,12 +17,13 @@ type RatPred
 
 type Prop
     = Pred RatPred
+    | Id String
     | Top
     | Bot
     | Neg Prop
     | Conj Prop Prop
     | Disj Prop Prop
-    | Forall Prop
+    | Forall String Prop
     | Exists Prop
 
 
@@ -73,8 +74,8 @@ linearize p =
         Disj p1 p2 ->
             (linearize p1) ++ "∨" ++ (linearize p2)
 
-        Forall p1 ->
-            "\\forall.\\ " ++ (linearize p1)
+        Forall s p1 ->
+            "∀" ++ s ++ ". " ++ (linearize p1)
 
         Exists p1 ->
             "\\exists.\\ " ++ (linearize p1)
@@ -82,5 +83,8 @@ linearize p =
         Neg p1 ->
             "¬" ++ linearize p1
 
-        _ ->
-            "TODO"
+        Pred rp ->
+            linearizeRatPred rp
+
+        Id x ->
+            x
