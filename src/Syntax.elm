@@ -37,10 +37,10 @@ linearizeExpr e =
             "1"
 
         Plus e1 e2 ->
-            linearizeExpr e1 ++ "+" ++ linearizeExpr e2
+            "(" ++ linearizeExpr e1 ++ "+" ++ linearizeExpr e2 ++ ")"
 
         Minus e1 e2 ->
-            linearizeExpr e1 ++ "-" ++ linearizeExpr e2
+            "(" ++ linearizeExpr e1 ++ "-" ++ linearizeExpr e2 ++ ")"
 
         Var n x ->
             "x@" ++ toString n
@@ -69,13 +69,13 @@ linearize p =
             "⊥"
 
         Conj p1 p2 ->
-            (linearize p1) ++ "∧" ++ (linearize p2)
+            "(" ++ (linearize p1) ++ "∧" ++ (linearize p2) ++ ")"
 
         Disj p1 p2 ->
-            (linearize p1) ++ "∨" ++ (linearize p2)
+            "(" ++ (linearize p1) ++ "∨" ++ (linearize p2) ++ ")"
 
         Forall s p1 ->
-            "∀" ++ s ++ ". " ++ (linearize p1)
+            "(" ++ "∀" ++ s ++ ". " ++ (linearize p1) ++ ")"
 
         Exists p1 ->
             "\\exists.\\ " ++ (linearize p1)
