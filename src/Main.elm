@@ -7,6 +7,7 @@ import String
 import Syntax exposing (Prop(..), linearize)
 import PropositionParser exposing (parseProp)
 import Styles exposing (..)
+import OmitNegations exposing (removeAllNegations)
 import NNF exposing (convertToNNF)
 
 
@@ -46,6 +47,15 @@ displayNNF p =
 
         Ok p ->
             "NNF: " ++ (linearize (convertToNNF p)) ++ "."
+
+
+displayAllNegationsRemoved p =
+    case p of
+        Err s ->
+            "waiting for valid input"
+
+        Ok p ->
+            "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
 
 
 view content =
