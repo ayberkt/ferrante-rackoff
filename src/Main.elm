@@ -6,6 +6,7 @@ import Html.Events exposing (onInput)
 import String
 import Syntax exposing (Prop(..), linearize)
 import PropositionParser exposing (parseProp)
+import Styles exposing (..)
 import NNF exposing (convertToNNF)
 
 
@@ -54,7 +55,7 @@ view content =
     in
         case parse of
             Err s ->
-                div []
+                div [ divStyle ]
                     [ Html.h1 [ heading ] [ text "QE for Linear Rationals" ]
                     , input
                         [ placeholder "Enter a proposition.", onInput NewContent, myStyle ]
@@ -63,7 +64,7 @@ view content =
                     ]
 
             Ok p ->
-                div []
+                div [ divStyle ]
                     [ Html.h1 [ heading ] [ text "QE for Linear Rationals" ]
                     , input
                         [ placeholder "Enter a proposition."
@@ -73,29 +74,5 @@ view content =
                         []
                     , div [ myStyle ] [ text (inputInterpretation parse) ]
                     , div [ myStyle ] [ text (displayNNF parse) ]
+                    , div [ myStyle ] [ text (displayAllNegationsRemoved parse) ]
                     ]
-
-
-myStyle =
-    style
-        [ ( "width", "80%" )
-        , ( "height", "40px" )
-        , ( "padding", "10px 0" )
-        , ( "font-size", "2em" )
-        , ( "text-align", "center" )
-        ]
-
-
-heading =
-    style [ ( "text-align", "center" ) ]
-
-
-waiting =
-    style
-        [ ( "width", "100%" )
-        , ( "height", "40px" )
-        , ( "padding", "10px 0" )
-        , ( "font-size", "2em" )
-        , ( "text-align", "center" )
-        , ( "color", "red" )
-        ]
