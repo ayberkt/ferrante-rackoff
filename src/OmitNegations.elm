@@ -12,9 +12,6 @@ removeAllNegations p =
         Neg (Pred (Eq e1 e2)) ->
             Disj (Pred (Less e1 e2)) (Pred (Greater e1 e2))
 
-        Neg p ->
-            Neg p
-
         -- this case should not happen.
         Conj p1 p2 ->
             Conj (removeAllNegations p1) (removeAllNegations p2)
@@ -27,6 +24,12 @@ removeAllNegations p =
 
         Exists p1 ->
             Exists (removeAllNegations p1)
+
+        Neg Top ->
+            Bot
+
+        Neg Bot ->
+            Top
 
         p ->
             p
