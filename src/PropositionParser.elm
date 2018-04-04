@@ -239,20 +239,15 @@ deBruijnRP ctx rp =
                     Nothing
 
 
+
+-- TODO: hook this to `deBruijnRP`.
+
+
 deBruijn : List VarIdentifier -> Prop -> Prop
 deBruijn ctx p =
     case p of
         Pred rp ->
             Top
-
-        Id s ->
-            Top
-
-        Top ->
-            Top
-
-        Bot ->
-            Bot
 
         Neg p ->
             Neg (deBruijn ctx p)
@@ -269,7 +264,15 @@ deBruijn ctx p =
         Exists p ->
             Exists (deBruijn ctx p)
 
+        p_ ->
+            p_
+
 
 parseProp : String -> Result Parser.Error Prop
 parseProp s =
-    run prop s
+    case run prop s of
+        Ok p ->
+            Ok (deBruijn [] p)
+
+        Err s ->
+            Err s
