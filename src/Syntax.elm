@@ -1,4 +1,8 @@
-module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize)
+module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, VarIdentifier(..))
+
+
+type VarIdentifier
+    = VI String
 
 
 type Expr
@@ -6,7 +10,7 @@ type Expr
     | One
     | Plus Expr Expr
     | Minus Expr Expr
-    | Var Int String
+    | Var Int VarIdentifier
 
 
 type RatPred
@@ -23,8 +27,13 @@ type Prop
     | Neg Prop
     | Conj Prop Prop
     | Disj Prop Prop
-    | Forall String Prop
+    | Forall VarIdentifier Prop
     | Exists Prop
+
+
+show : VarIdentifier -> String
+show (VI s) =
+    s
 
 
 linearizeExpr : Expr -> String
@@ -75,7 +84,7 @@ linearize p =
             "(" ++ (linearize p1) ++ "∨" ++ (linearize p2) ++ ")"
 
         Forall s p1 ->
-            "(" ++ "∀" ++ s ++ ". " ++ (linearize p1) ++ ")"
+            "(" ++ "∀" ++ show s ++ ". " ++ (linearize p1) ++ ")"
 
         Exists p1 ->
             "\\exists.\\ " ++ (linearize p1)

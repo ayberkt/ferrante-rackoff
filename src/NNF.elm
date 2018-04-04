@@ -1,6 +1,6 @@
 module NNF exposing (convertToNNF)
 
-import Syntax exposing (Prop(..), linearize)
+import Syntax exposing (Prop(..), VarIdentifier(..), linearize)
 
 
 convertToNNF : Prop -> Prop
@@ -19,7 +19,7 @@ convertToNNF p =
             Exists (convertToNNF (Neg p))
 
         Neg (Exists p) ->
-            Forall "TODO" (convertToNNF (Neg p))
+            Forall (VI "TODO") (convertToNNF (Neg p))
 
         Conj p1 p2 ->
             Conj (convertToNNF p1) (convertToNNF p2)
