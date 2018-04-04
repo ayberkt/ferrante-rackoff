@@ -82,7 +82,10 @@ view content =
                         , myStyle
                         ]
                         []
+                    , Html.h2 [ heading ] [ text "Step 1" ]
                     , div [ myStyle ] [ text (inputInterpretation parse) ]
+                    , Html.h2 [ heading ] [ text "Step 2" ]
                     , div [ myStyle ] [ text (displayNNF parse) ]
+                    , Html.h2 [ heading ] [ text "Step 3" ]
                     , div [ myStyle ] [ text (displayAllNegationsRemoved parse) ]
                     ]
