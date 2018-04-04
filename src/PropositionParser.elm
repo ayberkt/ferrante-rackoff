@@ -19,7 +19,8 @@ import Parser
 import Parser.LanguageKit exposing (variable)
 import Char
 import Set
-import Syntax exposing (Prop(..), RatPred(..), Expr(..))
+import Util
+import Syntax exposing (Prop(..), RatPred(..), Expr(..), VarIdentifier(..))
 
 
 spaces : Parser ()
@@ -62,7 +63,7 @@ infixOp r =
                         (succeed
                             Forall
                             |. spaces
-                            |= variable Char.isLower isVarChar keywords
+                            |= (succeed VI |= variable Char.isLower isVarChar keywords)
                             |. spaces
                             |= lazy r
                             |. spaces
@@ -98,7 +99,10 @@ exprAtom =
     oneOf
         [ succeed One |. symbol "1"
         , succeed Zero |. symbol "0"
-        , succeed (\x -> Var 0 x) |= variable Char.isLower isVarChar keywords
+        , succeed (\x -> Var 0 x)
+            |= (succeed VI
+                    |= variable Char.isLower isVarChar keywords
+               )
         ]
 
 
@@ -159,6 +163,111 @@ prop =
 expr : Parser Expr
 expr =
     oneOf [ infixArithmeticOp (\_ -> expr), exprAtom ]
+
+
+deBruijnExp : List VarIdentifier -> Expr -> Maybe Expr
+deBruijnExp ctx e =
+    case e of
+        Plus e1 e2 ->
+            let
+                e1_ =
+                    deBruijnExp ctx e1
+
+                e2_ =
+                    deBruijnExp ctx e2
+            in
+                case ( e1_, e2_ ) of
+                    ( Just e1__, Just e2__ ) ->
+                        Just (Plus e1__ e2__)
+
+                    ( _, _ ) ->
+                        Nothing
+
+        Minus e1 e2 ->
+            let
+                e1_ =
+                    deBruijnExp ctx e1
+
+                e2_ =
+                    deBruijnExp ctx e2
+            in
+                case ( e1_, e2_ ) of
+                    ( Just e1__, Just e2__ ) ->
+                        Just (Minus e1__ e2__)
+
+                    ( _, _ ) ->
+                        Nothing
+
+        Var _ s ->
+            case Util.indexOf ctx s of
+                Just i ->
+                    Just (Var i s)
+
+                Nothing ->
+                    Nothing
+
+        -- TODO
+        e_ ->
+            Just e_
+
+
+deBruijnRP : List VarIdentifier -> RatPred -> Maybe RatPred
+deBruijnRP ctx rp =
+    case rp of
+        Less e1 e2 ->
+            case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
+                ( Just e1_, Just e2_ ) ->
+                    Just (Less e1_ e2_)
+
+                ( _, _ ) ->
+                    Nothing
+
+        Greater e1 e2 ->
+            case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
+                ( Just e1_, Just e2_ ) ->
+                    Just (Greater e1_ e2_)
+
+                ( _, _ ) ->
+                    Nothing
+
+        Eq e1 e2 ->
+            case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
+                ( Just e1_, Just e2_ ) ->
+                    Just (Eq e1_ e2_)
+
+                ( _, _ ) ->
+                    Nothing
+
+
+deBruijn : List VarIdentifier -> Prop -> Prop
+deBruijn ctx p =
+    case p of
+        Pred rp ->
+            Top
+
+        Id s ->
+            Top
+
+        Top ->
+            Top
+
+        Bot ->
+            Bot
+
+        Neg p ->
+            Neg (deBruijn ctx p)
+
+        Conj p1 p2 ->
+            Conj (deBruijn ctx p) (deBruijn ctx p)
+
+        Disj p1 p2 ->
+            Disj (deBruijn ctx p) (deBruijn ctx p)
+
+        Forall x p ->
+            Forall x (deBruijn (x :: ctx) p)
+
+        Exists p ->
+            Exists (deBruijn ctx p)
 
 
 parseProp : String -> Result Parser.Error Prop
