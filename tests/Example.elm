@@ -16,5 +16,10 @@ suite =
                     Expect.equal
                         (convertToNNF (Neg (Conj Top Top)))
                         (Disj (Neg Top) (Neg Top))
+            , test "NNF 2" <|
+                \() ->
+                    Expect.equal
+                        (convertToNNF (Neg (Disj Top Bot)))
+                        (Conj (Neg Top) (Neg Bot))
             ]
         ]
