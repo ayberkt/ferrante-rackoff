@@ -36,7 +36,7 @@ inputInterpretation p =
 
 
 displayNNF p =
-    "Negation-normal form: " linearize (convertToNNF p) ++ "."
+    "Negation-normal form: " ++ linearize (convertToNNF p) ++ "."
 
 
 displayAllNegationsRemoved p =
