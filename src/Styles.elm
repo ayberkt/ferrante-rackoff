@@ -16,9 +16,10 @@ divStyle =
 myStyle =
     style
         [ ( "width", "50%" )
-        , ( "height", "30px" )
+        , ( "height", "10px" )
         , ( "padding", "10px 0" )
-        , ( "font-size", "2em" )
+        , ( "font-size", "1em" )
+        , ( "font-family", "Courier New" )
         , ( "text-align", "center" )
         , ( "align-content", "center" )
         , ( "margin", "0 auto" )
