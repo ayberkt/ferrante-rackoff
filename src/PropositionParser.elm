@@ -20,6 +20,7 @@ import Parser.LanguageKit exposing (variable)
 import Char
 import Set
 import Util
+import Maybe
 import Syntax exposing (Prop(..), RatPred(..), Expr(..), VarIdentifier(..))
 
 
@@ -243,36 +244,65 @@ deBruijnRP ctx rp =
 -- TODO: hook this to `deBruijnRP`.
 
 
-deBruijn : List VarIdentifier -> Prop -> Prop
+deBruijn : List VarIdentifier -> Prop -> Maybe Prop
 deBruijn ctx p =
     case p of
         Pred rp ->
-            Top
+            case deBruijnRP ctx rp of
+                Just rp_ ->
+                    Just (Pred rp_)
+
+                Nothing ->
+                    Nothing
 
         Neg p ->
-            Neg (deBruijn ctx p)
+            (deBruijn ctx p) |> Maybe.andThen (\x -> Just (Neg x))
 
         Conj p1 p2 ->
-            Conj (deBruijn ctx p) (deBruijn ctx p)
+            (deBruijn ctx p1)
+                |> Maybe.andThen
+                    (\p1_ ->
+                        (deBruijn ctx p1)
+                            |> Maybe.andThen
+                                (\p2_ ->
+                                    (Just (Conj p1_ p2_))
+                                )
+                    )
 
         Disj p1 p2 ->
-            Disj (deBruijn ctx p) (deBruijn ctx p)
+            (deBruijn ctx p1)
+                |> Maybe.andThen
+                    (\p1_ ->
+                        (deBruijn ctx p1)
+                            |> Maybe.andThen
+                                (\p2_ ->
+                                    (Just (Conj p1_ p2_))
+                                )
+                    )
 
         Forall x p ->
-            Forall x (deBruijn (x :: ctx) p)
+            (deBruijn (x :: ctx) p)
+                |> Maybe.andThen
+                    (\p_ ->
+                        Just (Forall x p_)
+                    )
 
         Exists p ->
-            Exists (deBruijn ctx p)
+            (deBruijn ctx p)
+                |> Maybe.andThen
+                    (\p_ ->
+                        Just (Exists p_)
+                    )
 
         p_ ->
-            p_
+            Just p_
 
 
-parseProp : String -> Result Parser.Error Prop
+parseProp : String -> Maybe Prop
 parseProp s =
     case run prop s of
         Ok p ->
-            Ok (deBruijn [] p)
+            deBruijn [] p
 
         Err s ->
-            Err s
+            Nothing

@@ -32,30 +32,15 @@ update (NewContent content) oldContent =
 
 
 inputInterpretation p =
-    case p of
-        Err s ->
-            "could not parse input"
-
-        Ok p ->
-            "Input interpretation: " ++ (linearize p) ++ "."
+    "Input interpretation: " ++ (linearize p) ++ "."
 
 
 displayNNF p =
-    case p of
-        Err s ->
-            "waiting for valid input"
-
-        Ok p ->
-            "NNF: " ++ (linearize (convertToNNF p)) ++ "."
+    "Negation-normal form: " linearize (convertToNNF p) ++ "."
 
 
 displayAllNegationsRemoved p =
-    case p of
-        Err s ->
-            "waiting for valid input"
-
-        Ok p ->
-            "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
+    "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
 
 
 view content =
@@ -64,7 +49,7 @@ view content =
             parseProp content
     in
         case parse of
-            Err s ->
+            Nothing ->
                 div [ divStyle ]
                     [ Html.h1 [ heading ] [ text "QE for Linear Rationals" ]
                     , input
@@ -73,7 +58,7 @@ view content =
                     , div [ waiting ] [ text ("Waiting for valid input...") ]
                     ]
 
-            Ok p ->
+            Just parse ->
                 div [ divStyle ]
                     [ Html.h1 [ heading ] [ text "QE for Linear Rationals" ]
                     , input
