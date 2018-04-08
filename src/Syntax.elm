@@ -52,7 +52,7 @@ linearizeExpr e =
             "(" ++ linearizeExpr e1 ++ "-" ++ linearizeExpr e2 ++ ")"
 
         Var n x ->
-            "x@" ++ toString n
+            "x" ++ toString n
 
 
 linearizeRatPred : RatPred -> String
