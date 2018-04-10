@@ -1,8 +1,14 @@
 module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, VarIdentifier(..))
 
+-- Newtype of `String` as a variable identifier.
+
 
 type VarIdentifier
     = VI String
+
+
+
+-- Arithmetic expressions.
 
 
 type Expr
@@ -13,10 +19,18 @@ type Expr
     | Var Int VarIdentifier
 
 
+
+-- Comparisons.
+
+
 type RatPred
     = Eq Expr Expr
     | Greater Expr Expr
     | Less Expr Expr
+
+
+
+-- Type of propositions.
 
 
 type Prop
@@ -31,9 +45,17 @@ type Prop
     | Exists Prop
 
 
+
+-- Project the `String` from a given `VarIdentifier`
+
+
 show : VarIdentifier -> String
 show (VI s) =
     s
+
+
+
+-- Linearize a given `Expr` `e`.
 
 
 linearizeExpr : Expr -> String
@@ -55,6 +77,10 @@ linearizeExpr e =
             "x" ++ toString n
 
 
+
+-- Linearize a given `RatPred` `rp`.
+
+
 linearizeRatPred : RatPred -> String
 linearizeRatPred rp =
     case rp of
@@ -66,6 +92,10 @@ linearizeRatPred rp =
 
         Less e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "<" ++ linearizeExpr e2 ++ ")"
+
+
+
+-- Linearize a given `Prop` `p`.
 
 
 linearize : Prop -> String

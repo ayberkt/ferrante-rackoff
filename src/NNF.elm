@@ -3,6 +3,11 @@ module NNF exposing (convertToNNF)
 import Syntax exposing (Prop(..), VarIdentifier(..), linearize)
 
 
+-- Take a `Prop` `p` and push all negations it contains inside by
+--   * converting negated universals to existentials (and vice versa),
+--   * pushing negations into binary operators via de Morgan laws.
+
+
 convertToNNF : Prop -> Prop
 convertToNNF p =
     case p of

@@ -212,6 +212,10 @@ deBruijnExp ctx e =
             Just e_
 
 
+
+-- Convert `RatPred`s to nameless representation.
+
+
 deBruijnRP : List VarIdentifier -> RatPred -> Maybe RatPred
 deBruijnRP ctx rp =
     case rp of
@@ -241,7 +245,7 @@ deBruijnRP ctx rp =
 
 
 
--- TODO: hook this to `deBruijnRP`.
+-- Convert `Prop`s to nameless representation.
 
 
 deBruijn : List VarIdentifier -> Prop -> Maybe Prop
@@ -296,6 +300,10 @@ deBruijn ctx p =
 
         p_ ->
             Just p_
+
+
+
+-- Parse a given string into a proposition.
 
 
 parseProp : String -> Maybe Prop

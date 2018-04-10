@@ -3,6 +3,10 @@ module OmitNegations exposing (removeAllNegations)
 import Syntax exposing (Prop(..), RatPred(..))
 
 
+-- Take a proposition `p` that is assumed to be in NNF
+-- and remove all negations that are on literals.
+
+
 removeAllNegations : Prop -> Prop
 removeAllNegations p =
     case p of
