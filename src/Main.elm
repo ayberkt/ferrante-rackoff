@@ -43,6 +43,11 @@ displayAllNegationsRemoved p =
     "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
 
 
+
+-- If the input is parsable, parse and display the steps.  If it is not
+-- parsable, display an error explaining that it is not parsable.
+
+
 view content =
     let
         parse =
