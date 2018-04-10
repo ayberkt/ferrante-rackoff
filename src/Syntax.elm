@@ -87,7 +87,7 @@ linearize p =
             "(" ++ "∀" ++ show s ++ ". " ++ (linearize p1) ++ ")"
 
         Exists p1 ->
-            "\\exists.\\ " ++ (linearize p1)
+            "(" ++ "∃" ++ linearize p1 ++ ")"
 
         Neg p1 ->
             "¬" ++ linearize p1

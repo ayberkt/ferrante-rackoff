@@ -262,7 +262,7 @@ deBruijn ctx p =
             (deBruijn ctx p1)
                 |> Maybe.andThen
                     (\p1_ ->
-                        (deBruijn ctx p1)
+                        (deBruijn ctx p2)
                             |> Maybe.andThen
                                 (\p2_ ->
                                     (Just (Conj p1_ p2_))
@@ -273,10 +273,10 @@ deBruijn ctx p =
             (deBruijn ctx p1)
                 |> Maybe.andThen
                     (\p1_ ->
-                        (deBruijn ctx p1)
+                        (deBruijn ctx p2)
                             |> Maybe.andThen
                                 (\p2_ ->
-                                    (Just (Conj p1_ p2_))
+                                    (Just (Disj p1_ p2_))
                                 )
                     )
 
