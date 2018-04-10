@@ -114,7 +114,7 @@ infixArithmeticOp r =
                 oneOf
                     [ delayedCommit (symbol "+")
                         (succeed
-                            Minus
+                            Plus
                             |. spaces
                             |= lazy r
                             |. spaces
@@ -123,7 +123,7 @@ infixArithmeticOp r =
                         )
                     , delayedCommit (symbol "-")
                         (succeed
-                            Plus
+                            Minus
                             |. spaces
                             |= lazy r
                             |. spaces
