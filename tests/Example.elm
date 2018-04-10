@@ -51,17 +51,7 @@ suite =
                             (Neg (Pred (Less (Plus One One) (Plus Zero One))))
                         )
                         (Disj
-                            (Pred (Greater (Plus One One) (Plus Zero One)))
-                            (Pred (Eq (Plus One One) (Plus Zero One)))
-                        )
-            , test "Omit negations, pred 2" <|
-                \() ->
-                    Expect.equal
-                        (removeAllNegations
-                            (Neg (Pred (Less (Plus One One) (Plus Zero One))))
-                        )
-                        (Disj
-                            (Pred (Greater (Plus One One) (Plus Zero One)))
+                            (Pred (Greater (Plus Zero One) (Plus One One)))
                             (Pred (Eq (Plus One One) (Plus Zero One)))
                         )
             ]
