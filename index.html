@@ -9853,8 +9853,14 @@ var _user$project$Syntax$linearize = function (p) {
 		case 'Exists':
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
-				'\\exists.\\ ',
-				_user$project$Syntax$linearize(_p4._0));
+				'(',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'∃',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_user$project$Syntax$linearize(_p4._0),
+						')')));
 		case 'Neg':
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
@@ -10049,7 +10055,6 @@ var _user$project$PropositionParser$deBruijn = F2(
 					},
 					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
 			case 'Conj':
-				var _p11 = _p9._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p1_) {
@@ -10059,11 +10064,10 @@ var _user$project$PropositionParser$deBruijn = F2(
 								return _elm_lang$core$Maybe$Just(
 									A2(_user$project$Syntax$Conj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p11));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p9._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p11));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
 			case 'Disj':
-				var _p12 = _p9._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p1_) {
@@ -10071,22 +10075,22 @@ var _user$project$PropositionParser$deBruijn = F2(
 							_elm_lang$core$Maybe$andThen,
 							function (p2_) {
 								return _elm_lang$core$Maybe$Just(
-									A2(_user$project$Syntax$Conj, p1_, p2_));
+									A2(_user$project$Syntax$Disj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p12));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p9._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p12));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
 			case 'Forall':
-				var _p13 = _p9._0;
+				var _p11 = _p9._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p_) {
 						return _elm_lang$core$Maybe$Just(
-							A2(_user$project$Syntax$Forall, _p13, p_));
+							A2(_user$project$Syntax$Forall, _p11, p_));
 					},
 					A2(
 						_user$project$PropositionParser$deBruijn,
-						{ctor: '::', _0: _p13, _1: ctx},
+						{ctor: '::', _0: _p11, _1: ctx},
 						_p9._1));
 			case 'Exists':
 				return A2(
@@ -10179,7 +10183,7 @@ var _user$project$PropositionParser$spaces = A2(
 var _user$project$PropositionParser$infixArithmeticOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p14) {
+		function (_p12) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -10233,7 +10237,7 @@ var _user$project$PropositionParser$expr = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixArithmeticOp(
-			function (_p15) {
+			function (_p13) {
 				return _user$project$PropositionParser$expr;
 			}),
 		_1: {
@@ -10291,7 +10295,7 @@ var _user$project$PropositionParser$parsePred = _elm_tools$parser$Parser$oneOf(
 var _user$project$PropositionParser$infixOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p16) {
+		function (_p14) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -10399,7 +10403,7 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixOp(
-			function (_p17) {
+			function (_p15) {
 				return _user$project$PropositionParser$prop;
 			}),
 		_1: {
@@ -10409,12 +10413,12 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 		}
 	});
 var _user$project$PropositionParser$parseProp = function (s) {
-	var _p18 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
-	if (_p18.ctor === 'Ok') {
+	var _p16 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
+	if (_p16.ctor === 'Ok') {
 		return A2(
 			_user$project$PropositionParser$deBruijn,
 			{ctor: '[]'},
-			_p18._0);
+			_p16._0);
 	} else {
 		return _elm_lang$core$Maybe$Nothing;
 	}
@@ -10532,7 +10536,7 @@ var _user$project$OmitNegations$removeAllNegations = function (p) {
 								return A2(
 									_user$project$Syntax$Disj,
 									_user$project$Syntax$Pred(
-										A2(_user$project$Syntax$Less, _p2, _p1)),
+										A2(_user$project$Syntax$Greater, _p2, _p1)),
 									_user$project$Syntax$Pred(
 										A2(_user$project$Syntax$Eq, _p1, _p2)));
 							case 'Eq':
