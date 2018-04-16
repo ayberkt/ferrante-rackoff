@@ -60,6 +60,13 @@ show (VI s) =
 
 -- Linearize a given `Expr` `e`.
 
+linearizeRat : Rat -> String
+linearizeRat q =
+    case q of
+      (Div n 1) -> toString n
+      (Div 0 n) -> "0"
+      (Div n1 n2) -> "(" ++ toString n1 ++ "/" ++ toString n2 ++ ")"
+
 
 linearizeExpr : Expr -> String
 linearizeExpr e =
