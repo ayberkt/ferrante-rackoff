@@ -83,6 +83,9 @@ linearizeExpr e =
         Minus e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "-" ++ linearizeExpr e2 ++ ")"
 
+        ConstFact c e ->
+            (linearizeRat c) ++ "(" ++ linearizeExpr e ++ ")"
+
         Var n x ->
             "x" ++ toString n
 
