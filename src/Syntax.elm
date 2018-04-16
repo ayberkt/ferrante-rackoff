@@ -10,6 +10,8 @@ type VarIdentifier
 
 -- Arithmetic expressions.
 
+type Rat = Div Int Int
+
 
 type Expr
     = Zero
