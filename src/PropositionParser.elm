@@ -21,7 +21,7 @@ import Char
 import Set
 import Util
 import Maybe
-import Syntax exposing (Prop(..), RatPred(..), Expr(..), VarIdentifier(..))
+import Syntax exposing (Prop(..), RatPred(..), Expr(..), VarIdentifier(..), Rat(..))
 
 
 spaces : Parser ()
@@ -126,6 +126,24 @@ infixArithmeticOp r =
                             Minus
                             |. spaces
                             |= lazy r
+                            |. spaces
+                            |= lazy r
+                            |. symbol ")"
+                        )
+                    , delayedCommit (symbol "/")
+                        (succeed
+                            (\z1 z2 -> ConstFact (Div z1 z2) One)
+                            |. spaces
+                            |= Parser.int
+                            |. spaces
+                            |= Parser.int
+                            |. symbol ")"
+                        )
+                    , delayedCommit (symbol "*")
+                        (succeed
+                            (\z e -> ConstFact (Div z 1) e)
+                            |. spaces
+                            |= Parser.int
                             |. spaces
                             |= lazy r
                             |. symbol ")"
