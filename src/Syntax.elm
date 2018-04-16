@@ -19,6 +19,7 @@ type Expr
     | Plus Expr Expr
     | Minus Expr Expr
     | Var Int VarIdentifier
+    | ConstFact Rat Expr
 
 
 
