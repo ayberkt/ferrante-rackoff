@@ -8,6 +8,7 @@ import Syntax exposing (Prop(..), linearize)
 import PropositionParser exposing (parseProp)
 import Styles exposing (..)
 import OmitNegations exposing (removeAllNegations)
+import Solve         exposing (solve)
 import NNF exposing (convertToNNF)
 
 
@@ -41,6 +42,10 @@ displayNNF p =
 
 displayAllNegationsRemoved p =
     "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
+
+displayConstantsSolved p =
+    "Solved constants: " ++
+      linearize ((solve (removeAllNegations (convertToNNF p)))) ++ "."
 
 
 
@@ -78,4 +83,6 @@ view content =
                     , div [ myStyle ] [ text (displayNNF parse) ]
                     , Html.h2 [ heading ] [ text "Step 3" ]
                     , div [ myStyle ] [ text (displayAllNegationsRemoved parse) ]
+                    , Html.h2 [ heading ] [ text "Step 4" ]
+                    , div [ myStyle ] [ text (displayConstantsSolved parse) ]
                     ]
