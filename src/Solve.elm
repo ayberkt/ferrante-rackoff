@@ -27,6 +27,12 @@ solveRatPred p =
         Less (ConstFact c x) t ->
             Less x (ConstFact (negateByMul c) t)
 
+        Eq t (ConstFact c x) ->
+            Eq (ConstFact (negateByMul c) t) x
+
+        Eq (ConstFact c x) t ->
+            Eq x (ConstFact (negateByMul c) t)
+
         p_ ->
             p_
 
