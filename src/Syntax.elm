@@ -10,7 +10,9 @@ type VarIdentifier
 
 -- Arithmetic expressions.
 
-type Rat = Div Int Int
+
+type Rat
+    = Div Int Int
 
 
 type Expr
@@ -60,12 +62,18 @@ show (VI s) =
 
 -- Linearize a given `Expr` `e`.
 
+
 linearizeRat : Rat -> String
 linearizeRat q =
     case q of
-      (Div n 1) -> toString n
-      (Div 0 n) -> "0"
-      (Div n1 n2) -> "(" ++ toString n1 ++ "/" ++ toString n2 ++ ")"
+        Div n 1 ->
+            toString n
+
+        Div 0 n ->
+            "0"
+
+        Div n1 n2 ->
+            "(" ++ toString n1 ++ "/" ++ toString n2 ++ ")"
 
 
 linearizeExpr : Expr -> String
