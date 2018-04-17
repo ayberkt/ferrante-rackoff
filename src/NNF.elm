@@ -20,10 +20,10 @@ convertToNNF p =
         Neg (Neg p) ->
             convertToNNF p
 
-        Neg (Forall _ p) ->
-            Exists (convertToNNF (Neg p))
+        Neg (Forall s p) ->
+            Exists s (convertToNNF (Neg p))
 
-        Neg (Exists p) ->
+        Neg (Exists _ p) ->
             Forall (VI "TODO") (convertToNNF (Neg p))
 
         Conj p1 p2 ->
@@ -35,8 +35,8 @@ convertToNNF p =
         Forall s p ->
             Forall s (convertToNNF p)
 
-        Exists p ->
-            Exists (convertToNNF p)
+        Exists s p ->
+            Exists s (convertToNNF p)
 
         p ->
             p

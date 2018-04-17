@@ -47,7 +47,7 @@ type Prop
     | Conj Prop Prop
     | Disj Prop Prop
     | Forall VarIdentifier Prop
-    | Exists Prop
+    | Exists VarIdentifier Prop
 
 
 
@@ -137,8 +137,8 @@ linearize p =
         Forall s p1 ->
             "(" ++ "∀" ++ show s ++ ". " ++ (linearize p1) ++ ")"
 
-        Exists p1 ->
-            "(" ++ "∃" ++ linearize p1 ++ ")"
+        Exists s p1 ->
+            "(" ++ "∃" ++ show s ++ ". " ++ linearize p1 ++ ")"
 
         Neg p1 ->
             "¬" ++ linearize p1

@@ -26,8 +26,8 @@ removeAllNegations p =
         Forall s p1 ->
             Forall s (removeAllNegations p1)
 
-        Exists p1 ->
-            Exists (removeAllNegations p1)
+        Exists s p1 ->
+            Exists s (removeAllNegations p1)
 
         Neg Top ->
             Bot

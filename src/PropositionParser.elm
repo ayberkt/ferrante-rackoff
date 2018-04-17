@@ -309,11 +309,11 @@ deBruijn ctx p =
                         Just (Forall x p_)
                     )
 
-        Exists p ->
-            (deBruijn ctx p)
+        Exists x p ->
+            (deBruijn (x :: ctx) p)
                 |> Maybe.andThen
                     (\p_ ->
-                        Just (Exists p_)
+                        Just (Forall x p_)
                     )
 
         p_ ->

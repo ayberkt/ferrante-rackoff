@@ -41,8 +41,8 @@ solve p =
         Forall s p1 ->
             Forall s (solve p1)
 
-        Exists p1 ->
-            Exists (solve p1)
+        Exists s p1 ->
+            Exists s (solve p1)
 
         Neg p1 ->
             Neg (solve p1)
