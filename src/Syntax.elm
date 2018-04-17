@@ -72,6 +72,9 @@ linearizeRat q =
         Div 0 n ->
             "0"
 
+        Div _ 0 ->
+            "ERROR: DIVISION BY ZERO"
+
         Div n1 n2 ->
             "(" ++ toString n1 ++ "/" ++ toString n2 ++ ")"
 
