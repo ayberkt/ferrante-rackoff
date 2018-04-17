@@ -179,16 +179,36 @@ suite =
             , test "Solve constant, 4" <|
                 \() ->
                     Expect.equal
-                        True
-                        True
+                        (solve
+                            (Pred
+                                (Eq (ConstFact (Div 3 1) One)
+                                    (ConstFact (Div 2 1) One)
+                                )
+                            )
+                        )
+                        (Pred
+                            (Eq
+                                (ConstFact (Div 1 2) (ConstFact (Div 3 1) One))
+                                One
+                            )
+                        )
             , test "Solve constant, 5" <|
                 \() ->
                     Expect.equal
-                        True
-                        True
+                        (solve
+                            (Pred
+                                (Less
+                                    (ConstFact (Div 2 1) One)
+                                    (ConstFact (Div 3 1) One)
+                                )
+                            )
+                        )
+                        (Pred
+                            (Less (ConstFact (Div 1 3) (ConstFact (Div 2 1) One)) One)
+                        )
             , test "Solve constant, 6" <|
                 \() ->
-                    Expect.equal True True
+                    Expect.equal (solve (Pred (Less One One))) (Pred (Less One One))
             , test "Parser 1" <|
                 \() ->
                     Expect.equal
