@@ -13,14 +13,26 @@ negateByMul (Div n1 n2) =
     Div n2 n1
 
 
+
+-- Replace every predicate of the form t < cx with t/c < x so that
+-- variables are alone. This corresponds to Step 4 of the algorithm
+
+
 solveRatPred : RatPred -> RatPred
 solveRatPred p =
     case p of
         Less t (ConstFact c x) ->
             Less (ConstFact (negateByMul c) t) x
 
+        Less (ConstFact c x) t ->
+            Less x (ConstFact (negateByMul c) t)
+
         p_ ->
             p_
+
+
+
+-- Go down recursively and apply `solveRatPred` to predicates.
 
 
 solve : Prop -> Prop
