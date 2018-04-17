@@ -8,7 +8,7 @@ import Syntax exposing (Prop(..), linearize)
 import PropositionParser exposing (parseProp)
 import Styles exposing (..)
 import OmitNegations exposing (removeAllNegations)
-import Solve         exposing (solve)
+import Solve exposing (solve)
 import NNF exposing (convertToNNF)
 
 
@@ -43,9 +43,11 @@ displayNNF p =
 displayAllNegationsRemoved p =
     "No negations: " ++ (linearize (removeAllNegations (convertToNNF p))) ++ "."
 
+
 displayConstantsSolved p =
-    "Solved constants: " ++
-      linearize ((solve (removeAllNegations (convertToNNF p)))) ++ "."
+    "Solved constants: "
+        ++ linearize ((solve (removeAllNegations (convertToNNF p))))
+        ++ "."
 
 
 
