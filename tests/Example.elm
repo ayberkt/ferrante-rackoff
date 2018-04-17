@@ -3,9 +3,10 @@ module Example exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Syntax exposing (Prop(..), RatPred(..), VarIdentifier(..), Expr(..))
+import Syntax exposing (Prop(..), RatPred(..), VarIdentifier(..), Expr(..), Rat(..))
 import NNF exposing (convertToNNF)
 import OmitNegations exposing (removeAllNegations)
+import Solve exposing (solve)
 import PropositionParser exposing (parseProp)
 
 
@@ -111,6 +112,83 @@ suite =
                     Expect.equal
                         (removeAllNegations Top)
                         Top
+            , test "Solve constant, 1" <|
+                \() ->
+                    Expect.equal
+                        (solve
+                            (Forall (VI "x")
+                                (Pred
+                                    (Less
+                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
+                                        (ConstFact (Div 2 1) (Var 0 (VI "x")))
+                                    )
+                                )
+                            )
+                        )
+                        (Forall (VI "x")
+                            (Pred
+                                (Less
+                                    (ConstFact
+                                        (Div 1 2)
+                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
+                                    )
+                                    (Var 0 (VI "x"))
+                                )
+                            )
+                        )
+            , test "Solve constant, 2" <|
+                \() ->
+                    Expect.equal
+                        (solve
+                            (Forall (VI "x")
+                                (Pred
+                                    (Less
+                                        (ConstFact (Div 1 3) (Var 0 (VI "x")))
+                                        (ConstFact (Div 1 10) (Var 0 (VI "x")))
+                                    )
+                                )
+                            )
+                        )
+                        (Forall (VI "x")
+                            (Pred
+                                (Less
+                                    (ConstFact
+                                        (Div 10 1)
+                                        (ConstFact (Div 1 3) (Var 0 (VI "x")))
+                                    )
+                                    (Var 0 (VI "x"))
+                                )
+                            )
+                        )
+            , test "Solve constant, 3" <|
+                \() ->
+                    Expect.equal
+                        (solve
+                            (Pred
+                                (Less (ConstFact (Div 3 1) One)
+                                    (ConstFact (Div 2 1) One)
+                                )
+                            )
+                        )
+                        (Pred
+                            (Less
+                                (ConstFact (Div 1 2) (ConstFact (Div 3 1) One))
+                                One
+                            )
+                        )
+            , test "Solve constant, 4" <|
+                \() ->
+                    Expect.equal
+                        True
+                        True
+            , test "Solve constant, 5" <|
+                \() ->
+                    Expect.equal
+                        True
+                        True
+            , test "Solve constant, 6" <|
+                \() ->
+                    Expect.equal True True
             , test "Parser 1" <|
                 \() ->
                     Expect.equal
@@ -151,5 +229,33 @@ suite =
                     Expect.equal
                         (parseProp "(~ (forall x (< x x)")
                         Nothing
+            , test "Parser 9" <|
+                \() ->
+                    Expect.equal
+                        (parseProp "(forall x (< (* 3 x) (* 2 x)))")
+                        (Just
+                            (Forall (VI "x")
+                                (Pred
+                                    (Less
+                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
+                                        (ConstFact (Div 2 1) (Var 0 (VI "x")))
+                                    )
+                                )
+                            )
+                        )
+            , test "Parser 10" <|
+                \() ->
+                    Expect.equal
+                        (parseProp "(forall x (< (* 3 x) 1))")
+                        (Just
+                            (Forall (VI "x")
+                                (Pred
+                                    (Less
+                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
+                                        One
+                                    )
+                                )
+                            )
+                        )
             ]
         ]
