@@ -10695,17 +10695,58 @@ var _user$project$Solve$negateByMul = function (_p0) {
 };
 var _user$project$Solve$solveRatPred = function (p) {
 	var _p2 = p;
-	if ((_p2.ctor === 'Less') && (_p2._1.ctor === 'ConstFact')) {
-		return A2(
-			_user$project$Syntax$Less,
-			A2(
-				_user$project$Syntax$ConstFact,
-				_user$project$Solve$negateByMul(_p2._1._0),
-				_p2._0),
-			_p2._1._1);
-	} else {
-		return _p2;
-	}
+	_v1_4:
+	do {
+		switch (_p2.ctor) {
+			case 'Less':
+				if (_p2._1.ctor === 'ConstFact') {
+					return A2(
+						_user$project$Syntax$Less,
+						A2(
+							_user$project$Syntax$ConstFact,
+							_user$project$Solve$negateByMul(_p2._1._0),
+							_p2._0),
+						_p2._1._1);
+				} else {
+					if (_p2._0.ctor === 'ConstFact') {
+						return A2(
+							_user$project$Syntax$Less,
+							_p2._0._1,
+							A2(
+								_user$project$Syntax$ConstFact,
+								_user$project$Solve$negateByMul(_p2._0._0),
+								_p2._1));
+					} else {
+						break _v1_4;
+					}
+				}
+			case 'Eq':
+				if (_p2._1.ctor === 'ConstFact') {
+					return A2(
+						_user$project$Syntax$Eq,
+						A2(
+							_user$project$Syntax$ConstFact,
+							_user$project$Solve$negateByMul(_p2._1._0),
+							_p2._0),
+						_p2._1._1);
+				} else {
+					if (_p2._0.ctor === 'ConstFact') {
+						return A2(
+							_user$project$Syntax$Eq,
+							_p2._0._1,
+							A2(
+								_user$project$Syntax$ConstFact,
+								_user$project$Solve$negateByMul(_p2._0._0),
+								_p2._1));
+					} else {
+						break _v1_4;
+					}
+				}
+			default:
+				break _v1_4;
+		}
+	} while(false);
+	return _p2;
 };
 var _user$project$Solve$solve = function (p) {
 	var _p3 = p;
