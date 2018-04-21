@@ -9743,10 +9743,6 @@ var _user$project$Syntax$linearizeRat = function (q) {
 var _user$project$Syntax$linearizeExpr = function (e) {
 	var _p1 = e;
 	switch (_p1.ctor) {
-		case 'Zero':
-			return '0';
-		case 'One':
-			return '1';
 		case 'Plus':
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
@@ -9786,6 +9782,14 @@ var _user$project$Syntax$linearizeExpr = function (e) {
 						_elm_lang$core$Basics_ops['++'],
 						_user$project$Syntax$linearizeExpr(_p1._1),
 						')')));
+		case 'ConstRat':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(_p1._0._0),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'/',
+					_elm_lang$core$Basics$toString(_p1._0._1)));
 		default:
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
@@ -9795,49 +9799,34 @@ var _user$project$Syntax$linearizeExpr = function (e) {
 };
 var _user$project$Syntax$linearizeRatPred = function (rp) {
 	var _p2 = rp;
-	switch (_p2.ctor) {
-		case 'Eq':
-			return A2(
+	if (_p2.ctor === 'Eq') {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'(',
+			A2(
 				_elm_lang$core$Basics_ops['++'],
-				'(',
+				_user$project$Syntax$linearizeExpr(_p2._0),
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					_user$project$Syntax$linearizeExpr(_p2._0),
+					'  =  ',
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						'  =  ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_user$project$Syntax$linearizeExpr(_p2._1),
-							')'))));
-		case 'Greater':
-			return A2(
+						_user$project$Syntax$linearizeExpr(_p2._1),
+						')'))));
+	} else {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'(',
+			A2(
 				_elm_lang$core$Basics_ops['++'],
-				'(',
+				_user$project$Syntax$linearizeExpr(_p2._0),
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					_user$project$Syntax$linearizeExpr(_p2._0),
+					'  <  ',
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						'  >  ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_user$project$Syntax$linearizeExpr(_p2._1),
-							')'))));
-		default:
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				'(',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_user$project$Syntax$linearizeExpr(_p2._0),
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'  <  ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_user$project$Syntax$linearizeExpr(_p2._1),
-							')'))));
+						_user$project$Syntax$linearizeExpr(_p2._1),
+						')'))));
 	}
 };
 var _user$project$Syntax$show = function (_p3) {
@@ -9935,6 +9924,9 @@ var _user$project$Syntax$ConstFact = F2(
 	function (a, b) {
 		return {ctor: 'ConstFact', _0: a, _1: b};
 	});
+var _user$project$Syntax$ConstRat = function (a) {
+	return {ctor: 'ConstRat', _0: a};
+};
 var _user$project$Syntax$Var = F2(
 	function (a, b) {
 		return {ctor: 'Var', _0: a, _1: b};
@@ -9947,15 +9939,9 @@ var _user$project$Syntax$Plus = F2(
 	function (a, b) {
 		return {ctor: 'Plus', _0: a, _1: b};
 	});
-var _user$project$Syntax$One = {ctor: 'One'};
-var _user$project$Syntax$Zero = {ctor: 'Zero'};
 var _user$project$Syntax$Less = F2(
 	function (a, b) {
 		return {ctor: 'Less', _0: a, _1: b};
-	});
-var _user$project$Syntax$Greater = F2(
-	function (a, b) {
-		return {ctor: 'Greater', _0: a, _1: b};
 	});
 var _user$project$Syntax$Eq = F2(
 	function (a, b) {
@@ -10016,94 +10002,160 @@ var _user$project$Util$indexOf = F2(
 	function (xs, t) {
 		return A3(_user$project$Util$indexOfRec, xs, t, 0);
 	});
-var _user$project$PropositionParser$deBruijnExp = F2(
-	function (ctx, e) {
+var _user$project$PropositionParser$substExpr = F3(
+	function (e, i, eNew) {
 		var _p0 = e;
 		switch (_p0.ctor) {
 			case 'Plus':
-				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p0._1);
-				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p0._0);
-				var _p1 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
-				if ((_p1._0.ctor === 'Just') && (_p1._1.ctor === 'Just')) {
+				return A2(
+					_user$project$Syntax$Plus,
+					A3(_user$project$PropositionParser$substExpr, _p0._0, i, eNew),
+					A3(_user$project$PropositionParser$substExpr, _p0._1, i, eNew));
+			case 'Minus':
+				return A2(
+					_user$project$Syntax$Plus,
+					A3(_user$project$PropositionParser$substExpr, _p0._0, i, eNew),
+					A3(_user$project$PropositionParser$substExpr, _p0._1, i, eNew));
+			case 'Var':
+				return _elm_lang$core$Native_Utils.eq(i, _p0._0) ? e : A2(_user$project$Syntax$Var, i, _p0._1);
+			case 'ConstRat':
+				return _user$project$Syntax$ConstRat(_p0._0);
+			default:
+				return A2(
+					_user$project$Syntax$ConstFact,
+					_p0._0,
+					A3(_user$project$PropositionParser$substExpr, _p0._1, i, eNew));
+		}
+	});
+var _user$project$PropositionParser$subst = F3(
+	function (p, i, e) {
+		var _p1 = p;
+		switch (_p1.ctor) {
+			case 'Pred':
+				if (_p1._0.ctor === 'Less') {
+					return _user$project$Syntax$Pred(
+						A2(
+							_user$project$Syntax$Less,
+							A3(_user$project$PropositionParser$substExpr, _p1._0._0, i, e),
+							A3(_user$project$PropositionParser$substExpr, _p1._0._1, i, e)));
+				} else {
+					var _p2 = _p1._0._0;
+					return _user$project$Syntax$Pred(
+						A2(
+							_user$project$Syntax$Eq,
+							A3(_user$project$PropositionParser$substExpr, _p2, i, e),
+							A3(_user$project$PropositionParser$substExpr, _p2, i, e)));
+				}
+			case 'Neg':
+				return _user$project$Syntax$Neg(
+					A3(_user$project$PropositionParser$subst, _p1._0, i, e));
+			case 'Conj':
+				return A2(
+					_user$project$Syntax$Conj,
+					A3(_user$project$PropositionParser$subst, _p1._0, i, e),
+					A3(_user$project$PropositionParser$subst, _p1._1, i, e));
+			case 'Disj':
+				return A2(
+					_user$project$Syntax$Disj,
+					A3(_user$project$PropositionParser$subst, _p1._0, i, e),
+					A3(_user$project$PropositionParser$subst, _p1._1, i, e));
+			case 'Forall':
+				return A2(
+					_user$project$Syntax$Forall,
+					_p1._0,
+					A3(_user$project$PropositionParser$subst, _p1._1, i, e));
+			case 'Exists':
+				return A2(
+					_user$project$Syntax$Exists,
+					_p1._0,
+					A3(_user$project$PropositionParser$subst, _p1._1, i, e));
+			default:
+				return _p1;
+		}
+	});
+var _user$project$PropositionParser$deBruijnExp = F2(
+	function (ctx, e) {
+		var _p3 = e;
+		switch (_p3.ctor) {
+			case 'Plus':
+				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p3._1);
+				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p3._0);
+				var _p4 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
+				if ((_p4._0.ctor === 'Just') && (_p4._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Plus, _p1._0._0, _p1._1._0));
+						A2(_user$project$Syntax$Plus, _p4._0._0, _p4._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			case 'Minus':
-				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p0._1);
-				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p0._0);
-				var _p2 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
-				if ((_p2._0.ctor === 'Just') && (_p2._1.ctor === 'Just')) {
+				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p3._1);
+				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p3._0);
+				var _p5 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
+				if ((_p5._0.ctor === 'Just') && (_p5._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Minus, _p2._0._0, _p2._1._0));
+						A2(_user$project$Syntax$Minus, _p5._0._0, _p5._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			case 'Var':
-				var _p4 = _p0._1;
-				var _p3 = A2(_user$project$Util$indexOf, ctx, _p4);
-				if (_p3.ctor === 'Just') {
+				var _p7 = _p3._1;
+				var _p6 = A2(_user$project$Util$indexOf, ctx, _p7);
+				if (_p6.ctor === 'Just') {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Var, _p3._0, _p4));
+						A2(_user$project$Syntax$Var, _p6._0, _p7));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
+			case 'ConstFact':
+				return A2(
+					_elm_lang$core$Maybe$andThen,
+					function (e1_) {
+						return _elm_lang$core$Maybe$Just(
+							A2(_user$project$Syntax$ConstFact, _p3._0, e1_));
+					},
+					A2(_user$project$PropositionParser$deBruijnExp, ctx, _p3._1));
 			default:
-				return _elm_lang$core$Maybe$Just(_p0);
+				return _elm_lang$core$Maybe$Just(_p3);
 		}
 	});
 var _user$project$PropositionParser$deBruijnRP = F2(
 	function (ctx, rp) {
-		var _p5 = rp;
-		switch (_p5.ctor) {
-			case 'Less':
-				var _p6 = {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._1)
-				};
-				if ((_p6._0.ctor === 'Just') && (_p6._1.ctor === 'Just')) {
-					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Less, _p6._0._0, _p6._1._0));
-				} else {
-					return _elm_lang$core$Maybe$Nothing;
-				}
-			case 'Greater':
-				var _p7 = {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._1)
-				};
-				if ((_p7._0.ctor === 'Just') && (_p7._1.ctor === 'Just')) {
-					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Greater, _p7._0._0, _p7._1._0));
-				} else {
-					return _elm_lang$core$Maybe$Nothing;
-				}
-			default:
-				var _p8 = {
-					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p5._1)
-				};
-				if ((_p8._0.ctor === 'Just') && (_p8._1.ctor === 'Just')) {
-					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Eq, _p8._0._0, _p8._1._0));
-				} else {
-					return _elm_lang$core$Maybe$Nothing;
-				}
+		var _p8 = rp;
+		if (_p8.ctor === 'Less') {
+			var _p9 = {
+				ctor: '_Tuple2',
+				_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._0),
+				_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._1)
+			};
+			if ((_p9._0.ctor === 'Just') && (_p9._1.ctor === 'Just')) {
+				return _elm_lang$core$Maybe$Just(
+					A2(_user$project$Syntax$Less, _p9._0._0, _p9._1._0));
+			} else {
+				return _elm_lang$core$Maybe$Nothing;
+			}
+		} else {
+			var _p10 = {
+				ctor: '_Tuple2',
+				_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._0),
+				_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._1)
+			};
+			if ((_p10._0.ctor === 'Just') && (_p10._1.ctor === 'Just')) {
+				return _elm_lang$core$Maybe$Just(
+					A2(_user$project$Syntax$Eq, _p10._0._0, _p10._1._0));
+			} else {
+				return _elm_lang$core$Maybe$Nothing;
+			}
 		}
 	});
 var _user$project$PropositionParser$deBruijn = F2(
 	function (ctx, p) {
-		var _p9 = p;
-		switch (_p9.ctor) {
+		var _p11 = p;
+		switch (_p11.ctor) {
 			case 'Pred':
-				var _p10 = A2(_user$project$PropositionParser$deBruijnRP, ctx, _p9._0);
-				if (_p10.ctor === 'Just') {
+				var _p12 = A2(_user$project$PropositionParser$deBruijnRP, ctx, _p11._0);
+				if (_p12.ctor === 'Just') {
 					return _elm_lang$core$Maybe$Just(
-						_user$project$Syntax$Pred(_p10._0));
+						_user$project$Syntax$Pred(_p12._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
@@ -10114,7 +10166,7 @@ var _user$project$PropositionParser$deBruijn = F2(
 						return _elm_lang$core$Maybe$Just(
 							_user$project$Syntax$Neg(x));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
 			case 'Conj':
 				return A2(
 					_elm_lang$core$Maybe$andThen,
@@ -10125,9 +10177,9 @@ var _user$project$PropositionParser$deBruijn = F2(
 								return _elm_lang$core$Maybe$Just(
 									A2(_user$project$Syntax$Conj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p9._1));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p11._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
 			case 'Disj':
 				return A2(
 					_elm_lang$core$Maybe$andThen,
@@ -10138,37 +10190,51 @@ var _user$project$PropositionParser$deBruijn = F2(
 								return _elm_lang$core$Maybe$Just(
 									A2(_user$project$Syntax$Disj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p9._1));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p11._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p9._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
 			case 'Forall':
-				var _p11 = _p9._0;
+				var _p13 = _p11._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p_) {
 						return _elm_lang$core$Maybe$Just(
-							A2(_user$project$Syntax$Forall, _p11, p_));
+							A2(_user$project$Syntax$Forall, _p13, p_));
 					},
 					A2(
 						_user$project$PropositionParser$deBruijn,
-						{ctor: '::', _0: _p11, _1: ctx},
-						_p9._1));
+						{ctor: '::', _0: _p13, _1: ctx},
+						_p11._1));
 			case 'Exists':
-				var _p12 = _p9._0;
+				var _p14 = _p11._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p_) {
 						return _elm_lang$core$Maybe$Just(
-							A2(_user$project$Syntax$Forall, _p12, p_));
+							A2(_user$project$Syntax$Exists, _p14, p_));
 					},
 					A2(
 						_user$project$PropositionParser$deBruijn,
-						{ctor: '::', _0: _p12, _1: ctx},
-						_p9._1));
+						{ctor: '::', _0: _p14, _1: ctx},
+						_p11._1));
 			default:
-				return _elm_lang$core$Maybe$Just(_p9);
+				return _elm_lang$core$Maybe$Just(_p11);
 		}
 	});
+var _user$project$PropositionParser$rat = A2(
+	_elm_tools$parser$Parser_ops['|='],
+	A2(
+		_elm_tools$parser$Parser_ops['|.'],
+		A2(
+			_elm_tools$parser$Parser_ops['|='],
+			_elm_tools$parser$Parser$succeed(
+				F2(
+					function (z1, z2) {
+						return A2(_user$project$Syntax$Div, z1, z2);
+					})),
+			_elm_tools$parser$Parser$int),
+		_elm_tools$parser$Parser$symbol('/')),
+	_elm_tools$parser$Parser$int);
 var _user$project$PropositionParser$atom = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
@@ -10212,29 +10278,22 @@ var _user$project$PropositionParser$exprAtom = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: A2(
-			_elm_tools$parser$Parser_ops['|.'],
-			_elm_tools$parser$Parser$succeed(_user$project$Syntax$One),
-			_elm_tools$parser$Parser$symbol('1')),
+			_elm_tools$parser$Parser_ops['|='],
+			_elm_tools$parser$Parser$succeed(
+				function (x) {
+					return A2(_user$project$Syntax$Var, 0, x);
+				}),
+			A2(
+				_elm_tools$parser$Parser_ops['|='],
+				_elm_tools$parser$Parser$succeed(_user$project$Syntax$VI),
+				A3(_elm_tools$parser$Parser_LanguageKit$variable, _elm_lang$core$Char$isLower, _user$project$PropositionParser$isVarChar, _user$project$PropositionParser$keywords))),
 		_1: {
 			ctor: '::',
 			_0: A2(
-				_elm_tools$parser$Parser_ops['|.'],
-				_elm_tools$parser$Parser$succeed(_user$project$Syntax$Zero),
-				_elm_tools$parser$Parser$symbol('0')),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_tools$parser$Parser_ops['|='],
-					_elm_tools$parser$Parser$succeed(
-						function (x) {
-							return A2(_user$project$Syntax$Var, 0, x);
-						}),
-					A2(
-						_elm_tools$parser$Parser_ops['|='],
-						_elm_tools$parser$Parser$succeed(_user$project$Syntax$VI),
-						A3(_elm_tools$parser$Parser_LanguageKit$variable, _elm_lang$core$Char$isLower, _user$project$PropositionParser$isVarChar, _user$project$PropositionParser$keywords))),
-				_1: {ctor: '[]'}
-			}
+				_elm_tools$parser$Parser_ops['|='],
+				_elm_tools$parser$Parser$succeed(_user$project$Syntax$ConstRat),
+				_user$project$PropositionParser$rat),
+			_1: {ctor: '[]'}
 		}
 	});
 var _user$project$PropositionParser$spaces = A2(
@@ -10248,7 +10307,7 @@ var _user$project$PropositionParser$spaces = A2(
 var _user$project$PropositionParser$infixArithmeticOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p13) {
+		function (_p15) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -10296,7 +10355,7 @@ var _user$project$PropositionParser$infixArithmeticOp = function (r) {
 							ctor: '::',
 							_0: A2(
 								_elm_tools$parser$Parser$delayedCommit,
-								_elm_tools$parser$Parser$symbol('/'),
+								_elm_tools$parser$Parser$symbol('*'),
 								A2(
 									_elm_tools$parser$Parser_ops['|.'],
 									A2(
@@ -10307,49 +10366,13 @@ var _user$project$PropositionParser$infixArithmeticOp = function (r) {
 												_elm_tools$parser$Parser_ops['|='],
 												A2(
 													_elm_tools$parser$Parser_ops['|.'],
-													_elm_tools$parser$Parser$succeed(
-														F2(
-															function (z1, z2) {
-																return A2(
-																	_user$project$Syntax$ConstFact,
-																	A2(_user$project$Syntax$Div, z1, z2),
-																	_user$project$Syntax$One);
-															})),
+													_elm_tools$parser$Parser$succeed(_user$project$Syntax$ConstFact),
 													_user$project$PropositionParser$spaces),
-												_elm_tools$parser$Parser$int),
+												_user$project$PropositionParser$rat),
 											_user$project$PropositionParser$spaces),
-										_elm_tools$parser$Parser$int),
+										_elm_tools$parser$Parser$lazy(r)),
 									_elm_tools$parser$Parser$symbol(')'))),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_elm_tools$parser$Parser$delayedCommit,
-									_elm_tools$parser$Parser$symbol('*'),
-									A2(
-										_elm_tools$parser$Parser_ops['|.'],
-										A2(
-											_elm_tools$parser$Parser_ops['|='],
-											A2(
-												_elm_tools$parser$Parser_ops['|.'],
-												A2(
-													_elm_tools$parser$Parser_ops['|='],
-													A2(
-														_elm_tools$parser$Parser_ops['|.'],
-														_elm_tools$parser$Parser$succeed(
-															F2(
-																function (z, e) {
-																	return A2(
-																		_user$project$Syntax$ConstFact,
-																		A2(_user$project$Syntax$Div, z, 1),
-																		e);
-																})),
-														_user$project$PropositionParser$spaces),
-													_elm_tools$parser$Parser$int),
-												_user$project$PropositionParser$spaces),
-											_elm_tools$parser$Parser$lazy(r)),
-										_elm_tools$parser$Parser$symbol(')'))),
-								_1: {ctor: '[]'}
-							}
+							_1: {ctor: '[]'}
 						}
 					}
 				});
@@ -10360,7 +10383,7 @@ var _user$project$PropositionParser$expr = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixArithmeticOp(
-			function (_p14) {
+			function (_p16) {
 				return _user$project$PropositionParser$expr;
 			}),
 		_1: {
@@ -10391,34 +10414,12 @@ var _user$project$PropositionParser$parsePred = _elm_tools$parser$Parser$oneOf(
 						_user$project$PropositionParser$spaces),
 					_user$project$PropositionParser$expr),
 				_elm_tools$parser$Parser$symbol(')'))),
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_elm_tools$parser$Parser$delayedCommit,
-				_elm_tools$parser$Parser$symbol('>'),
-				A2(
-					_elm_tools$parser$Parser_ops['|.'],
-					A2(
-						_elm_tools$parser$Parser_ops['|='],
-						A2(
-							_elm_tools$parser$Parser_ops['|.'],
-							A2(
-								_elm_tools$parser$Parser_ops['|='],
-								A2(
-									_elm_tools$parser$Parser_ops['|.'],
-									_elm_tools$parser$Parser$succeed(_user$project$Syntax$Greater),
-									_user$project$PropositionParser$spaces),
-								_user$project$PropositionParser$expr),
-							_user$project$PropositionParser$spaces),
-						_user$project$PropositionParser$expr),
-					_elm_tools$parser$Parser$symbol(')'))),
-			_1: {ctor: '[]'}
-		}
+		_1: {ctor: '[]'}
 	});
 var _user$project$PropositionParser$infixOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p15) {
+		function (_p17) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -10510,10 +10511,38 @@ var _user$project$PropositionParser$infixOp = function (r) {
 								_1: {
 									ctor: '::',
 									_0: A2(
-										_elm_tools$parser$Parser_ops['|='],
-										_elm_tools$parser$Parser$succeed(_user$project$Syntax$Pred),
-										_user$project$PropositionParser$parsePred),
-									_1: {ctor: '[]'}
+										_elm_tools$parser$Parser$delayedCommit,
+										_elm_tools$parser$Parser$symbol('exists'),
+										A2(
+											_elm_tools$parser$Parser_ops['|.'],
+											A2(
+												_elm_tools$parser$Parser_ops['|.'],
+												A2(
+													_elm_tools$parser$Parser_ops['|='],
+													A2(
+														_elm_tools$parser$Parser_ops['|.'],
+														A2(
+															_elm_tools$parser$Parser_ops['|='],
+															A2(
+																_elm_tools$parser$Parser_ops['|.'],
+																_elm_tools$parser$Parser$succeed(_user$project$Syntax$Exists),
+																_user$project$PropositionParser$spaces),
+															A2(
+																_elm_tools$parser$Parser_ops['|='],
+																_elm_tools$parser$Parser$succeed(_user$project$Syntax$VI),
+																A3(_elm_tools$parser$Parser_LanguageKit$variable, _elm_lang$core$Char$isLower, _user$project$PropositionParser$isVarChar, _user$project$PropositionParser$keywords))),
+														_user$project$PropositionParser$spaces),
+													_elm_tools$parser$Parser$lazy(r)),
+												_user$project$PropositionParser$spaces),
+											_elm_tools$parser$Parser$symbol(')'))),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_tools$parser$Parser_ops['|='],
+											_elm_tools$parser$Parser$succeed(_user$project$Syntax$Pred),
+											_user$project$PropositionParser$parsePred),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}
@@ -10526,7 +10555,7 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixOp(
-			function (_p16) {
+			function (_p18) {
 				return _user$project$PropositionParser$prop;
 			}),
 		_1: {
@@ -10536,15 +10565,183 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 		}
 	});
 var _user$project$PropositionParser$parseProp = function (s) {
-	var _p17 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
-	if (_p17.ctor === 'Ok') {
+	var _p19 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
+	if (_p19.ctor === 'Ok') {
 		return A2(
 			_user$project$PropositionParser$deBruijn,
 			{ctor: '[]'},
-			_p17._0);
+			_p19._0);
 	} else {
 		return _elm_lang$core$Maybe$Nothing;
 	}
+};
+var _user$project$InfiniteProjection$mkEmptyReplacedList = function (x) {
+	return {
+		ctor: '_Tuple2',
+		_0: x,
+		_1: {ctor: '[]'}
+	};
+};
+var _user$project$InfiniteProjection$infProj = F2(
+	function (p, ipk) {
+		var _p0 = p;
+		_v0_3:
+		do {
+			switch (_p0.ctor) {
+				case 'Pred':
+					if (_p0._0.ctor === 'Less') {
+						if (_p0._0._0.ctor === 'Var') {
+							var _p2 = _p0._0._1;
+							var _p1 = ipk;
+							if (_p1.ctor === 'LeftInfProj') {
+								return {
+									ctor: '_Tuple2',
+									_0: _user$project$Syntax$Top,
+									_1: {
+										ctor: '::',
+										_0: _p2,
+										_1: {ctor: '[]'}
+									}
+								};
+							} else {
+								return {
+									ctor: '_Tuple2',
+									_0: _user$project$Syntax$Bot,
+									_1: {
+										ctor: '::',
+										_0: _p2,
+										_1: {ctor: '[]'}
+									}
+								};
+							}
+						} else {
+							if (_p0._0._1.ctor === 'Var') {
+								var _p4 = _p0._0._0;
+								var _p3 = ipk;
+								if (_p3.ctor === 'RightInfProj') {
+									return {
+										ctor: '_Tuple2',
+										_0: _user$project$Syntax$Top,
+										_1: {
+											ctor: '::',
+											_0: _p4,
+											_1: {ctor: '[]'}
+										}
+									};
+								} else {
+									return {
+										ctor: '_Tuple2',
+										_0: _user$project$Syntax$Bot,
+										_1: {
+											ctor: '::',
+											_0: _p4,
+											_1: {ctor: '[]'}
+										}
+									};
+								}
+							} else {
+								break _v0_3;
+							}
+						}
+					} else {
+						if (_p0._0._0.ctor === 'Var') {
+							var _p6 = _p0._0._1;
+							var _p5 = ipk;
+							if (_p5.ctor === 'RightInfProj') {
+								return {
+									ctor: '_Tuple2',
+									_0: _user$project$Syntax$Bot,
+									_1: {
+										ctor: '::',
+										_0: _p6,
+										_1: {ctor: '[]'}
+									}
+								};
+							} else {
+								return {
+									ctor: '_Tuple2',
+									_0: _user$project$Syntax$Bot,
+									_1: {
+										ctor: '::',
+										_0: _p6,
+										_1: {ctor: '[]'}
+									}
+								};
+							}
+						} else {
+							break _v0_3;
+						}
+					}
+				case 'Id':
+					return _user$project$InfiniteProjection$mkEmptyReplacedList(
+						_user$project$Syntax$Id(_p0._0));
+				case 'Top':
+					return _user$project$InfiniteProjection$mkEmptyReplacedList(_user$project$Syntax$Top);
+				case 'Bot':
+					return _user$project$InfiniteProjection$mkEmptyReplacedList(_user$project$Syntax$Bot);
+				case 'Neg':
+					var _p7 = A2(_user$project$InfiniteProjection$infProj, _p0._0, ipk);
+					var p1LInfProj = _p7._0;
+					var replaced = _p7._1;
+					return {
+						ctor: '_Tuple2',
+						_0: _user$project$Syntax$Neg(p1LInfProj),
+						_1: replaced
+					};
+				case 'Conj':
+					var _p8 = A2(_user$project$InfiniteProjection$infProj, _p0._1, ipk);
+					var p2LInfProj = _p8._0;
+					var replaced2 = _p8._1;
+					var _p9 = A2(_user$project$InfiniteProjection$infProj, _p0._0, ipk);
+					var p1LInfProj = _p9._0;
+					var replaced1 = _p9._1;
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Syntax$Conj, p1LInfProj, p2LInfProj),
+						_1: A2(_elm_lang$core$Basics_ops['++'], replaced1, replaced2)
+					};
+				case 'Disj':
+					var _p10 = A2(_user$project$InfiniteProjection$infProj, _p0._1, ipk);
+					var p2LInfProj = _p10._0;
+					var replaced2 = _p10._1;
+					var _p11 = A2(_user$project$InfiniteProjection$infProj, _p0._0, ipk);
+					var p1LInfProj = _p11._0;
+					var replaced1 = _p11._1;
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Syntax$Disj, p1LInfProj, p2LInfProj),
+						_1: A2(_elm_lang$core$Basics_ops['++'], replaced1, replaced2)
+					};
+				case 'Forall':
+					var _p12 = A2(_user$project$InfiniteProjection$infProj, _p0._1, ipk);
+					var p1LInfProj = _p12._0;
+					var replaced = _p12._1;
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Syntax$Forall, _p0._0, p1LInfProj),
+						_1: replaced
+					};
+				default:
+					var _p13 = A2(_user$project$InfiniteProjection$infProj, _p0._1, ipk);
+					var p1LInfProj = _p13._0;
+					var replaced = _p13._1;
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Syntax$Exists, _p0._0, p1LInfProj),
+						_1: replaced
+					};
+			}
+		} while(false);
+		return _user$project$InfiniteProjection$mkEmptyReplacedList(
+			_user$project$Syntax$Pred(_p0._0));
+	});
+var _user$project$InfiniteProjection$RightInfProj = {ctor: 'RightInfProj'};
+var _user$project$InfiniteProjection$rightInfProj = function (x) {
+	return A2(_user$project$InfiniteProjection$infProj, x, _user$project$InfiniteProjection$RightInfProj);
+};
+var _user$project$InfiniteProjection$LeftInfProj = {ctor: 'LeftInfProj'};
+var _user$project$InfiniteProjection$leftInfProj = function (x) {
+	return A2(_user$project$InfiniteProjection$infProj, x, _user$project$InfiniteProjection$LeftInfProj);
 };
 var _user$project$Styles$waiting = _elm_lang$html$Html_Attributes$style(
 	{
@@ -10654,27 +10851,24 @@ var _user$project$OmitNegations$removeAllNegations = function (p) {
 			case 'Neg':
 				switch (_p0._0.ctor) {
 					case 'Pred':
-						switch (_p0._0._0.ctor) {
-							case 'Less':
-								var _p2 = _p0._0._0._1;
-								var _p1 = _p0._0._0._0;
-								return A2(
-									_user$project$Syntax$Disj,
-									_user$project$Syntax$Pred(
-										A2(_user$project$Syntax$Greater, _p2, _p1)),
-									_user$project$Syntax$Pred(
-										A2(_user$project$Syntax$Eq, _p1, _p2)));
-							case 'Eq':
-								var _p4 = _p0._0._0._1;
-								var _p3 = _p0._0._0._0;
-								return A2(
-									_user$project$Syntax$Disj,
-									_user$project$Syntax$Pred(
-										A2(_user$project$Syntax$Less, _p3, _p4)),
-									_user$project$Syntax$Pred(
-										A2(_user$project$Syntax$Greater, _p3, _p4)));
-							default:
-								break _v0_8;
+						if (_p0._0._0.ctor === 'Less') {
+							var _p2 = _p0._0._0._1;
+							var _p1 = _p0._0._0._0;
+							return A2(
+								_user$project$Syntax$Disj,
+								_user$project$Syntax$Pred(
+									A2(_user$project$Syntax$Less, _p2, _p1)),
+								_user$project$Syntax$Pred(
+									A2(_user$project$Syntax$Eq, _p1, _p2)));
+						} else {
+							var _p4 = _p0._0._0._1;
+							var _p3 = _p0._0._0._0;
+							return A2(
+								_user$project$Syntax$Disj,
+								_user$project$Syntax$Pred(
+									A2(_user$project$Syntax$Less, _p3, _p4)),
+								_user$project$Syntax$Pred(
+									A2(_user$project$Syntax$Less, _p3, _p4)));
 						}
 					case 'Top':
 						return _user$project$Syntax$Bot;
@@ -10697,53 +10891,50 @@ var _user$project$Solve$solveRatPred = function (p) {
 	var _p2 = p;
 	_v1_4:
 	do {
-		switch (_p2.ctor) {
-			case 'Less':
-				if (_p2._1.ctor === 'ConstFact') {
+		if (_p2.ctor === 'Less') {
+			if (_p2._1.ctor === 'ConstFact') {
+				return A2(
+					_user$project$Syntax$Less,
+					A2(
+						_user$project$Syntax$ConstFact,
+						_user$project$Solve$negateByMul(_p2._1._0),
+						_p2._0),
+					_p2._1._1);
+			} else {
+				if (_p2._0.ctor === 'ConstFact') {
 					return A2(
 						_user$project$Syntax$Less,
+						_p2._0._1,
 						A2(
 							_user$project$Syntax$ConstFact,
-							_user$project$Solve$negateByMul(_p2._1._0),
-							_p2._0),
-						_p2._1._1);
+							_user$project$Solve$negateByMul(_p2._0._0),
+							_p2._1));
 				} else {
-					if (_p2._0.ctor === 'ConstFact') {
-						return A2(
-							_user$project$Syntax$Less,
-							_p2._0._1,
-							A2(
-								_user$project$Syntax$ConstFact,
-								_user$project$Solve$negateByMul(_p2._0._0),
-								_p2._1));
-					} else {
-						break _v1_4;
-					}
+					break _v1_4;
 				}
-			case 'Eq':
-				if (_p2._1.ctor === 'ConstFact') {
+			}
+		} else {
+			if (_p2._1.ctor === 'ConstFact') {
+				return A2(
+					_user$project$Syntax$Eq,
+					A2(
+						_user$project$Syntax$ConstFact,
+						_user$project$Solve$negateByMul(_p2._1._0),
+						_p2._0),
+					_p2._1._1);
+			} else {
+				if (_p2._0.ctor === 'ConstFact') {
 					return A2(
 						_user$project$Syntax$Eq,
+						_p2._0._1,
 						A2(
 							_user$project$Syntax$ConstFact,
-							_user$project$Solve$negateByMul(_p2._1._0),
-							_p2._0),
-						_p2._1._1);
+							_user$project$Solve$negateByMul(_p2._0._0),
+							_p2._1));
 				} else {
-					if (_p2._0.ctor === 'ConstFact') {
-						return A2(
-							_user$project$Syntax$Eq,
-							_p2._0._1,
-							A2(
-								_user$project$Syntax$ConstFact,
-								_user$project$Solve$negateByMul(_p2._0._0),
-								_p2._1));
-					} else {
-						break _v1_4;
-					}
+					break _v1_4;
 				}
-			default:
-				break _v1_4;
+			}
 		}
 	} while(false);
 	return _p2;
@@ -10854,6 +11045,50 @@ var _user$project$NNF$convertToNNF = function (p) {
 		return _p0;
 	}
 };
+var _user$project$Main$displayRightInfProj = function (p) {
+	var _p0 = _user$project$InfiniteProjection$rightInfProj(
+		_user$project$Solve$solve(
+			_user$project$OmitNegations$removeAllNegations(
+				_user$project$NNF$convertToNNF(p))));
+	var pRightInfProj = _p0._0;
+	var replaced = _p0._1;
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'Right inf. projection: ',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_user$project$Syntax$linearize(pRightInfProj),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'.\n\n',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'The following atoms have been replaced: ',
+					_elm_lang$core$Basics$toString(
+						A2(_elm_lang$core$List$map, _user$project$Syntax$linearizeExpr, replaced))))));
+};
+var _user$project$Main$displayLeftInfProj = function (p) {
+	var _p1 = _user$project$InfiniteProjection$leftInfProj(
+		_user$project$Solve$solve(
+			_user$project$OmitNegations$removeAllNegations(
+				_user$project$NNF$convertToNNF(p))));
+	var pLeftInfProj = _p1._0;
+	var replaced = _p1._1;
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'Left inf. projection: ',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_user$project$Syntax$linearize(pLeftInfProj),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'.\n\n',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'The following atoms have been replaced: ',
+					_elm_lang$core$Basics$toString(
+						A2(_elm_lang$core$List$map, _user$project$Syntax$linearizeExpr, replaced))))));
+};
 var _user$project$Main$displayConstantsSolved = function (p) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
@@ -10897,17 +11132,17 @@ var _user$project$Main$inputInterpretation = function (p) {
 			'.'));
 };
 var _user$project$Main$update = F2(
-	function (_p0, oldContent) {
-		var _p1 = _p0;
-		return _p1._0;
+	function (_p2, oldContent) {
+		var _p3 = _p2;
+		return _p3._0;
 	});
 var _user$project$Main$NewContent = function (a) {
 	return {ctor: 'NewContent', _0: a};
 };
 var _user$project$Main$view = function (content) {
 	var parse = _user$project$PropositionParser$parseProp(content);
-	var _p2 = parse;
-	if (_p2.ctor === 'Nothing') {
+	var _p4 = parse;
+	if (_p4.ctor === 'Nothing') {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -10966,7 +11201,7 @@ var _user$project$Main$view = function (content) {
 				}
 			});
 	} else {
-		var _p3 = _p2._0;
+		var _p5 = _p4._0;
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -11032,7 +11267,7 @@ var _user$project$Main$view = function (content) {
 								{
 									ctor: '::',
 									_0: _elm_lang$html$Html$text(
-										_user$project$Main$inputInterpretation(_p3)),
+										_user$project$Main$inputInterpretation(_p5)),
 									_1: {ctor: '[]'}
 								}),
 							_1: {
@@ -11061,7 +11296,7 @@ var _user$project$Main$view = function (content) {
 										{
 											ctor: '::',
 											_0: _elm_lang$html$Html$text(
-												_user$project$Main$displayNNF(_p3)),
+												_user$project$Main$displayNNF(_p5)),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -11090,7 +11325,7 @@ var _user$project$Main$view = function (content) {
 												{
 													ctor: '::',
 													_0: _elm_lang$html$Html$text(
-														_user$project$Main$displayAllNegationsRemoved(_p3)),
+														_user$project$Main$displayAllNegationsRemoved(_p5)),
 													_1: {ctor: '[]'}
 												}),
 											_1: {
@@ -11119,10 +11354,72 @@ var _user$project$Main$view = function (content) {
 														{
 															ctor: '::',
 															_0: _elm_lang$html$Html$text(
-																_user$project$Main$displayConstantsSolved(_p3)),
+																_user$project$Main$displayConstantsSolved(_p5)),
 															_1: {ctor: '[]'}
 														}),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$h2,
+															{
+																ctor: '::',
+																_0: _user$project$Styles$heading,
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Step 5.1'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$div,
+																{
+																	ctor: '::',
+																	_0: _user$project$Styles$myStyle,
+																	_1: {ctor: '[]'}
+																},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text(
+																		_user$project$Main$displayLeftInfProj(_p5)),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$h2,
+																	{
+																		ctor: '::',
+																		_0: _user$project$Styles$heading,
+																		_1: {ctor: '[]'}
+																	},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('Step 5.2'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$div,
+																		{
+																			ctor: '::',
+																			_0: _user$project$Styles$myStyle,
+																			_1: {ctor: '[]'}
+																		},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(
+																				_user$project$Main$displayRightInfProj(_p5)),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
 												}
 											}
 										}
@@ -11138,6 +11435,10 @@ var _user$project$Main$view = function (content) {
 var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
 	{model: '', view: _user$project$Main$view, update: _user$project$Main$update})();
 var Elm = {};
+Elm['InfiniteProjection'] = Elm['InfiniteProjection'] || {};
+if (typeof _user$project$InfiniteProjection$main !== 'undefined') {
+    _user$project$InfiniteProjection$main(Elm['InfiniteProjection'], 'InfiniteProjection', undefined);
+}
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
     _user$project$Main$main(Elm['Main'], 'Main', undefined);
