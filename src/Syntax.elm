@@ -1,4 +1,4 @@
-module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, VarIdentifier(..), Rat(..))
+module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, linearizeExpr, VarIdentifier(..), Rat(..))
 
 -- Newtype of `String` as a variable identifier.
 
