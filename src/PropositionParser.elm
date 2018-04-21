@@ -1,4 +1,4 @@
-module PropositionParser exposing (parseProp)
+module PropositionParser exposing (parseProp, subst)
 
 import Parser
     exposing
@@ -63,6 +63,16 @@ infixOp r =
                     , delayedCommit (symbol "forall")
                         (succeed
                             Forall
+                            |. spaces
+                            |= (succeed VI |= variable Char.isLower isVarChar keywords)
+                            |. spaces
+                            |= lazy r
+                            |. spaces
+                            |. symbol ")"
+                        )
+                    , delayedCommit (symbol "exists")
+                        (succeed
+                            Exists
                             |. spaces
                             |= (succeed VI |= variable Char.isLower isVarChar keywords)
                             |. spaces
