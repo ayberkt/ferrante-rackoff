@@ -16,11 +16,10 @@ type Rat
 
 
 type Expr
-    = Zero
-    | One
-    | Plus Expr Expr
+    = Plus Expr Expr
     | Minus Expr Expr
     | Var Int VarIdentifier
+    | ConstRat Rat
     | ConstFact Rat Expr
 
 
@@ -81,12 +80,6 @@ linearizeRat q =
 linearizeExpr : Expr -> String
 linearizeExpr e =
     case e of
-        Zero ->
-            "0"
-
-        One ->
-            "1"
-
         Plus e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "+" ++ linearizeExpr e2 ++ ")"
 
@@ -95,6 +88,9 @@ linearizeExpr e =
 
         ConstFact c e ->
             (linearizeRat c) ++ "(" ++ linearizeExpr e ++ ")"
+
+        ConstRat (Div z1 z2) ->
+            (toString z1) ++ "/" ++ (toString z2)
 
         Var n x ->
             "x" ++ toString n

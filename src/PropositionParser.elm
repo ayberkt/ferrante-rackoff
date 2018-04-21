@@ -96,14 +96,20 @@ atom =
         ]
 
 
+rat =
+    succeed (\z1 z2 -> (Div z1 z2))
+        |= Parser.int
+        |. symbol "/"
+        |= Parser.int
+
+
 exprAtom =
     oneOf
-        [ succeed One |. symbol "1"
-        , succeed Zero |. symbol "0"
-        , succeed (\x -> Var 0 x)
+        [ succeed (\x -> Var 0 x)
             |= (succeed VI
                     |= variable Char.isLower isVarChar keywords
                )
+        , succeed ConstRat |= rat
         ]
 
 
@@ -130,20 +136,11 @@ infixArithmeticOp r =
                             |= lazy r
                             |. symbol ")"
                         )
-                    , delayedCommit (symbol "/")
-                        (succeed
-                            (\z1 z2 -> ConstFact (Div z1 z2) One)
-                            |. spaces
-                            |= Parser.int
-                            |. spaces
-                            |= Parser.int
-                            |. symbol ")"
-                        )
                     , delayedCommit (symbol "*")
                         (succeed
-                            (\z e -> ConstFact (Div z 1) e)
+                            ConstFact
                             |. spaces
-                            |= Parser.int
+                            |= rat
                             |. spaces
                             |= lazy r
                             |. symbol ")"
