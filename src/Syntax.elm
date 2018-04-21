@@ -30,7 +30,6 @@ type Expr
 
 type RatPred
     = Eq Expr Expr
-    | Greater Expr Expr
     | Less Expr Expr
 
 
@@ -110,9 +109,6 @@ linearizeRatPred rp =
     case rp of
         Eq e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "  =  " ++ linearizeExpr e2 ++ ")"
-
-        Greater e1 e2 ->
-            "(" ++ linearizeExpr e1 ++ "  >  " ++ linearizeExpr e2 ++ ")"
 
         Less e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "  <  " ++ linearizeExpr e2 ++ ")"

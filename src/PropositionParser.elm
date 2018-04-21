@@ -163,15 +163,6 @@ parsePred =
                 |= expr
                 |. symbol ")"
             )
-        , delayedCommit (symbol ">")
-            (succeed
-                Greater
-                |. spaces
-                |= expr
-                |. spaces
-                |= expr
-                |. symbol ")"
-            )
         ]
 
 
@@ -241,14 +232,6 @@ deBruijnRP ctx rp =
             case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
                 ( Just e1_, Just e2_ ) ->
                     Just (Less e1_ e2_)
-
-                ( _, _ ) ->
-                    Nothing
-
-        Greater e1 e2 ->
-            case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
-                ( Just e1_, Just e2_ ) ->
-                    Just (Greater e1_ e2_)
 
                 ( _, _ ) ->
                     Nothing

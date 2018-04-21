@@ -1,15 +1,23 @@
 module InfiniteProjection exposing (..)
 
-import Syntax exposing (Prop(..))
+import Syntax exposing (Prop(..), RatPred(..), Expr(..))
 
 
 leftInfProj : Prop -> Prop
 leftInfProj p =
     case p of
+        Pred (Less (Var _ _) a) ->
+            Top
+
+        Pred (Less a (Var _ x)) ->
+            Bot
+
+        Pred (Eq (Var _ x) c) ->
+            Bot
+
         Pred rp ->
             Pred rp
 
-        -- TODO
         Id s ->
             Id s
 
