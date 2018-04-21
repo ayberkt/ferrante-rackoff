@@ -223,6 +223,13 @@ deBruijnExp ctx e =
                 Nothing ->
                     Nothing
 
+        ConstFact r e1 ->
+            (deBruijnExp ctx e1)
+                |> Maybe.andThen
+                    (\e1_ ->
+                        Just (ConstFact r e1_)
+                    )
+
         -- TODO
         e_ ->
             Just e_
@@ -303,11 +310,61 @@ deBruijn ctx p =
             (deBruijn (x :: ctx) p)
                 |> Maybe.andThen
                     (\p_ ->
-                        Just (Forall x p_)
+                        Just (Exists x p_)
                     )
 
         p_ ->
             Just p_
+
+
+substExpr : Expr -> Int -> Expr -> Expr
+substExpr e i eNew =
+    case e of
+        Plus e1 e2 ->
+            Plus (substExpr e1 i eNew) (substExpr e2 i eNew)
+
+        Minus e1 e2 ->
+            Plus (substExpr e1 i eNew) (substExpr e2 i eNew)
+
+        Var i_ s ->
+            if i == i_ then
+                e
+            else
+                Var i s
+
+        ConstRat r ->
+            ConstRat r
+
+        ConstFact r e1 ->
+            ConstFact r (substExpr e1 i eNew)
+
+
+subst : Prop -> Int -> Expr -> Prop
+subst p i e =
+    case p of
+        Pred (Less e1 e2) ->
+            Pred (Less (substExpr e1 i e) (substExpr e2 i e))
+
+        Pred (Eq e1 e2) ->
+            Pred (Eq (substExpr e1 i e) (substExpr e1 i e))
+
+        Neg p_ ->
+            Neg (subst p_ i e)
+
+        Conj p1 p2 ->
+            Conj (subst p1 i e) (subst p2 i e)
+
+        Disj p1 p2 ->
+            Disj (subst p1 i e) (subst p2 i e)
+
+        Forall x p_ ->
+            Forall x (subst p_ i e)
+
+        Exists x p_ ->
+            Exists x (subst p_ i e)
+
+        p_ ->
+            p_
 
 
 
