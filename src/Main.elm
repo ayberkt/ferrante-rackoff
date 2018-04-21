@@ -4,11 +4,12 @@ import Html exposing (Html, Attribute, beginnerProgram, text, div, input)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 import String
-import Syntax exposing (Prop(..), linearize)
+import Syntax exposing (Prop(..), linearize, linearizeExpr)
 import PropositionParser exposing (parseProp)
 import Styles exposing (..)
 import OmitNegations exposing (removeAllNegations)
 import Solve exposing (solve)
+import InfiniteProjection exposing (leftInfProj, rightInfProj)
 import NNF exposing (convertToNNF)
 
 
@@ -50,6 +51,30 @@ displayConstantsSolved p =
         ++ "."
 
 
+displayLeftInfProj p =
+    let
+        ( pLeftInfProj, replaced ) =
+            (leftInfProj (solve (removeAllNegations (convertToNNF p))))
+    in
+        "Left inf. projection: "
+            ++ linearize pLeftInfProj
+            ++ ".\n\n"
+            ++ "The following atoms have been replaced: "
+            ++ (toString (List.map linearizeExpr replaced))
+
+
+displayRightInfProj p =
+    let
+        ( pRightInfProj, replaced ) =
+            (rightInfProj (solve (removeAllNegations (convertToNNF p))))
+    in
+        "Right inf. projection: "
+            ++ linearize pRightInfProj
+            ++ ".\n\n"
+            ++ "The following atoms have been replaced: "
+            ++ (toString (List.map linearizeExpr replaced))
+
+
 
 -- If the input is parsable, parse and display the steps.  If it is not
 -- parsable, display an error explaining that it is not parsable.
@@ -87,4 +112,8 @@ view content =
                     , div [ myStyle ] [ text (displayAllNegationsRemoved parse) ]
                     , Html.h2 [ heading ] [ text "Step 4" ]
                     , div [ myStyle ] [ text (displayConstantsSolved parse) ]
+                    , Html.h2 [ heading ] [ text "Step 5.1" ]
+                    , div [ myStyle ] [ text (displayLeftInfProj parse) ]
+                    , Html.h2 [ heading ] [ text "Step 5.2" ]
+                    , div [ myStyle ] [ text (displayRightInfProj parse) ]
                     ]
