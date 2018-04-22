@@ -69,15 +69,40 @@ simplify e =
             e_
 
 
+normMuls : Expr -> Expr
+normMuls e =
+    case e of
+        Plus e1 e2 ->
+            Plus (normMuls e1) (normMuls e2)
+
+        Minus e1 e2 ->
+            Minus (normMuls e1) (normMuls e2)
+
+        Var i vi ->
+            Var i vi
+
+        ConstRat r ->
+            ConstRat r
+
+        ConstFact (Div z1_1 z1_2) (ConstFact (Div z2_1 z2_2) e1) ->
+            ConstFact (Div (z1_1 * z2_1) (z1_2 * z2_2)) (normMuls e1)
+
+        ConstFact (Div z1_1 z1_2) (ConstRat (Div z2_1 z2_2)) ->
+            ConstRat (Div (z1_1 * z2_1) (z1_2 * z2_2))
+
+        ConstFact r e1 ->
+            ConstFact r (normMuls e1)
+
+
 solveRatPred : RatPred -> RatPred
 solveRatPred rp =
     if solved rp then
         case rp of
             Less e1 e2 ->
-                Less (simplify e1) (simplify e2)
+                Less (normMuls e1) (normMuls e2)
 
             Eq e1 e2 ->
-                Eq (simplify e1) (simplify e2)
+                Eq (normMuls e1) (normMuls e2)
     else
         case rp of
             Less t (ConstFact c e1) ->
@@ -93,10 +118,10 @@ solveRatPred rp =
                 solveRatPred (Eq x (ConstFact (negateByMul c) t))
 
             Less e1 e2 ->
-                (Less (simplify e1) (simplify e2))
+                solveRatPred (Less (simplify e1) (simplify e2))
 
             Eq e1 e2 ->
-                (Eq (simplify e1) (simplify e2))
+                solveRatPred (Eq (simplify e1) (simplify e2))
 
 
 
