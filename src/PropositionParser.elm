@@ -170,6 +170,15 @@ parsePred =
                 |= expr
                 |. symbol ")"
             )
+        , delayedCommit (symbol "=")
+            (succeed
+                Eq
+                |. spaces
+                |= expr
+                |. spaces
+                |= expr
+                |. symbol ")"
+            )
         ]
 
 
@@ -328,7 +337,7 @@ substExpr e i eNew =
 
         Var i_ s ->
             if i == i_ then
-                e
+                eNew
             else
                 Var i s
 
@@ -346,7 +355,7 @@ subst p i e =
             Pred (Less (substExpr e1 i e) (substExpr e2 i e))
 
         Pred (Eq e1 e2) ->
-            Pred (Eq (substExpr e1 i e) (substExpr e1 i e))
+            Pred (Eq (substExpr e1 i e) (substExpr e2 i e))
 
         Neg p_ ->
             Neg (subst p_ i e)
