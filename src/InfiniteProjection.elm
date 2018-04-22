@@ -1,7 +1,25 @@
-module InfiniteProjection exposing (leftInfProj, rightInfProj)
+module InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 
-import Syntax exposing (Prop(..), RatPred(..), Expr(..))
+import Syntax exposing (Prop(..), RatPred(..), Expr(..), Rat(..))
+import Set
 import PropositionParser exposing (subst)
+
+
+-- Taken from circuithub/elm-list-extra.
+
+
+nub : List Expr -> List Expr -> List Expr
+nub xs hist =
+    case xs of
+        [] ->
+            hist
+
+        x :: xs ->
+            (if List.member x hist then
+                nub xs hist
+             else
+                nub xs (x :: hist)
+            )
 
 
 mkEmptyReplacedList x =
@@ -33,12 +51,7 @@ infProj p ipk =
                     ( Bot, [ a ] )
 
         Pred (Eq (Var _ x) c) ->
-            case ipk of
-                RightInfProj ->
-                    ( Bot, [ c ] )
-
-                LeftInfProj ->
-                    ( Bot, [ c ] )
+            ( Bot, [ c ] )
 
         Pred rp ->
             mkEmptyReplacedList (Pred rp)
@@ -91,7 +104,7 @@ infProj p ipk =
                 ( p1LInfProj, replaced ) =
                     infProj p ipk
             in
-                ( Exists vi p1LInfProj, replaced )
+                ( p1LInfProj, replaced )
 
 
 leftInfProj =
@@ -102,10 +115,31 @@ rightInfProj =
     \x -> infProj x RightInfProj
 
 
+listProduct : List a -> List a -> List ( a, a )
+listProduct xs ys =
+    List.concat (List.map (\x -> List.map (\y -> ( x, y )) ys) xs)
 
--- constructF3 : Prop -> Prop
--- constructF3 p =
--- case p of
--- (Exists _ p1) -> (su
--- p1 -> p1
--- TODO
+
+bigVee : List Expr -> (( Expr, Expr ) -> Expr) -> Prop -> List Prop
+bigVee ps f pfree =
+    List.map (\( x, y ) -> subst pfree 0 (f ( x, y ))) (listProduct ps ps)
+
+
+constructF3 : Prop -> List Prop
+constructF3 p =
+    case p of
+        Exists vi p1 ->
+            let
+                ( _, replaced1 ) =
+                    leftInfProj (Exists vi p1)
+
+                ( _, replaced2 ) =
+                    rightInfProj (Exists vi p1)
+            in
+                bigVee
+                    (nub (replaced1 ++ replaced2) [])
+                    (\( x, y ) -> (ConstFact (Div 1 2) (Plus x y)))
+                    p1
+
+        p_ ->
+            [ p_ ]

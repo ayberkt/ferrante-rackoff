@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, Attribute, beginnerProgram, text, div, input)
+import Html exposing (Html, Attribute, beginnerProgram, text, div, input, li, ul)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
 import String
@@ -9,7 +9,7 @@ import PropositionParser exposing (parseProp)
 import Styles exposing (..)
 import OmitNegations exposing (removeAllNegations)
 import Solve exposing (solve)
-import InfiniteProjection exposing (leftInfProj, rightInfProj)
+import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import NNF exposing (convertToNNF)
 
 
@@ -75,6 +75,14 @@ displayRightInfProj p =
             ++ (toString (List.map linearizeExpr replaced))
 
 
+displayF3 p =
+    let
+        disjuncts =
+            constructF3 (solve (removeAllNegations (convertToNNF p)))
+    in
+        (List.map (\x -> li [] [ text (linearize x) ]) disjuncts)
+
+
 
 -- If the input is parsable, parse and display the steps.  If it is not
 -- parsable, display an error explaining that it is not parsable.
@@ -116,4 +124,6 @@ view content =
                     , div [ myStyle ] [ text (displayLeftInfProj parse) ]
                     , Html.h2 [ heading ] [ text "Step 5.2" ]
                     , div [ myStyle ] [ text (displayRightInfProj parse) ]
+                    , Html.h2 [ heading ] [ text "Step 5.3" ]
+                    , ul [ myStyle ] (displayF3 parse)
                     ]
