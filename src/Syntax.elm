@@ -1,4 +1,4 @@
-module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, linearizeExpr, VarIdentifier(..), Rat(..))
+module Syntax exposing (Prop(..), RatPred(..), Expr(..), linearize, linearizeExpr, VarIdentifier(..), Rat(..), occurs)
 
 -- Newtype of `String` as a variable identifier.
 
@@ -90,7 +90,7 @@ linearizeExpr e =
             (linearizeRat c) ++ "(" ++ linearizeExpr e ++ ")"
 
         ConstRat (Div z1 z2) ->
-            (toString z1) ++ "/" ++ (toString z2)
+            linearizeRat (Div z1 z2)
 
         Var n x ->
             "x" ++ toString n
@@ -112,6 +112,25 @@ linearizeRatPred rp =
 
 
 -- Linearize a given `Prop` `p`.
+
+
+occurs : Int -> Expr -> Bool
+occurs i e =
+    case e of
+        Plus e1 e2 ->
+            (occurs i e2) || (occurs i e2)
+
+        Minus e1 e2 ->
+            (occurs i e1) || (occurs i e2)
+
+        Var i_ vi ->
+            i == i_
+
+        ConstRat r ->
+            False
+
+        ConstFact r e1 ->
+            occurs i e1
 
 
 linearize : Prop -> String
