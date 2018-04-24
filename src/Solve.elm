@@ -32,8 +32,11 @@ solved rp =
         Eq (Var i _) e1 ->
             not (occurs i e1)
 
-        _ ->
-            False
+        Less e1 e2 ->
+            (not (occurs 0 e1)) && (not (occurs 0 e2))
+
+        Eq e1 e2 ->
+            (not (occurs 0 e1)) && (not (occurs 0 e2))
 
 
 
@@ -96,32 +99,24 @@ normMuls e =
 
 solveRatPred : RatPred -> RatPred
 solveRatPred rp =
-    if solved rp then
-        case rp of
-            Less e1 e2 ->
-                Less (normMuls e1) (normMuls e2)
+    case rp of
+        Less t (ConstFact c e1) ->
+            Less (ConstFact (negateByMul c) t) e1
 
-            Eq e1 e2 ->
-                Eq (normMuls e1) (normMuls e2)
-    else
-        case rp of
-            Less t (ConstFact c e1) ->
-                solveRatPred (Less (ConstFact (negateByMul c) t) e1)
+        Less (ConstFact c e1) t ->
+            Less e1 (ConstFact (negateByMul c) t)
 
-            Less (ConstFact c e1) t ->
-                solveRatPred (Less e1 (ConstFact (negateByMul c) t))
+        Eq t (ConstFact c x) ->
+            Eq (ConstFact (negateByMul c) t) x
 
-            Eq t (ConstFact c x) ->
-                solveRatPred (Eq (ConstFact (negateByMul c) t) x)
+        Eq (ConstFact c x) t ->
+            Eq x (ConstFact (negateByMul c) t)
 
-            Eq (ConstFact c x) t ->
-                solveRatPred (Eq x (ConstFact (negateByMul c) t))
+        Less e1 e2 ->
+            Less (simplify e1) (simplify e2)
 
-            Less e1 e2 ->
-                solveRatPred (Less (simplify e1) (simplify e2))
-
-            Eq e1 e2 ->
-                solveRatPred (Eq (simplify e1) (simplify e2))
+        Eq e1 e2 ->
+            Eq (simplify e1) (simplify e2)
 
 
 
