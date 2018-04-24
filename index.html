@@ -11085,123 +11085,89 @@ var _user$project$Solve$simplify = function (e) {
 };
 var _user$project$Solve$solved = function (rp) {
 	var _p6 = rp;
-	_v6_4:
-	do {
-		if (_p6.ctor === 'Less') {
-			if (_p6._1.ctor === 'Var') {
-				return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
-			} else {
-				if (_p6._0.ctor === 'Var') {
-					return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
-				} else {
-					break _v6_4;
-				}
-			}
+	if (_p6.ctor === 'Less') {
+		if (_p6._1.ctor === 'Var') {
+			return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
 		} else {
-			if (_p6._1.ctor === 'Var') {
-				return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
+			if (_p6._0.ctor === 'Var') {
+				return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
 			} else {
-				if (_p6._0.ctor === 'Var') {
-					return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
-				} else {
-					break _v6_4;
-				}
+				return (!A2(_user$project$Syntax$occurs, 0, _p6._0)) && (!A2(_user$project$Syntax$occurs, 0, _p6._1));
 			}
 		}
-	} while(false);
-	return false;
+	} else {
+		if (_p6._1.ctor === 'Var') {
+			return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
+		} else {
+			if (_p6._0.ctor === 'Var') {
+				return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
+			} else {
+				return (!A2(_user$project$Syntax$occurs, 0, _p6._0)) && (!A2(_user$project$Syntax$occurs, 0, _p6._1));
+			}
+		}
+	}
 };
 var _user$project$Solve$negateByMul = function (_p7) {
 	var _p8 = _p7;
 	return A2(_user$project$Syntax$Div, _p8._1, _p8._0);
 };
 var _user$project$Solve$solveRatPred = function (rp) {
-	solveRatPred:
-	while (true) {
-		if (_user$project$Solve$solved(rp)) {
-			var _p9 = rp;
-			if (_p9.ctor === 'Less') {
+	var _p9 = rp;
+	if (_p9.ctor === 'Less') {
+		if (_p9._1.ctor === 'ConstFact') {
+			return A2(
+				_user$project$Syntax$Less,
+				A2(
+					_user$project$Syntax$ConstFact,
+					_user$project$Solve$negateByMul(_p9._1._0),
+					_p9._0),
+				_p9._1._1);
+		} else {
+			if (_p9._0.ctor === 'ConstFact') {
 				return A2(
 					_user$project$Syntax$Less,
-					_user$project$Solve$normMuls(_p9._0),
-					_user$project$Solve$normMuls(_p9._1));
+					_p9._0._1,
+					A2(
+						_user$project$Syntax$ConstFact,
+						_user$project$Solve$negateByMul(_p9._0._0),
+						_p9._1));
+			} else {
+				return A2(
+					_user$project$Syntax$Less,
+					_user$project$Solve$simplify(_p9._0),
+					_user$project$Solve$simplify(_p9._1));
+			}
+		}
+	} else {
+		if (_p9._1.ctor === 'ConstFact') {
+			return A2(
+				_user$project$Syntax$Eq,
+				A2(
+					_user$project$Syntax$ConstFact,
+					_user$project$Solve$negateByMul(_p9._1._0),
+					_p9._0),
+				_p9._1._1);
+		} else {
+			if (_p9._0.ctor === 'ConstFact') {
+				return A2(
+					_user$project$Syntax$Eq,
+					_p9._0._1,
+					A2(
+						_user$project$Syntax$ConstFact,
+						_user$project$Solve$negateByMul(_p9._0._0),
+						_p9._1));
 			} else {
 				return A2(
 					_user$project$Syntax$Eq,
-					_user$project$Solve$normMuls(_p9._0),
-					_user$project$Solve$normMuls(_p9._1));
-			}
-		} else {
-			var _p10 = rp;
-			if (_p10.ctor === 'Less') {
-				if (_p10._1.ctor === 'ConstFact') {
-					var _v10 = A2(
-						_user$project$Syntax$Less,
-						A2(
-							_user$project$Syntax$ConstFact,
-							_user$project$Solve$negateByMul(_p10._1._0),
-							_p10._0),
-						_p10._1._1);
-					rp = _v10;
-					continue solveRatPred;
-				} else {
-					if (_p10._0.ctor === 'ConstFact') {
-						var _v11 = A2(
-							_user$project$Syntax$Less,
-							_p10._0._1,
-							A2(
-								_user$project$Syntax$ConstFact,
-								_user$project$Solve$negateByMul(_p10._0._0),
-								_p10._1));
-						rp = _v11;
-						continue solveRatPred;
-					} else {
-						var _v12 = A2(
-							_user$project$Syntax$Less,
-							_user$project$Solve$simplify(_p10._0),
-							_user$project$Solve$simplify(_p10._1));
-						rp = _v12;
-						continue solveRatPred;
-					}
-				}
-			} else {
-				if (_p10._1.ctor === 'ConstFact') {
-					var _v13 = A2(
-						_user$project$Syntax$Eq,
-						A2(
-							_user$project$Syntax$ConstFact,
-							_user$project$Solve$negateByMul(_p10._1._0),
-							_p10._0),
-						_p10._1._1);
-					rp = _v13;
-					continue solveRatPred;
-				} else {
-					if (_p10._0.ctor === 'ConstFact') {
-						var _v14 = A2(
-							_user$project$Syntax$Eq,
-							_p10._0._1,
-							A2(
-								_user$project$Syntax$ConstFact,
-								_user$project$Solve$negateByMul(_p10._0._0),
-								_p10._1));
-						rp = _v14;
-						continue solveRatPred;
-					} else {
-						var _v15 = A2(
-							_user$project$Syntax$Eq,
-							_user$project$Solve$simplify(_p10._0),
-							_user$project$Solve$simplify(_p10._1));
-						rp = _v15;
-						continue solveRatPred;
-					}
-				}
+					_user$project$Solve$simplify(_p9._0),
+					_user$project$Solve$simplify(_p9._1));
 			}
 		}
 	}
 };
 var _user$project$Solve$solve = function (p) {
-	var _p11 = p;
-	switch (_p11.ctor) {
+	var _p10 = p;
+	switch (_p10.ctor) {
 		case 'Top':
 			return _user$project$Syntax$Top;
 		case 'Bot':
@@ -11209,31 +11175,31 @@ var _user$project$Solve$solve = function (p) {
 		case 'Conj':
 			return A2(
 				_user$project$Syntax$Conj,
-				_user$project$Solve$solve(_p11._0),
-				_user$project$Solve$solve(_p11._1));
+				_user$project$Solve$solve(_p10._0),
+				_user$project$Solve$solve(_p10._1));
 		case 'Disj':
 			return A2(
 				_user$project$Syntax$Disj,
-				_user$project$Solve$solve(_p11._0),
-				_user$project$Solve$solve(_p11._1));
+				_user$project$Solve$solve(_p10._0),
+				_user$project$Solve$solve(_p10._1));
 		case 'Forall':
 			return A2(
 				_user$project$Syntax$Forall,
-				_p11._0,
-				_user$project$Solve$solve(_p11._1));
+				_p10._0,
+				_user$project$Solve$solve(_p10._1));
 		case 'Exists':
 			return A2(
 				_user$project$Syntax$Exists,
-				_p11._0,
-				_user$project$Solve$solve(_p11._1));
+				_p10._0,
+				_user$project$Solve$solve(_p10._1));
 		case 'Neg':
 			return _user$project$Syntax$Neg(
-				_user$project$Solve$solve(_p11._0));
+				_user$project$Solve$solve(_p10._0));
 		case 'Pred':
 			return _user$project$Syntax$Pred(
-				_user$project$Solve$solveRatPred(_p11._0));
+				_user$project$Solve$solveRatPred(_p10._0));
 		default:
-			return _user$project$Syntax$Id(_p11._0);
+			return _user$project$Syntax$Id(_p10._0);
 	}
 };
 var _user$project$NNF$convertToNNF = function (p) {
