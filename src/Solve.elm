@@ -38,18 +38,54 @@ solved rp =
         Eq e1 e2 ->
             (not (occurs 0 e1)) && (not (occurs 0 e2))
 
+
+isConstant : Expr -> Bool
+isConstant e =
+    case e of
+        ConstRat _ ->
+            True
+
+        Var _ _ ->
+            False
+
+        ConstFact _ e2 ->
+            isConstant e2
+
+        Plus e1 e2 ->
+            isConstant e1 && isConstant e2
+
+        Minus e1 e2 ->
+            isConstant e1 && isConstant e2
+
+
 removeConstantAdditions : RatPred -> RatPred
 removeConstantAdditions e =
-  case e of
-    Less (Plus e1 (ConstRat r)) e2  ->
-      Less e1 (Minus e2 (ConstRat r))
-    Less (Plus (ConstRat r) e1) e2  ->
-      Less e1 (Minus e2 (ConstRat r))
-    Eq (Plus e1 (ConstRat r)) e2  ->
-      Eq e1 (Minus e2 (ConstFact (Div -1 1) (ConstRat r)))
-    Eq (Plus (ConstRat r) e1) e2  ->
-      Eq e1 (Minus e2 (ConstFact (Div -1 1) (ConstRat r)))
-    e1 -> e1
+    case e of
+        Less (Plus e1 e2) e3 ->
+            case ( isConstant e1, isConstant e2 ) of
+                ( False, True ) ->
+                    Less e1 (Minus e3 e2)
+
+                ( True, False ) ->
+                    Less e1 (Minus e3 e1)
+
+                ( _, _ ) ->
+                    e
+
+        Eq (Plus e1 e2) e3 ->
+            case ( isConstant e1, isConstant e2 ) of
+                ( False, True ) ->
+                    Eq e1 (Minus e3 e2)
+
+                ( True, False ) ->
+                    Eq e1 (Minus e3 e1)
+
+                ( _, _ ) ->
+                    e
+
+        e1 ->
+            e
+
 
 
 -- Replace every predicate of the form t < cx with t/c < x so that
@@ -102,8 +138,10 @@ omitCoefficients rp =
         Eq e1 e2 ->
             Eq e1 e2
 
+
 solveRatPred : RatPred -> RatPred
-solveRatPred = \e -> omitCoefficients (removeConstantAdditions e)
+solveRatPred =
+    \e -> omitCoefficients (removeConstantAdditions e)
 
 
 
