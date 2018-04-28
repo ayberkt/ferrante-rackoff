@@ -38,6 +38,18 @@ solved rp =
         Eq e1 e2 ->
             (not (occurs 0 e1)) && (not (occurs 0 e2))
 
+removeConstantAdditions : RatPred -> RatPred
+removeConstantAdditions e =
+  case e of
+    Less (Plus e1 (ConstRat r)) e2  ->
+      Less e1 (Minus e2 (ConstRat r))
+    Less (Plus (ConstRat r) e1) e2  ->
+      Less e1 (Minus e2 (ConstRat r))
+    Eq (Plus e1 (ConstRat r)) e2  ->
+      Eq e1 (Minus e2 (ConstFact (Div -1 1) (ConstRat r)))
+    Eq (Plus (ConstRat r) e1) e2  ->
+      Eq e1 (Minus e2 (ConstFact (Div -1 1) (ConstRat r)))
+    e1 -> e1
 
 
 -- Replace every predicate of the form t < cx with t/c < x so that
@@ -69,8 +81,8 @@ normMuls e =
             ConstFact r (normMuls e1)
 
 
-solveRatPred : RatPred -> RatPred
-solveRatPred rp =
+omitCoefficients : RatPred -> RatPred
+omitCoefficients rp =
     case rp of
         Less t (ConstFact c e1) ->
             Less (ConstFact (negateByMul c) t) e1
@@ -89,6 +101,9 @@ solveRatPred rp =
 
         Eq e1 e2 ->
             Eq e1 e2
+
+solveRatPred : RatPred -> RatPred
+solveRatPred = \e -> omitCoefficients (removeConstantAdditions e)
 
 
 
