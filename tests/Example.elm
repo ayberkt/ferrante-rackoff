@@ -285,7 +285,16 @@ suite =
                             )
                         )
                         4
-            , test "Parser 1" <|
+            , describe "Solver case" solverTestCases
+            ]
+        ]
+
+
+parserTest : Test
+parserTest =
+    describe "Parser test suite"
+        [ describe "Parser test cases"
+            [ test "Parser 1" <|
                 \() ->
                     Expect.equal
                         (parseProp "true")
@@ -382,3 +391,32 @@ suite =
                         )
             ]
         ]
+
+
+valOf : Maybe Prop -> Prop
+valOf m =
+    case m of
+        Just x ->
+            x
+
+        Nothing ->
+            Bot
+
+
+solverTestCases : List Test
+solverTestCases =
+    [ describe "Solver test suite"
+        [ describe "Parser test cases"
+            [ test "Solver case 1" <|
+                \() ->
+                    Expect.equal
+                        (solve (valOf (parseProp "(exists x (< (* 3/1 x) 5/1))")))
+                        (valOf (parseProp "(exists x (< x (* 1/3 5/1)))"))
+            , test "Solver case 2" <|
+                \() ->
+                    Expect.equal
+                        (solve (valOf (parseProp "(exists x (< (+ x 1/1) 5/1))")))
+                        (valOf (parseProp "(exists x (< x (- 5/1 1/1)))"))
+            ]
+        ]
+    ]
