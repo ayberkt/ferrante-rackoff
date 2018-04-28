@@ -44,34 +44,6 @@ solved rp =
 -- variables are alone. This corresponds to Step 4 of the algorithm
 
 
-simplify : Expr -> Expr
-simplify e =
-    case e of
-        Plus e1 e2 ->
-            if e1 == e2 then
-                simplify (ConstFact (Div 2 1) e1)
-            else
-                simplify (Plus (simplify e1) (simplify e2))
-
-        Minus e1 e2 ->
-            Minus (simplify e1) (simplify e2)
-
-        Var i vi ->
-            Var i vi
-
-        ConstRat r ->
-            ConstRat r
-
-        ConstFact (Div z1_1 z1_2) (ConstRat (Div z2_1 z2_2)) ->
-            simplify (ConstRat (Div (z1_1 * z1_1) (z2_1 * z2_2)))
-
-        ConstFact (Div z1_1 z1_2) (ConstFact (Div z2_1 z2_2) e1) ->
-            simplify (ConstFact (Div (z1_1 * z1_1) (z2_1 * z2_2)) (simplify e1))
-
-        e_ ->
-            e_
-
-
 normMuls : Expr -> Expr
 normMuls e =
     case e of
@@ -113,10 +85,10 @@ solveRatPred rp =
             Eq x (ConstFact (negateByMul c) t)
 
         Less e1 e2 ->
-            Less (simplify e1) (simplify e2)
+            Less e1 e2
 
         Eq e1 e2 ->
-            Eq (simplify e1) (simplify e2)
+            Eq e1 e2
 
 
 
