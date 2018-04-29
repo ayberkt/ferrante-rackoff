@@ -17613,33 +17613,39 @@ var _user$project$PropositionParser$deBruijnExp = F2(
 		var _p2 = e;
 		switch (_p2.ctor) {
 			case 'Plus':
-				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._1);
-				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._0);
-				var _p3 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
-				if ((_p3._0.ctor === 'Just') && (_p3._1.ctor === 'Just')) {
+				var _p3 = {
+					ctor: '_Tuple2',
+					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._0),
+					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._1)
+				};
+				var e1_ = _p3._0;
+				var e2_ = _p3._1;
+				var _p4 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
+				if ((_p4._0.ctor === 'Just') && (_p4._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Plus, _p3._0._0, _p3._1._0));
+						A2(_user$project$Syntax$Plus, _p4._0._0, _p4._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			case 'Minus':
 				var e2_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._1);
 				var e1_ = A2(_user$project$PropositionParser$deBruijnExp, ctx, _p2._0);
-				var _p4 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
-				if ((_p4._0.ctor === 'Just') && (_p4._1.ctor === 'Just')) {
+				var _p5 = {ctor: '_Tuple2', _0: e1_, _1: e2_};
+				if ((_p5._0.ctor === 'Just') && (_p5._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Minus, _p4._0._0, _p4._1._0));
+						A2(_user$project$Syntax$Minus, _p5._0._0, _p5._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			case 'Var':
-				var _p6 = _p2._1;
-				var _p5 = A2(_user$project$Util$indexOf, ctx, _p6);
-				if (_p5.ctor === 'Just') {
+				var _p7 = _p2._1;
+				var _p6 = A2(_user$project$Util$indexOf, ctx, _p7);
+				if (_p6.ctor === 'Just') {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Var, _p5._0, _p6));
+						A2(_user$project$Syntax$Var, _p6._0, _p7));
 				} else {
-					return _elm_lang$core$Maybe$Nothing;
+					return _elm_lang$core$Maybe$Just(
+						A2(_user$project$Syntax$Var, -1, _p7));
 				}
 			case 'ConstFact':
 				return A2(
@@ -17655,41 +17661,41 @@ var _user$project$PropositionParser$deBruijnExp = F2(
 	});
 var _user$project$PropositionParser$deBruijnRP = F2(
 	function (ctx, rp) {
-		var _p7 = rp;
-		switch (_p7.ctor) {
+		var _p8 = rp;
+		switch (_p8.ctor) {
 			case 'Less':
-				var _p8 = {
+				var _p9 = {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._1)
+					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._0),
+					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._1)
 				};
-				if ((_p8._0.ctor === 'Just') && (_p8._1.ctor === 'Just')) {
+				if ((_p9._0.ctor === 'Just') && (_p9._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Less, _p8._0._0, _p8._1._0));
+						A2(_user$project$Syntax$Less, _p9._0._0, _p9._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			case 'Greater':
-				var _p9 = {
+				var _p10 = {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._1)
+					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._0),
+					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._1)
 				};
-				if ((_p9._0.ctor === 'Just') && (_p9._1.ctor === 'Just')) {
+				if ((_p10._0.ctor === 'Just') && (_p10._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Greater, _p9._0._0, _p9._1._0));
+						A2(_user$project$Syntax$Greater, _p10._0._0, _p10._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
 			default:
-				var _p10 = {
+				var _p11 = {
 					ctor: '_Tuple2',
-					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._0),
-					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p7._1)
+					_0: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._0),
+					_1: A2(_user$project$PropositionParser$deBruijnExp, ctx, _p8._1)
 				};
-				if ((_p10._0.ctor === 'Just') && (_p10._1.ctor === 'Just')) {
+				if ((_p11._0.ctor === 'Just') && (_p11._1.ctor === 'Just')) {
 					return _elm_lang$core$Maybe$Just(
-						A2(_user$project$Syntax$Eq, _p10._0._0, _p10._1._0));
+						A2(_user$project$Syntax$Eq, _p11._0._0, _p11._1._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
@@ -17697,13 +17703,13 @@ var _user$project$PropositionParser$deBruijnRP = F2(
 	});
 var _user$project$PropositionParser$deBruijn = F2(
 	function (ctx, p) {
-		var _p11 = p;
-		switch (_p11.ctor) {
+		var _p12 = p;
+		switch (_p12.ctor) {
 			case 'Pred':
-				var _p12 = A2(_user$project$PropositionParser$deBruijnRP, ctx, _p11._0);
-				if (_p12.ctor === 'Just') {
+				var _p13 = A2(_user$project$PropositionParser$deBruijnRP, ctx, _p12._0);
+				if (_p13.ctor === 'Just') {
 					return _elm_lang$core$Maybe$Just(
-						_user$project$Syntax$Pred(_p12._0));
+						_user$project$Syntax$Pred(_p13._0));
 				} else {
 					return _elm_lang$core$Maybe$Nothing;
 				}
@@ -17714,7 +17720,7 @@ var _user$project$PropositionParser$deBruijn = F2(
 						return _elm_lang$core$Maybe$Just(
 							_user$project$Syntax$Neg(x));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p12._0));
 			case 'Conj':
 				return A2(
 					_elm_lang$core$Maybe$andThen,
@@ -17725,9 +17731,9 @@ var _user$project$PropositionParser$deBruijn = F2(
 								return _elm_lang$core$Maybe$Just(
 									A2(_user$project$Syntax$Conj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p11._1));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p12._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p12._0));
 			case 'Disj':
 				return A2(
 					_elm_lang$core$Maybe$andThen,
@@ -17738,35 +17744,35 @@ var _user$project$PropositionParser$deBruijn = F2(
 								return _elm_lang$core$Maybe$Just(
 									A2(_user$project$Syntax$Disj, p1_, p2_));
 							},
-							A2(_user$project$PropositionParser$deBruijn, ctx, _p11._1));
+							A2(_user$project$PropositionParser$deBruijn, ctx, _p12._1));
 					},
-					A2(_user$project$PropositionParser$deBruijn, ctx, _p11._0));
+					A2(_user$project$PropositionParser$deBruijn, ctx, _p12._0));
 			case 'Forall':
-				var _p13 = _p11._0;
+				var _p14 = _p12._0;
 				return A2(
 					_elm_lang$core$Maybe$andThen,
 					function (p_) {
 						return _elm_lang$core$Maybe$Just(
-							A2(_user$project$Syntax$Forall, _p13, p_));
-					},
-					A2(
-						_user$project$PropositionParser$deBruijn,
-						{ctor: '::', _0: _p13, _1: ctx},
-						_p11._1));
-			case 'Exists':
-				var _p14 = _p11._0;
-				return A2(
-					_elm_lang$core$Maybe$andThen,
-					function (p_) {
-						return _elm_lang$core$Maybe$Just(
-							A2(_user$project$Syntax$Exists, _p14, p_));
+							A2(_user$project$Syntax$Forall, _p14, p_));
 					},
 					A2(
 						_user$project$PropositionParser$deBruijn,
 						{ctor: '::', _0: _p14, _1: ctx},
-						_p11._1));
+						_p12._1));
+			case 'Exists':
+				var _p15 = _p12._0;
+				return A2(
+					_elm_lang$core$Maybe$andThen,
+					function (p_) {
+						return _elm_lang$core$Maybe$Just(
+							A2(_user$project$Syntax$Exists, _p15, p_));
+					},
+					A2(
+						_user$project$PropositionParser$deBruijn,
+						{ctor: '::', _0: _p15, _1: ctx},
+						_p12._1));
 			default:
-				return _elm_lang$core$Maybe$Just(_p11);
+				return _elm_lang$core$Maybe$Just(_p12);
 		}
 	});
 var _user$project$PropositionParser$rat = A2(
@@ -17855,7 +17861,7 @@ var _user$project$PropositionParser$spaces = A2(
 var _user$project$PropositionParser$infixArithmeticOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p15) {
+		function (_p16) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -17931,7 +17937,7 @@ var _user$project$PropositionParser$expr = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixArithmeticOp(
-			function (_p16) {
+			function (_p17) {
 				return _user$project$PropositionParser$expr;
 			}),
 		_1: {
@@ -17989,7 +17995,7 @@ var _user$project$PropositionParser$parsePred = _elm_tools$parser$Parser$oneOf(
 var _user$project$PropositionParser$infixOp = function (r) {
 	return A2(
 		_elm_tools$parser$Parser$andThen,
-		function (_p17) {
+		function (_p18) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -18125,7 +18131,7 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$PropositionParser$infixOp(
-			function (_p18) {
+			function (_p19) {
 				return _user$project$PropositionParser$prop;
 			}),
 		_1: {
@@ -18135,12 +18141,12 @@ var _user$project$PropositionParser$prop = _elm_tools$parser$Parser$oneOf(
 		}
 	});
 var _user$project$PropositionParser$parseProp = function (s) {
-	var _p19 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
-	if (_p19.ctor === 'Ok') {
+	var _p20 = A2(_elm_tools$parser$Parser$run, _user$project$PropositionParser$prop, s);
+	if (_p20.ctor === 'Ok') {
 		return A2(
 			_user$project$PropositionParser$deBruijn,
 			{ctor: '[]'},
-			_p19._0);
+			_p20._0);
 	} else {
 		return _elm_lang$core$Maybe$Nothing;
 	}
