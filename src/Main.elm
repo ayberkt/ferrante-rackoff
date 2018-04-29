@@ -11,6 +11,8 @@ import Material.Textfield as Textfield
 import Material.Color as Color
 import Material.List as L
 import NNF exposing (convertToNNF)
+import OmitNegations exposing (removeAllNegations)
+import Solve exposing (solve)
 import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
 import Debug exposing (log)
@@ -138,16 +140,29 @@ view model =
               [ css "font-size" "20px", Color.text Color.accent ]
               [ text "Waiting for valid input." ] ]
         Parsed p ->
-          Options.div
-          []
-          [ subTitle "Negation-normal form"
-          , Options.styled
-            Html.body
-            [css "font-size" "20px" ]
-            [ text (linearize (convertToNNF p)) ]
-          , subTitle "No negations"
-          , subTitle "Simplified"
-          ]
+          let
+              nnf         = convertToNNF p
+              noNegs      = removeAllNegations nnf
+              simplified  = solve noNegs
+          in
+            Options.div
+            []
+            [ subTitle "Negation-normal form"
+            , Options.styled
+              Html.body
+              [css "font-size" "20px" ]
+              [ text (linearize (convertToNNF p)) ]
+            , subTitle "No negations"
+            , Options.styled
+              Html.body
+              [ css "font-size" "20px" ]
+              [ text (linearize noNegs) ]
+            , subTitle "Simplified"
+            , Options.styled
+              Html.body
+              [ css "font-size" "20px" ]
+              [ text (linearize simplified) ]
+            ]
     ]
     |> Material.Scheme.top
 
