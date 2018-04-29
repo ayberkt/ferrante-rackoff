@@ -35,7 +35,8 @@ suite =
             , test "NNF 3" <|
                 \() ->
                     Expect.equal
-                        (convertToNNF (Forall (VI "x") (Neg (Conj (Disj Bot Top) Top))))
+                        (convertToNNF
+                          (Forall (VI "x") (Neg (Conj (Disj Bot Top) Top))))
                         (Neg (Exists
                             (VI "x")
                             (Conj (Disj Bot Top) Top)))
@@ -45,28 +46,18 @@ suite =
                         (removeAllNegations
                             (convertToNNF
                                 (Forall (VI "x")
-                                    (Neg (Conj (Disj Bot Top) Top))
-                                )
-                            )
-                        )
-                        (Neg (Exists
-                            (VI "x")
-                            (Conj (Disj Bot Top) Top)
-                        ))
+                                  (Neg (Conj (Disj Bot Top) Top))))
+                        (Neg (Exists (VI "x") (Conj (Disj Bot Top) Top)))
             , test "Omit negations 2" <|
                 \() ->
                     Expect.equal
                         (removeAllNegations
                             (convertToNNF
                                 (Forall (VI "x")
-                                    (Conj (Disj Bot Top) Top)
-                                )
-                            )
-                        )
+                                    (Conj (Disj Bot Top) Top))))
                         (Neg (Exists
                             (VI "x")
-                            (Disj (Conj Top Bot) Bot)
-                        ))
+                            (Disj (Conj Top Bot) Bot)))
             , test "Omit negations 3" <|
                 \() ->
                     Expect.equal
@@ -89,21 +80,13 @@ suite =
                                 (Pred
                                     (Less
                                         (Plus (injDiv 1 1) (injDiv 1 1))
-                                        (Plus (injDiv 0 1) (injDiv 1 1))
-                                    )
-                                )
-                            )
-                        )
+                                        (Plus (injDiv 0 1) (injDiv 1 1))))))
                         (removeAllNegations
                             (Neg
                                 (Pred
                                     (Less
                                         (Plus (injDiv 1 1) (injDiv 1 1))
-                                        (Plus (injDiv 0 1) (injDiv 1 1))
-                                    )
-                                )
-                            )
-                        )
+                                        (Plus (injDiv 0 1) (injDiv 1 1))))))
             , test "Omit negations, pred 2" <|
                 \() ->
                     Expect.equal
