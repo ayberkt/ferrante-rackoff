@@ -10,6 +10,7 @@ import Solve exposing (solve)
 import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Maybe exposing (withDefault)
 import PropositionParser exposing (parseProp)
+import Normalization exposing (normalizeExpr, normalizeRatPred, normalize)
 
 
 injDiv : Int -> Int -> Expr
@@ -234,6 +235,7 @@ suite =
                         )
                         4
             , describe "Solver case" solverTestCases
+            , describe "Normalization case" normalizationTestCases
             ]
         ]
 
@@ -395,6 +397,52 @@ solverTestCases =
                     Expect.equal
                         (solve (valOf (parseProp "(exists x (= (* 3/1 x) (* 5/1 x)))")))
                         (valOf (parseProp "(exists x (= (- (* 3/1 x) (* 5/1 x)) 0/1))"))
+            ]
+        ]
+    ]
+
+parse s = valOf (parseProp s)
+    
+normalizationTestCases : List Test
+normalizationTestCases =
+    [ describe "Normalization test suite"
+        [ describe "Parser test cases"
+            [ test "Normalization case 1: `normalizeExpr`." <|
+                \() ->
+                    Expect.equal
+                        (normalizeExpr (Plus (ConstRat (Div 3 1))(ConstRat (Div 7 1))))
+                        10.0
+            , test "Normalization case 2: `normalizeRatPred`." <|
+                \() ->
+                    Expect.equal
+                        (normalizeRatPred
+                          (Less
+                            (ConstRat (Div 1 1))
+                            (Plus (injDiv 1 1) (injDiv 1 1))))
+                        True
+            , test "Normalization case 3: `normalizeRatPred`." <|
+                \() ->
+                    Expect.equal
+                        (normalizeRatPred
+                          (Less
+                            (Plus (injDiv 1 1) (injDiv 1 1))
+                            (ConstRat (Div 1 1))))
+                        False
+            , test "Normalization case 4: `normalize`." <|
+                \() ->
+                    Expect.equal
+                        (normalize (parse "(/\\ true true)"))
+                        True
+            , test "Normalization case 5: `normalize`." <|
+                \() ->
+                    Expect.equal
+                        (normalize (parse "(/\\ false true)"))
+                        False
+            , test "Normalization case 6: `normalize`." <|
+                \() ->
+                    Expect.equal
+                        (normalize (parse "(\\/ false true)"))
+                        True
             ]
         ]
     ]
