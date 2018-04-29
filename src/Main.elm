@@ -16,6 +16,7 @@ import Solve exposing (solve)
 import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
 import InfiniteProjection exposing (leftInfProj, rightInfProj)
+import Normalization exposing (normalize)
 import Debug exposing (log)
 import Json.Encode
 import Json.Decode
@@ -142,10 +143,11 @@ view model =
               [ text "Waiting for valid input." ] ]
         Parsed p ->
           let
-              nnf           = convertToNNF p
-              noNegs        = removeAllNegations nnf
-              simplified    = solve noNegs
-              (leftProj, _) = leftInfProj simplified
+              nnf            = convertToNNF p
+              noNegs         = removeAllNegations nnf
+              simplified     = solve noNegs
+              (leftProj,  _) = leftInfProj simplified
+              (rightProj, _) = rightInfProj simplified
           in
             Options.div
             []
@@ -169,6 +171,18 @@ view model =
               Html.body
               [ css "font-size" "20px" ]
               [ text (linearize leftProj) ]
+            , subTitle "Right Infinite Projection"
+            , Options.styled
+              Html.body
+              [ css "font-size" "20px" ]
+              [ text (linearize rightProj) ]
+            , subTitle "Result"
+            , text
+                (case (normalize leftProj, normalize rightProj) of
+                  (False,  False) -> "Not satisfiable"
+                  (False,   True) -> "Satisfiable due to right projection."
+                  (True,   False) -> "Satisfiable due to left projection."
+                  (True,    True) -> "Satisfiable due to both projections.")
             ]
     ]
     |> Material.Scheme.top
