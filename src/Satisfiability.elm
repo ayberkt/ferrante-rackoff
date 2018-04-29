@@ -1,5 +1,11 @@
 module Satisfiability exposing (isSat)
 
-import Syntax exposing (..)
+import Normalization exposing (normalize)
+import Syntax        exposing (..)
 
-isSat = 1
+isSat : Prop -> Prop -> List Prop -> Bool
+isSat l r ps =
+  if (normalize l) || (normalize r) then
+    True
+  else
+    List.foldl (||) False (List.map (normalize) ps)
