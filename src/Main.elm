@@ -8,6 +8,7 @@ import Material.Button as Button
 import Material.Grid exposing (..)
 import Material.Options as Options exposing (css)
 import Material.Textfield as Textfield
+import Material.Toggles   as Toggles
 import Material.Color as Color
 import Material.List as L
 import NNF exposing (convertToNNF)
@@ -36,6 +37,7 @@ type alias Model =
     { count     : Int
     , inputText : String
     , input     : Input
+    , showSteps : Bool
     , mdl       : Material.Model
     }
 
@@ -45,6 +47,7 @@ model =
     { count     = 0
     , input     = InvalidInput
     , inputText = ""
+    , showSteps = True
     , mdl       = Material.model
     }
 
@@ -65,6 +68,7 @@ type Msg
     = Increase
     | Reset
     | UpdateMessage String
+    | ToggleSteps
     | Mdl (Material.Msg Msg)
 
 
@@ -93,6 +97,8 @@ update msg model =
               Just p  -> ( { model | input = Parsed p,     inputText = s }, Cmd.none )
               Nothing -> ( { model | input = InvalidInput, inputText = s }, Cmd.none )
 
+        ToggleSteps -> ( { model | showSteps = not model.showSteps }, Cmd.none )
+
         -- Boilerplate: Mdl action handler.
         Mdl msg_ ->
             Material.update Mdl msg_ model
@@ -120,6 +126,18 @@ subTitle t =
         [ text t ]
 
 
+goodResult : String -> Html a
+goodResult t =
+  Options.styled Html.h2
+    [ Color.text (Color.color Color.LightGreen Color.S800) ]
+    [ text t ]
+
+badResult : String -> Html a
+badResult t =
+  Options.styled Html.h2
+    [ Color.text (Color.color Color.Red Color.S800) ]
+    [ text t ]
+
 view : Model -> Html Msg
 view model =
   Options.div
@@ -135,6 +153,12 @@ view model =
         model.mdl
         [ Options.onClick Increase, css "margin" "0 24px" ]
         [ text "Start" ]
+    , Toggles.switch Mdl [0] model.mdl
+        [ Options.onToggle ToggleSteps
+        , Toggles.ripple
+        , Toggles.value model.showSteps
+        ]
+        [ text "Show steps" ]
     , case model.input of
         InvalidInput ->
           Options.div
@@ -153,43 +177,46 @@ view model =
           in
             Options.div
             []
-            [ subTitle "Negation-normal form"
-            , Options.styled
-              Html.body
-              [css "font-size" "20px" ]
-              [ text (linearize (convertToNNF p)) ]
-            , subTitle "No negations"
-            , Options.styled
-              Html.body
-              [ css "font-size" "20px" ]
-              [ text (linearize noNegs) ]
-            , subTitle "Simplified"
-            , Options.styled
-              Html.body
-              [ css "font-size" "20px" ]
-              [ text (linearize simplified) ]
-            , subTitle "Left Infinite Projection"
-            , Options.styled
-              Html.body
-              [ css "font-size" "20px" ]
-              [ text (linearize leftProj) ]
-            , subTitle "Right Infinite Projection"
-            , Options.styled
-              Html.body
-              [ css "font-size" "20px" ]
-              [ text (linearize rightProj) ]
-            , subTitle "Middle case"
-            , Options.styled
-              Html.body
-              [ css "font-size" "20px" ]
-              (List.map (text << toString << normalize) middleCases)
-              -- List.map text (List.map linearize middleCases)
-            , subTitle "Result"
-            , if isSat leftProj rightProj middleCases then
-                text "Satisfiable."
-              else
-                text "Not satisfiable."
+            ((if model.showSteps then
+              [ subTitle "Negation-normal form"
+              , Options.styled
+                Html.body
+                [css "font-size" "20px" ]
+                [ text (linearize (convertToNNF p)) ]
+              , subTitle "No negations"
+              , Options.styled
+                Html.body
+                [ css "font-size" "20px" ]
+                [ text (linearize noNegs) ]
+              , subTitle "Simplified"
+              , Options.styled
+                Html.body
+                [ css "font-size" "20px" ]
+                [ text (linearize simplified) ]
+              , subTitle "Left Infinite Projection"
+              , Options.styled
+                Html.body
+                [ css "font-size" "20px" ]
+                [ text (linearize leftProj) ]
+              , subTitle "Right Infinite Projection"
+              , Options.styled
+                Html.body
+                [ css "font-size" "20px" ]
+                [ text (linearize rightProj) ]
+              , subTitle "Middle case"
+              , Options.styled
+                Html.body
+                [ css "font-size" "20px" ]
+                (List.map (text << toString << normalize) middleCases)
             ]
+          else
+            [])
+          ++
+          [ if isSat leftProj rightProj middleCases then
+                goodResult "Satisfiable."
+              else
+                badResult "Not satisfiable."
+          ])
     ]
     |> Material.Scheme.top
 
