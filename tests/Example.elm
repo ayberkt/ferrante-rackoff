@@ -35,10 +35,9 @@ suite =
                 \() ->
                     Expect.equal
                         (convertToNNF (Forall (VI "x") (Neg (Conj (Disj Bot Top) Top))))
-                        (Forall
+                        (Neg (Exists
                             (VI "x")
-                            (Disj (Conj (Neg Bot) (Neg Top)) (Neg Top))
-                        )
+                            (Conj (Disj Bot Top) Top)))
             , test "Omit negations 1" <|
                 \() ->
                     Expect.equal
@@ -49,10 +48,10 @@ suite =
                                 )
                             )
                         )
-                        (Forall
+                        (Neg (Exists
                             (VI "x")
-                            (Disj (Conj Top Bot) Bot)
-                        )
+                            (Conj (Disj Bot Top) Top)
+                        ))
             , test "Omit negations 2" <|
                 \() ->
                     Expect.equal
@@ -63,10 +62,10 @@ suite =
                                 )
                             )
                         )
-                        (Forall
+                        (Neg (Exists
                             (VI "x")
-                            (Conj (Disj Bot Top) Top)
-                        )
+                            (Disj (Conj Top Bot) Bot)
+                        ))
             , test "Omit negations 3" <|
                 \() ->
                     Expect.equal
@@ -77,13 +76,10 @@ suite =
                                 )
                             )
                         )
-                        (Forall
+                        (Neg
+                          (Exists
                             (VI "x")
-                            (Disj
-                                (Pred (Less (Var 0 (VI "x")) (Var 0 (VI "x"))))
-                                (Pred (Eq (Var 0 (VI "x")) (Var 0 (VI "x"))))
-                            )
-                        )
+                            (Pred (Less (Var 0 (VI "x")) (Var 0 (VI "x"))))))
             , test "Omit negations, pred 1" <|
                 \() ->
                     Expect.equal
