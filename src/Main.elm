@@ -9,6 +9,7 @@ import Material.Grid exposing (..)
 import Material.Options as Options exposing (css)
 import Material.Textfield as Textfield
 import Material.Toggles   as Toggles
+import Material.Slider   as Slider
 import Material.Color as Color
 import Material.List as L
 import NNF exposing (convertToNNF)
@@ -36,6 +37,7 @@ type Input
 type alias Model =
     { count     : Int
     , inputText : String
+    , fontSize  : Float
     , input     : Input
     , showSteps : Bool
     , mdl       : Material.Model
@@ -47,6 +49,7 @@ model =
     { count     = 0
     , input     = InvalidInput
     , inputText = ""
+    , fontSize  = 20
     , showSteps = True
     , mdl       = Material.model
     }
@@ -68,6 +71,7 @@ type Msg
     = Increase
     | Reset
     | UpdateMessage String
+    | ChangeFontSize Float
     | ToggleSteps
     | Mdl (Material.Msg Msg)
 
@@ -98,6 +102,8 @@ update msg model =
               Nothing -> ( { model | input = InvalidInput, inputText = s }, Cmd.none )
 
         ToggleSteps -> ( { model | showSteps = not model.showSteps }, Cmd.none )
+
+        ChangeFontSize f -> ( { model | fontSize = f }, Cmd.none)
 
         -- Boilerplate: Mdl action handler.
         Mdl msg_ ->
@@ -159,12 +165,17 @@ view model =
         , Toggles.value model.showSteps
         ]
         [ text "Show steps" ]
+    , Slider.view
+      [ Slider.onChange ChangeFontSize
+      , css "margin" "0 24px"
+      , Slider.value model.fontSize]
     , case model.input of
         InvalidInput ->
           Options.div
             []
             [ Options.styled Html.body
-              [ css "font-size" "20px", Color.text Color.accent ]
+              [ css "font-size" "20px",
+                Color.text Color.accent ]
               [ text "Waiting for valid input." ] ]
         Parsed p ->
           let
@@ -181,32 +192,32 @@ view model =
               [ subTitle "Negation-normal form"
               , Options.styled
                 Html.body
-                [css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 [ text (linearize (convertToNNF p)) ]
               , subTitle "No negations"
               , Options.styled
                 Html.body
-                [ css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 [ text (linearize noNegs) ]
               , subTitle "Simplified"
               , Options.styled
                 Html.body
-                [ css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 [ text (linearize simplified) ]
               , subTitle "Left Infinite Projection"
               , Options.styled
                 Html.body
-                [ css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 [ text (linearize leftProj) ]
               , subTitle "Right Infinite Projection"
               , Options.styled
                 Html.body
-                [ css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 [ text (linearize rightProj) ]
               , subTitle "Middle case"
               , Options.styled
                 Html.body
-                [ css "font-size" "20px" ]
+                [css "font-size" ((toString model.fontSize) ++ "px") ]
                 (List.map (text << toString << normalize) middleCases)
             ]
           else
