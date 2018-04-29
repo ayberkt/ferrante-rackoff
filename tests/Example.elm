@@ -132,54 +132,6 @@ suite =
                     Expect.equal
                         (removeAllNegations Top)
                         Top
-            , test "Solve constant, 1" <|
-                \() ->
-                    Expect.equal
-                        (solve
-                            (Forall (VI "x")
-                                (Pred
-                                    (Less
-                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
-                                        (ConstFact (Div 2 1) (Var 0 (VI "x")))
-                                    )
-                                )
-                            )
-                        )
-                        (Forall (VI "x")
-                            (Pred
-                                (Less
-                                    (ConstFact
-                                        (Div 1 2)
-                                        (ConstFact (Div 3 1) (Var 0 (VI "x")))
-                                    )
-                                    (Var 0 (VI "x"))
-                                )
-                            )
-                        )
-            , test "Solve constant, 2" <|
-                \() ->
-                    Expect.equal
-                        (solve
-                            (Forall (VI "x")
-                                (Pred
-                                    (Less
-                                        (ConstFact (Div 1 3) (Var 0 (VI "x")))
-                                        (ConstFact (Div 1 10) (Var 0 (VI "x")))
-                                    )
-                                )
-                            )
-                        )
-                        (Forall (VI "x")
-                            (Pred
-                                (Less
-                                    (ConstFact
-                                        (Div 10 1)
-                                        (ConstFact (Div 1 3) (Var 0 (VI "x")))
-                                    )
-                                    (Var 0 (VI "x"))
-                                )
-                            )
-                        )
             , test "Solve constant, 3" <|
                 \() ->
                     Expect.equal
@@ -432,6 +384,16 @@ solverTestCases =
                     Expect.equal
                         (solve (valOf (parseProp "(exists x (< (+ (* 3/1 x) 1/1) 5/1))")))
                         (valOf (parseProp "(exists x (< x (* 1/3 (- 5/1 1/1))))"))
+            , test "Solver case 6: TODO: description." <|
+                \() ->
+                    Expect.equal
+                        (solve (valOf (parseProp "(exists x (= (+ (* 3/1 x) 1/1) 5/1))")))
+                        (valOf (parseProp "(exists x (= x (* 1/3 (- 5/1 1/1))))"))
+            , test "Solver case 7: TODO: description." <|
+                \() ->
+                    Expect.equal
+                        (solve (valOf (parseProp "(exists x (= (* 3/1 x) (* 5/1 x)))")))
+                        (valOf (parseProp "(exists x (= (- (* 3/1 x) (* 5/1 x)) 0/1))"))
             ]
         ]
     ]
