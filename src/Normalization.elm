@@ -1,4 +1,4 @@
-module Normalization exposing (normalizeExpr, normalizeRatPred)
+module Normalization exposing (normalizeExpr, normalizeRatPred, normalize)
 
 import Syntax exposing (Prop(..), RatPred(..), Expr(..), Rat(..))
 import Set
@@ -19,4 +19,15 @@ normalizeRatPred rp =
     Less e1 e2 -> (normalizeExpr e1) < (normalizeExpr e2)
     Eq e1 e2 -> (normalizeExpr e1) == (normalizeExpr e2)
 
--- normalize : Prop -> Bool
+normalize : Prop -> Bool
+normalize p =
+  case p of
+    Top -> True
+    Bot -> False
+    Neg p1 -> not (normalize p1)
+    Conj p1 p2 -> (normalize p1) && (normalize p2)
+    Disj p1 p2 -> (normalize p1) || (normalize p2)
+    Pred rp -> normalizeRatPred rp
+    Id s -> False
+    Exists s e1 -> False
+    Forall s e1 -> False
