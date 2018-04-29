@@ -17971,7 +17971,7 @@ var _user$project$InfiniteProjection$mkEmptyReplacedList = function (x) {
 var _user$project$InfiniteProjection$infProj = F2(
 	function (p, ipk) {
 		var _p2 = p;
-		_v1_3:
+		_v1_5:
 		do {
 			switch (_p2.ctor) {
 				case 'Pred':
@@ -18027,10 +18027,64 @@ var _user$project$InfiniteProjection$infProj = F2(
 										};
 									}
 								} else {
-									break _v1_3;
+									break _v1_5;
 								}
 							}
-						case 'Eq':
+						case 'Greater':
+							if (_p2._0._0.ctor === 'Var') {
+								var _p8 = _p2._0._1;
+								var _p7 = ipk;
+								if (_p7.ctor === 'LeftInfProj') {
+									return {
+										ctor: '_Tuple2',
+										_0: _user$project$Syntax$Bot,
+										_1: {
+											ctor: '::',
+											_0: _p8,
+											_1: {ctor: '[]'}
+										}
+									};
+								} else {
+									return {
+										ctor: '_Tuple2',
+										_0: _user$project$Syntax$Top,
+										_1: {
+											ctor: '::',
+											_0: _p8,
+											_1: {ctor: '[]'}
+										}
+									};
+								}
+							} else {
+								if (_p2._0._1.ctor === 'Var') {
+									var _p10 = _p2._0._0;
+									var _p9 = ipk;
+									if (_p9.ctor === 'RightInfProj') {
+										return {
+											ctor: '_Tuple2',
+											_0: _user$project$Syntax$Bot,
+											_1: {
+												ctor: '::',
+												_0: _p10,
+												_1: {ctor: '[]'}
+											}
+										};
+									} else {
+										return {
+											ctor: '_Tuple2',
+											_0: _user$project$Syntax$Top,
+											_1: {
+												ctor: '::',
+												_0: _p10,
+												_1: {ctor: '[]'}
+											}
+										};
+									}
+								} else {
+									break _v1_5;
+								}
+							}
+						default:
 							if (_p2._0._0.ctor === 'Var') {
 								return {
 									ctor: '_Tuple2',
@@ -18042,10 +18096,8 @@ var _user$project$InfiniteProjection$infProj = F2(
 									}
 								};
 							} else {
-								break _v1_3;
+								break _v1_5;
 							}
-						default:
-							break _v1_3;
 					}
 				case 'Id':
 					return _user$project$InfiniteProjection$mkEmptyReplacedList(
@@ -18055,51 +18107,51 @@ var _user$project$InfiniteProjection$infProj = F2(
 				case 'Bot':
 					return _user$project$InfiniteProjection$mkEmptyReplacedList(_user$project$Syntax$Bot);
 				case 'Neg':
-					var _p7 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
-					var p1LInfProj = _p7._0;
-					var replaced = _p7._1;
+					var _p11 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
+					var p1LInfProj = _p11._0;
+					var replaced = _p11._1;
 					return {
 						ctor: '_Tuple2',
 						_0: _user$project$Syntax$Neg(p1LInfProj),
 						_1: replaced
 					};
 				case 'Conj':
-					var _p8 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
-					var p2LInfProj = _p8._0;
-					var replaced2 = _p8._1;
-					var _p9 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
-					var p1LInfProj = _p9._0;
-					var replaced1 = _p9._1;
+					var _p12 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
+					var p2LInfProj = _p12._0;
+					var replaced2 = _p12._1;
+					var _p13 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
+					var p1LInfProj = _p13._0;
+					var replaced1 = _p13._1;
 					return {
 						ctor: '_Tuple2',
 						_0: A2(_user$project$Syntax$Conj, p1LInfProj, p2LInfProj),
 						_1: A2(_elm_lang$core$Basics_ops['++'], replaced1, replaced2)
 					};
 				case 'Disj':
-					var _p10 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
-					var p2LInfProj = _p10._0;
-					var replaced2 = _p10._1;
-					var _p11 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
-					var p1LInfProj = _p11._0;
-					var replaced1 = _p11._1;
+					var _p14 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
+					var p2LInfProj = _p14._0;
+					var replaced2 = _p14._1;
+					var _p15 = A2(_user$project$InfiniteProjection$infProj, _p2._0, ipk);
+					var p1LInfProj = _p15._0;
+					var replaced1 = _p15._1;
 					return {
 						ctor: '_Tuple2',
 						_0: A2(_user$project$Syntax$Disj, p1LInfProj, p2LInfProj),
 						_1: A2(_elm_lang$core$Basics_ops['++'], replaced1, replaced2)
 					};
 				case 'Forall':
-					var _p12 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
-					var p1LInfProj = _p12._0;
-					var replaced = _p12._1;
+					var _p16 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
+					var p1LInfProj = _p16._0;
+					var replaced = _p16._1;
 					return {
 						ctor: '_Tuple2',
 						_0: A2(_user$project$Syntax$Forall, _p2._0, p1LInfProj),
 						_1: replaced
 					};
 				default:
-					var _p13 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
-					var p1LInfProj = _p13._0;
-					var replaced = _p13._1;
+					var _p17 = A2(_user$project$InfiniteProjection$infProj, _p2._1, ipk);
+					var p1LInfProj = _p17._0;
+					var replaced = _p17._1;
 					return {ctor: '_Tuple2', _0: p1LInfProj, _1: replaced};
 			}
 		} while(false);
@@ -18110,23 +18162,23 @@ var _user$project$InfiniteProjection$nub = F2(
 	function (xs, hist) {
 		nub:
 		while (true) {
-			var _p14 = xs;
-			if (_p14.ctor === '[]') {
+			var _p18 = xs;
+			if (_p18.ctor === '[]') {
 				return hist;
 			} else {
-				var _p16 = _p14._1;
-				var _p15 = _p14._0;
-				if (A2(_elm_lang$core$List$member, _p15, hist)) {
-					var _v5 = _p16,
-						_v6 = hist;
-					xs = _v5;
-					hist = _v6;
-					continue nub;
-				} else {
-					var _v7 = _p16,
-						_v8 = {ctor: '::', _0: _p15, _1: hist};
+				var _p20 = _p18._1;
+				var _p19 = _p18._0;
+				if (A2(_elm_lang$core$List$member, _p19, hist)) {
+					var _v7 = _p20,
+						_v8 = hist;
 					xs = _v7;
 					hist = _v8;
+					continue nub;
+				} else {
+					var _v9 = _p20,
+						_v10 = {ctor: '::', _0: _p19, _1: hist};
+					xs = _v9;
+					hist = _v10;
 					continue nub;
 				}
 			}
@@ -18141,34 +18193,34 @@ var _user$project$InfiniteProjection$leftInfProj = function (x) {
 	return A2(_user$project$InfiniteProjection$infProj, x, _user$project$InfiniteProjection$LeftInfProj);
 };
 var _user$project$InfiniteProjection$constructF3 = function (p) {
-	var _p17 = p;
-	if (_p17.ctor === 'Exists') {
-		var _p23 = _p17._0;
-		var _p22 = _p17._1;
-		var _p18 = _user$project$InfiniteProjection$rightInfProj(
-			A2(_user$project$Syntax$Exists, _p23, _p22));
-		var replaced2 = _p18._1;
-		var _p19 = _user$project$InfiniteProjection$leftInfProj(
-			A2(_user$project$Syntax$Exists, _p23, _p22));
-		var replaced1 = _p19._1;
+	var _p21 = p;
+	if (_p21.ctor === 'Exists') {
+		var _p27 = _p21._0;
+		var _p26 = _p21._1;
+		var _p22 = _user$project$InfiniteProjection$rightInfProj(
+			A2(_user$project$Syntax$Exists, _p27, _p26));
+		var replaced2 = _p22._1;
+		var _p23 = _user$project$InfiniteProjection$leftInfProj(
+			A2(_user$project$Syntax$Exists, _p27, _p26));
+		var replaced1 = _p23._1;
 		return A3(
 			_user$project$InfiniteProjection$bigVee,
 			A2(
 				_user$project$InfiniteProjection$nub,
 				A2(_elm_lang$core$Basics_ops['++'], replaced1, replaced2),
 				{ctor: '[]'}),
-			function (_p20) {
-				var _p21 = _p20;
+			function (_p24) {
+				var _p25 = _p24;
 				return A2(
 					_user$project$Syntax$ConstFact,
 					A2(_user$project$Syntax$Div, 1, 2),
-					A2(_user$project$Syntax$Plus, _p21._0, _p21._1));
+					A2(_user$project$Syntax$Plus, _p25._0, _p25._1));
 			},
-			_p22);
+			_p26);
 	} else {
 		return {
 			ctor: '::',
-			_0: _p17,
+			_0: _p21,
 			_1: {ctor: '[]'}
 		};
 	}
@@ -18713,6 +18765,104 @@ var _user$project$Solve$solve = function (p) {
 			return _user$project$Syntax$Id(_p34._0);
 	}
 };
+var _user$project$Normalization$normalizeExpr = function (e) {
+	var _p0 = e;
+	switch (_p0.ctor) {
+		case 'Plus':
+			return _user$project$Normalization$normalizeExpr(_p0._0) + _user$project$Normalization$normalizeExpr(_p0._1);
+		case 'Minus':
+			return _user$project$Normalization$normalizeExpr(_p0._0) - _user$project$Normalization$normalizeExpr(_p0._1);
+		case 'ConstRat':
+			return _elm_lang$core$Basics$toFloat(_p0._0._0) / _elm_lang$core$Basics$toFloat(_p0._0._1);
+		case 'ConstFact':
+			return (_elm_lang$core$Basics$toFloat(_p0._0._0) / _elm_lang$core$Basics$toFloat(_p0._0._1)) * _user$project$Normalization$normalizeExpr(_p0._1);
+		default:
+			return -1;
+	}
+};
+var _user$project$Normalization$normalizeRatPred = function (rp) {
+	var _p1 = rp;
+	switch (_p1.ctor) {
+		case 'Less':
+			return _elm_lang$core$Native_Utils.cmp(
+				_user$project$Normalization$normalizeExpr(_p1._0),
+				_user$project$Normalization$normalizeExpr(_p1._1)) < 0;
+		case 'Greater':
+			return _elm_lang$core$Native_Utils.cmp(
+				_user$project$Normalization$normalizeExpr(_p1._0),
+				_user$project$Normalization$normalizeExpr(_p1._1)) > 0;
+		default:
+			return _elm_lang$core$Native_Utils.eq(
+				_user$project$Normalization$normalizeExpr(_p1._0),
+				_user$project$Normalization$normalizeExpr(_p1._1));
+	}
+};
+var _user$project$Normalization$normalize = function (p) {
+	var _p2 = p;
+	switch (_p2.ctor) {
+		case 'Top':
+			return true;
+		case 'Bot':
+			return false;
+		case 'Neg':
+			return !_user$project$Normalization$normalize(_p2._0);
+		case 'Conj':
+			return _user$project$Normalization$normalize(_p2._0) && _user$project$Normalization$normalize(_p2._1);
+		case 'Disj':
+			return _user$project$Normalization$normalize(_p2._0) || _user$project$Normalization$normalize(_p2._1);
+		case 'Pred':
+			return _user$project$Normalization$normalizeRatPred(_p2._0);
+		case 'Id':
+			return false;
+		case 'Exists':
+			return false;
+		default:
+			return false;
+	}
+};
+var _user$project$Satisfiability$isSat = F3(
+	function (l, r, ps) {
+		return (_user$project$Normalization$normalize(l) || _user$project$Normalization$normalize(r)) ? true : A3(
+			_elm_lang$core$List$foldl,
+			F2(
+				function (x, y) {
+					return x || y;
+				}),
+			false,
+			A2(_elm_lang$core$List$map, _user$project$Normalization$normalize, ps));
+	});
+var _user$project$Main$badResult = function (t) {
+	return A3(
+		_debois$elm_mdl$Material_Options$styled,
+		_elm_lang$html$Html$h2,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_Color$text(
+				A2(_debois$elm_mdl$Material_Color$color, _debois$elm_mdl$Material_Color$Red, _debois$elm_mdl$Material_Color$S800)),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(t),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Main$goodResult = function (t) {
+	return A3(
+		_debois$elm_mdl$Material_Options$styled,
+		_elm_lang$html$Html$h2,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_Color$text(
+				A2(_debois$elm_mdl$Material_Color$color, _debois$elm_mdl$Material_Color$LightGreen, _debois$elm_mdl$Material_Color$S800)),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(t),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$Main$subTitle = function (t) {
 	return A3(
 		_debois$elm_mdl$Material_Options$styled,
@@ -18756,15 +18906,15 @@ var _user$project$Main$boxed = {
 		}
 	}
 };
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {count: a, inputText: b, input: c, mdl: d};
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {count: a, inputText: b, input: c, showSteps: d, mdl: e};
 	});
 var _user$project$Main$Parsed = function (a) {
 	return {ctor: 'Parsed', _0: a};
 };
 var _user$project$Main$InvalidInput = {ctor: 'InvalidInput'};
-var _user$project$Main$model = {count: 0, input: _user$project$Main$InvalidInput, inputText: '', mdl: _debois$elm_mdl$Material$model};
+var _user$project$Main$model = {count: 0, input: _user$project$Main$InvalidInput, inputText: '', showSteps: true, mdl: _debois$elm_mdl$Material$model};
 var _user$project$Main$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
@@ -18812,10 +18962,19 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
+			case 'ToggleSteps':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{showSteps: !model.showSteps}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				return A3(_debois$elm_mdl$Material$update, _user$project$Main$Mdl, _p0._0, model);
 		}
 	});
+var _user$project$Main$ToggleSteps = {ctor: 'ToggleSteps'};
 var _user$project$Main$UpdateMessage = function (a) {
 	return {ctor: 'UpdateMessage', _0: a};
 };
@@ -18877,45 +19036,42 @@ var _user$project$Main$view = function (model) {
 							}),
 						_1: {
 							ctor: '::',
-							_0: function () {
-								var _p4 = model.input;
-								if (_p4.ctor === 'InvalidInput') {
-									return A2(
-										_debois$elm_mdl$Material_Options$div,
-										{ctor: '[]'},
-										{
+							_0: A5(
+								_debois$elm_mdl$Material_Toggles$switch,
+								_user$project$Main$Mdl,
+								{
+									ctor: '::',
+									_0: 0,
+									_1: {ctor: '[]'}
+								},
+								model.mdl,
+								{
+									ctor: '::',
+									_0: _debois$elm_mdl$Material_Options$onToggle(_user$project$Main$ToggleSteps),
+									_1: {
+										ctor: '::',
+										_0: _debois$elm_mdl$Material_Toggles$ripple,
+										_1: {
 											ctor: '::',
-											_0: A3(
-												_debois$elm_mdl$Material_Options$styled,
-												_elm_lang$html$Html$body,
-												{
-													ctor: '::',
-													_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-													_1: {
-														ctor: '::',
-														_0: _debois$elm_mdl$Material_Color$text(_debois$elm_mdl$Material_Color$accent),
-														_1: {ctor: '[]'}
-													}
-												},
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html$text('Waiting for valid input.'),
-													_1: {ctor: '[]'}
-												}),
+											_0: _debois$elm_mdl$Material_Toggles$value(model.showSteps),
 											_1: {ctor: '[]'}
-										});
-								} else {
-									var _p5 = _p4._0;
-									var nnf = _user$project$NNF$convertToNNF(_p5);
-									var noNegs = _user$project$OmitNegations$removeAllNegations(nnf);
-									var simplified = _user$project$Solve$solve(noNegs);
-									return A2(
-										_debois$elm_mdl$Material_Options$div,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _user$project$Main$subTitle('Negation-normal form'),
-											_1: {
+										}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Show steps'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: function () {
+									var _p4 = model.input;
+									if (_p4.ctor === 'InvalidInput') {
+										return A2(
+											_debois$elm_mdl$Material_Options$div,
+											{ctor: '[]'},
+											{
 												ctor: '::',
 												_0: A3(
 													_debois$elm_mdl$Material_Options$styled,
@@ -18923,18 +19079,37 @@ var _user$project$Main$view = function (model) {
 													{
 														ctor: '::',
 														_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: _debois$elm_mdl$Material_Color$text(_debois$elm_mdl$Material_Color$accent),
+															_1: {ctor: '[]'}
+														}
 													},
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html$text(
-															_user$project$Syntax$linearize(
-																_user$project$NNF$convertToNNF(_p5))),
+														_0: _elm_lang$html$Html$text('Waiting for valid input.'),
 														_1: {ctor: '[]'}
 													}),
-												_1: {
+												_1: {ctor: '[]'}
+											});
+									} else {
+										var _p8 = _p4._0;
+										var nnf = _user$project$NNF$convertToNNF(_p8);
+										var noNegs = _user$project$OmitNegations$removeAllNegations(nnf);
+										var simplified = _user$project$Solve$solve(noNegs);
+										var _p5 = _user$project$InfiniteProjection$leftInfProj(simplified);
+										var leftProj = _p5._0;
+										var _p6 = _user$project$InfiniteProjection$rightInfProj(simplified);
+										var rightProj = _p6._0;
+										var middleCases = _user$project$InfiniteProjection$constructF3(simplified);
+										return A2(
+											_debois$elm_mdl$Material_Options$div,
+											{ctor: '[]'},
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												model.showSteps ? {
 													ctor: '::',
-													_0: _user$project$Main$subTitle('No negations'),
+													_0: _user$project$Main$subTitle('Negation-normal form'),
 													_1: {
 														ctor: '::',
 														_0: A3(
@@ -18948,12 +19123,13 @@ var _user$project$Main$view = function (model) {
 															{
 																ctor: '::',
 																_0: _elm_lang$html$Html$text(
-																	_user$project$Syntax$linearize(noNegs)),
+																	_user$project$Syntax$linearize(
+																		_user$project$NNF$convertToNNF(_p8))),
 																_1: {ctor: '[]'}
 															}),
 														_1: {
 															ctor: '::',
-															_0: _user$project$Main$subTitle('Simplified'),
+															_0: _user$project$Main$subTitle('No negations'),
 															_1: {
 																ctor: '::',
 																_0: A3(
@@ -18967,19 +19143,109 @@ var _user$project$Main$view = function (model) {
 																	{
 																		ctor: '::',
 																		_0: _elm_lang$html$Html$text(
-																			_user$project$Syntax$linearize(simplified)),
+																			_user$project$Syntax$linearize(noNegs)),
 																		_1: {ctor: '[]'}
 																	}),
-																_1: {ctor: '[]'}
+																_1: {
+																	ctor: '::',
+																	_0: _user$project$Main$subTitle('Simplified'),
+																	_1: {
+																		ctor: '::',
+																		_0: A3(
+																			_debois$elm_mdl$Material_Options$styled,
+																			_elm_lang$html$Html$body,
+																			{
+																				ctor: '::',
+																				_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
+																				_1: {ctor: '[]'}
+																			},
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html$text(
+																					_user$project$Syntax$linearize(simplified)),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {
+																			ctor: '::',
+																			_0: _user$project$Main$subTitle('Left Infinite Projection'),
+																			_1: {
+																				ctor: '::',
+																				_0: A3(
+																					_debois$elm_mdl$Material_Options$styled,
+																					_elm_lang$html$Html$body,
+																					{
+																						ctor: '::',
+																						_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
+																						_1: {ctor: '[]'}
+																					},
+																					{
+																						ctor: '::',
+																						_0: _elm_lang$html$Html$text(
+																							_user$project$Syntax$linearize(leftProj)),
+																						_1: {ctor: '[]'}
+																					}),
+																				_1: {
+																					ctor: '::',
+																					_0: _user$project$Main$subTitle('Right Infinite Projection'),
+																					_1: {
+																						ctor: '::',
+																						_0: A3(
+																							_debois$elm_mdl$Material_Options$styled,
+																							_elm_lang$html$Html$body,
+																							{
+																								ctor: '::',
+																								_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
+																								_1: {ctor: '[]'}
+																							},
+																							{
+																								ctor: '::',
+																								_0: _elm_lang$html$Html$text(
+																									_user$project$Syntax$linearize(rightProj)),
+																								_1: {ctor: '[]'}
+																							}),
+																						_1: {
+																							ctor: '::',
+																							_0: _user$project$Main$subTitle('Middle case'),
+																							_1: {
+																								ctor: '::',
+																								_0: A3(
+																									_debois$elm_mdl$Material_Options$styled,
+																									_elm_lang$html$Html$body,
+																									{
+																										ctor: '::',
+																										_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
+																										_1: {ctor: '[]'}
+																									},
+																									A2(
+																										_elm_lang$core$List$map,
+																										function (_p7) {
+																											return _elm_lang$html$Html$text(
+																												_elm_lang$core$Basics$toString(
+																													_user$project$Normalization$normalize(_p7)));
+																										},
+																										middleCases)),
+																								_1: {ctor: '[]'}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
 															}
 														}
 													}
-												}
-											}
-										});
-								}
-							}(),
-							_1: {ctor: '[]'}
+												} : {ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A3(_user$project$Satisfiability$isSat, leftProj, rightProj, middleCases) ? _user$project$Main$goodResult('Satisfiable.') : _user$project$Main$badResult('Not satisfiable.'),
+													_1: {ctor: '[]'}
+												}));
+									}
+								}(),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -18992,61 +19258,6 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 		subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none),
 		update: _user$project$Main$update
 	})();
-var _user$project$Normalization$normalizeExpr = function (e) {
-	var _p0 = e;
-	switch (_p0.ctor) {
-		case 'Plus':
-			return _user$project$Normalization$normalizeExpr(_p0._0) + _user$project$Normalization$normalizeExpr(_p0._1);
-		case 'Minus':
-			return _user$project$Normalization$normalizeExpr(_p0._0) - _user$project$Normalization$normalizeExpr(_p0._1);
-		case 'ConstRat':
-			return _elm_lang$core$Basics$toFloat(_p0._0._0) / _elm_lang$core$Basics$toFloat(_p0._0._1);
-		case 'ConstFact':
-			return (_elm_lang$core$Basics$toFloat(_p0._0._0) / _elm_lang$core$Basics$toFloat(_p0._0._1)) * _user$project$Normalization$normalizeExpr(_p0._1);
-		default:
-			return -1;
-	}
-};
-var _user$project$Normalization$normalizeRatPred = function (rp) {
-	var _p1 = rp;
-	switch (_p1.ctor) {
-		case 'Less':
-			return _elm_lang$core$Native_Utils.cmp(
-				_user$project$Normalization$normalizeExpr(_p1._0),
-				_user$project$Normalization$normalizeExpr(_p1._1)) < 0;
-		case 'Greater':
-			return _elm_lang$core$Native_Utils.cmp(
-				_user$project$Normalization$normalizeExpr(_p1._0),
-				_user$project$Normalization$normalizeExpr(_p1._1)) > 0;
-		default:
-			return _elm_lang$core$Native_Utils.eq(
-				_user$project$Normalization$normalizeExpr(_p1._0),
-				_user$project$Normalization$normalizeExpr(_p1._1));
-	}
-};
-var _user$project$Normalization$normalize = function (p) {
-	var _p2 = p;
-	switch (_p2.ctor) {
-		case 'Top':
-			return true;
-		case 'Bot':
-			return false;
-		case 'Neg':
-			return !_user$project$Normalization$normalize(_p2._0);
-		case 'Conj':
-			return _user$project$Normalization$normalize(_p2._0) && _user$project$Normalization$normalize(_p2._1);
-		case 'Disj':
-			return _user$project$Normalization$normalize(_p2._0) || _user$project$Normalization$normalize(_p2._1);
-		case 'Pred':
-			return _user$project$Normalization$normalizeRatPred(_p2._0);
-		case 'Id':
-			return false;
-		case 'Exists':
-			return false;
-		default:
-			return false;
-	}
-};
 var _user$project$Styles$waiting = _elm_lang$html$Html_Attributes$style(
 	{
 		ctor: '::',
@@ -19151,6 +19362,10 @@ if (typeof _user$project$OmitNegations$main !== 'undefined') {
 Elm['PropositionParser'] = Elm['PropositionParser'] || {};
 if (typeof _user$project$PropositionParser$main !== 'undefined') {
     _user$project$PropositionParser$main(Elm['PropositionParser'], 'PropositionParser', undefined);
+}
+Elm['Satisfiability'] = Elm['Satisfiability'] || {};
+if (typeof _user$project$Satisfiability$main !== 'undefined') {
+    _user$project$Satisfiability$main(Elm['Satisfiability'], 'Satisfiability', undefined);
 }
 Elm['Solve'] = Elm['Solve'] || {};
 if (typeof _user$project$Solve$main !== 'undefined') {
