@@ -9,3 +9,16 @@ isSat l r ps =
     True
   else
     List.foldl (||) False (List.map (normalize) ps)
+
+type SimplifiedProp = Prop
+
+getInnermostExistential : SimplifiedProp -> SimplifiedProp
+getInnermostExistential sp r =
+  case sp of
+    Neg  sp1     ->
+    Conj sp1 sp2 ->
+    Disj sp1 sp2 ->
+    E
+
+isSat : SimplifiedProp -> Bool
+isSat p = False -- TODO
