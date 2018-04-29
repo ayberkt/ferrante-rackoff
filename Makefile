@@ -1,6 +1,6 @@
 all: index.html
 
-index.html: src/Main.elm src/Syntax.elm src/NNF.elm src/OmitNegations.elm src/PropositionParser.elm src/Styles.elm src/Util.elm src/Solve.elm src/InfiniteProjection.elm
+index.html: src/Main.elm src/Syntax.elm src/NNF.elm src/OmitNegations.elm src/PropositionParser.elm src/Styles.elm src/Util.elm src/Solve.elm src/InfiniteProjection.elm src/Normalization.elm
 	elm-make $^
 
 clean:
