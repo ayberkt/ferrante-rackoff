@@ -35,5 +35,6 @@ removeAllNegations p =
         Neg Bot ->
             Top
 
-        p ->
-            p
+        Neg p1  -> Neg (removeAllNegations p1)
+
+        p -> p
