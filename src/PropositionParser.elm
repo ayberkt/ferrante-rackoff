@@ -211,11 +211,8 @@ deBruijnExp ctx e =
           (_, _) -> Nothing
     Var _ s ->
       case Util.indexOf ctx s of
-          Just i ->
-              Just (Var i s)
-
-          Nothing ->
-              Nothing
+          Just i  -> Just (Var i s)
+          Nothing -> Just (Var -1 s)
     ConstFact r e1 ->
       (deBruijnExp ctx e1)
           |> Maybe.andThen
