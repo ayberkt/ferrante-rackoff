@@ -87,6 +87,22 @@ removeConstantAdditions e =
             e
 
 
+moveVarToLHS : RatPred -> RatPred
+moveVarToLHS rp =
+    case rp of
+        Less e1 e2 ->
+            if occurs 0 e2 then
+                Less (Minus e1 e2) (ConstRat (Div 0 1))
+            else
+                Less e1 e2
+
+        Eq e1 e2 ->
+            if occurs 0 e2 then
+                Eq (Minus e1 e2) (ConstRat (Div 0 1))
+            else
+                Eq e1 e2
+
+
 
 -- Replace every predicate of the form t < cx with t/c < x so that
 -- variables are alone. This corresponds to Step 4 of the algorithm
@@ -141,7 +157,8 @@ omitCoefficients rp =
 
 solveRatPred : RatPred -> RatPred
 solveRatPred =
-    \e -> omitCoefficients (removeConstantAdditions e)
+    -- \e -> moveVarToLHS (omitCoefficients (removeConstantAdditions e))
+    \e -> omitCoefficients (removeConstantAdditions (moveVarToLHS e))
 
 
 
