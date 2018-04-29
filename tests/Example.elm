@@ -392,6 +392,11 @@ solverTestCases =
             , test "Solver case 7: TODO: description." <|
                 \() ->
                     Expect.equal
+                        (solve (valOf (parseProp "(exists x (< (* 3/1 x) (* 5/1 x)))")))
+                        (valOf (parseProp "(exists x (< (- (* 3/1 x) (* 5/1 x)) 0/1))"))
+            , test "Solver case 8: TODO: description." <|
+                \() ->
+                    Expect.equal
                         (solve (valOf (parseProp "(exists x (= (* 3/1 x) (* 5/1 x)))")))
                         (valOf (parseProp "(exists x (= (- (* 3/1 x) (* 5/1 x)) 0/1))"))
             ]
