@@ -15532,6 +15532,220 @@ var _debois$elm_mdl$Material_Scheme$topWithScheme = F3(
 var _debois$elm_mdl$Material_Scheme$top = function (content) {
 	return A3(_debois$elm_mdl$Material_Scheme$topWithScheme, _debois$elm_mdl$Material_Color$Grey, _debois$elm_mdl$Material_Color$Grey, content);
 };
+var _debois$elm_mdl$Material_Slider$floatVal = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'valueAsNumber',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$float);
+var _debois$elm_mdl$Material_Slider$onChange = function (f) {
+	return _debois$elm_mdl$Material_Options$many(
+		{
+			ctor: '::',
+			_0: A2(
+				_debois$elm_mdl$Material_Options$on,
+				'change',
+				A2(_elm_lang$core$Json_Decode$map, f, _debois$elm_mdl$Material_Slider$floatVal)),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_debois$elm_mdl$Material_Options$on,
+					'input',
+					A2(_elm_lang$core$Json_Decode$map, f, _debois$elm_mdl$Material_Slider$floatVal)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _debois$elm_mdl$Material_Slider$disabled = _debois$elm_mdl$Material_Options_Internal$attribute(
+	_elm_lang$html$Html_Attributes$disabled(true));
+var _debois$elm_mdl$Material_Slider$step = function (_p0) {
+	return _debois$elm_mdl$Material_Options_Internal$option(
+		F2(
+			function (v, options) {
+				return _elm_lang$core$Native_Utils.update(
+					options,
+					{step: v});
+			})(_p0));
+};
+var _debois$elm_mdl$Material_Slider$max = function (_p1) {
+	return _debois$elm_mdl$Material_Options_Internal$option(
+		F2(
+			function (v, options) {
+				return _elm_lang$core$Native_Utils.update(
+					options,
+					{max: v});
+			})(_p1));
+};
+var _debois$elm_mdl$Material_Slider$min = function (_p2) {
+	return _debois$elm_mdl$Material_Options_Internal$option(
+		F2(
+			function (v, options) {
+				return _elm_lang$core$Native_Utils.update(
+					options,
+					{min: v});
+			})(_p2));
+};
+var _debois$elm_mdl$Material_Slider$value = function (_p3) {
+	return _debois$elm_mdl$Material_Options_Internal$option(
+		F2(
+			function (v, options) {
+				return _elm_lang$core$Native_Utils.update(
+					options,
+					{value: v});
+			})(_p3));
+};
+var _debois$elm_mdl$Material_Slider$defaultConfig = {
+	value: 50,
+	min: 0,
+	max: 100,
+	step: 1,
+	input: {ctor: '[]'},
+	container: {ctor: '[]'}
+};
+var _debois$elm_mdl$Material_Slider$view = function (options) {
+	var summary = A2(_debois$elm_mdl$Material_Options_Internal$collect, _debois$elm_mdl$Material_Slider$defaultConfig, options);
+	var config = summary.config;
+	var fraction = (config.value - config.min) / (config.max - config.min);
+	var lower = A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(fraction),
+		' 1 0%');
+	var upper = A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(1 - fraction),
+		' 1 0%');
+	var background = A3(
+		_debois$elm_mdl$Material_Options$styled,
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_Options$cs('mdl-slider__background-flex'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A3(
+				_debois$elm_mdl$Material_Options$styled,
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _debois$elm_mdl$Material_Options$cs('mdl-slider__background-lower'),
+					_1: {
+						ctor: '::',
+						_0: A2(_debois$elm_mdl$Material_Options$css, 'flex', lower),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_debois$elm_mdl$Material_Options$styled,
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _debois$elm_mdl$Material_Options$cs('mdl-slider__background-upper'),
+						_1: {
+							ctor: '::',
+							_0: A2(_debois$elm_mdl$Material_Options$css, 'flex', upper),
+							_1: {ctor: '[]'}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+	return A4(
+		_debois$elm_mdl$Material_Options_Internal$applyContainer,
+		summary,
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _debois$elm_mdl$Material_Options$cs('mdl-slider__container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A4(
+				_debois$elm_mdl$Material_Options_Internal$applyInput,
+				summary,
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _debois$elm_mdl$Material_Options$cs('mdl-slider'),
+					_1: {
+						ctor: '::',
+						_0: _debois$elm_mdl$Material_Options$cs('mdl-js-slider'),
+						_1: {
+							ctor: '::',
+							_0: _debois$elm_mdl$Material_Options$cs('is-upgraded'),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_debois$elm_mdl$Material_Options$when,
+									_elm_lang$core$Native_Utils.eq(fraction, 0),
+									_debois$elm_mdl$Material_Options$cs('is-lowest-value')),
+								_1: {
+									ctor: '::',
+									_0: A2(_debois$elm_mdl$Material_Options$css, 'padding', '8px 0'),
+									_1: {
+										ctor: '::',
+										_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+											_elm_lang$html$Html_Attributes$type_('range')),
+										_1: {
+											ctor: '::',
+											_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+												_elm_lang$html$Html_Attributes$max(
+													_elm_lang$core$Basics$toString(config.max))),
+											_1: {
+												ctor: '::',
+												_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+													_elm_lang$html$Html_Attributes$min(
+														_elm_lang$core$Basics$toString(config.min))),
+												_1: {
+													ctor: '::',
+													_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+														_elm_lang$html$Html_Attributes$step(
+															_elm_lang$core$Basics$toString(config.step))),
+													_1: {
+														ctor: '::',
+														_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+															_elm_lang$html$Html_Attributes$value(
+																_elm_lang$core$Basics$toString(config.value))),
+														_1: {
+															ctor: '::',
+															_0: _debois$elm_mdl$Material_Options_Internal$attribute(
+																_debois$elm_mdl$Material_Helpers$blurOn('mouseup')),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: background,
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _debois$elm_mdl$Material_Slider$Config = F6(
+	function (a, b, c, d, e, f) {
+		return {value: a, min: b, max: c, step: d, input: e, container: f};
+	});
 var _elm_lang$core$Set$foldr = F3(
 	function (f, b, _p0) {
 		var _p1 = _p0;
@@ -18820,6 +19034,9 @@ var _user$project$Normalization$normalize = function (p) {
 			return false;
 	}
 };
+var _user$project$Satisfiability$getInnermostExistential = function (sp) {
+	return sp;
+};
 var _user$project$Satisfiability$isSat = F3(
 	function (l, r, ps) {
 		return (_user$project$Normalization$normalize(l) || _user$project$Normalization$normalize(r)) ? true : A3(
@@ -18831,6 +19048,7 @@ var _user$project$Satisfiability$isSat = F3(
 			false,
 			A2(_elm_lang$core$List$map, _user$project$Normalization$normalize, ps));
 	});
+var _user$project$Satisfiability$Prop = {ctor: 'Prop'};
 var _user$project$Main$badResult = function (t) {
 	return A3(
 		_debois$elm_mdl$Material_Options$styled,
@@ -18906,15 +19124,15 @@ var _user$project$Main$boxed = {
 		}
 	}
 };
-var _user$project$Main$Model = F5(
-	function (a, b, c, d, e) {
-		return {count: a, inputText: b, input: c, showSteps: d, mdl: e};
+var _user$project$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {count: a, inputText: b, fontSize: c, input: d, showSteps: e, mdl: f};
 	});
 var _user$project$Main$Parsed = function (a) {
 	return {ctor: 'Parsed', _0: a};
 };
 var _user$project$Main$InvalidInput = {ctor: 'InvalidInput'};
-var _user$project$Main$model = {count: 0, input: _user$project$Main$InvalidInput, inputText: '', showSteps: true, mdl: _debois$elm_mdl$Material$model};
+var _user$project$Main$model = {count: 0, input: _user$project$Main$InvalidInput, inputText: '', fontSize: 20, showSteps: true, mdl: _debois$elm_mdl$Material$model};
 var _user$project$Main$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
@@ -18970,11 +19188,22 @@ var _user$project$Main$update = F2(
 						{showSteps: !model.showSteps}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'ChangeFontSize':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{fontSize: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				return A3(_debois$elm_mdl$Material$update, _user$project$Main$Mdl, _p0._0, model);
 		}
 	});
 var _user$project$Main$ToggleSteps = {ctor: 'ToggleSteps'};
+var _user$project$Main$ChangeFontSize = function (a) {
+	return {ctor: 'ChangeFontSize', _0: a};
+};
 var _user$project$Main$UpdateMessage = function (a) {
 	return {ctor: 'UpdateMessage', _0: a};
 };
@@ -19065,166 +19294,219 @@ var _user$project$Main$view = function (model) {
 								}),
 							_1: {
 								ctor: '::',
-								_0: function () {
-									var _p4 = model.input;
-									if (_p4.ctor === 'InvalidInput') {
-										return A2(
-											_debois$elm_mdl$Material_Options$div,
-											{ctor: '[]'},
-											{
+								_0: _debois$elm_mdl$Material_Slider$view(
+									{
+										ctor: '::',
+										_0: _debois$elm_mdl$Material_Slider$onChange(_user$project$Main$ChangeFontSize),
+										_1: {
+											ctor: '::',
+											_0: A2(_debois$elm_mdl$Material_Options$css, 'margin', '0 24px'),
+											_1: {
 												ctor: '::',
-												_0: A3(
-													_debois$elm_mdl$Material_Options$styled,
-													_elm_lang$html$Html$body,
-													{
-														ctor: '::',
-														_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-														_1: {
-															ctor: '::',
-															_0: _debois$elm_mdl$Material_Color$text(_debois$elm_mdl$Material_Color$accent),
-															_1: {ctor: '[]'}
-														}
-													},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text('Waiting for valid input.'),
-														_1: {ctor: '[]'}
-													}),
+												_0: _debois$elm_mdl$Material_Slider$value(model.fontSize),
 												_1: {ctor: '[]'}
-											});
-									} else {
-										var _p8 = _p4._0;
-										var nnf = _user$project$NNF$convertToNNF(_p8);
-										var noNegs = _user$project$OmitNegations$removeAllNegations(nnf);
-										var simplified = _user$project$Solve$solve(noNegs);
-										var _p5 = _user$project$InfiniteProjection$leftInfProj(simplified);
-										var leftProj = _p5._0;
-										var _p6 = _user$project$InfiniteProjection$rightInfProj(simplified);
-										var rightProj = _p6._0;
-										var middleCases = _user$project$InfiniteProjection$constructF3(simplified);
-										return A2(
-											_debois$elm_mdl$Material_Options$div,
-											{ctor: '[]'},
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												model.showSteps ? {
+											}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: function () {
+										var _p4 = model.input;
+										if (_p4.ctor === 'InvalidInput') {
+											return A2(
+												_debois$elm_mdl$Material_Options$div,
+												{ctor: '[]'},
+												{
 													ctor: '::',
-													_0: _user$project$Main$subTitle('Negation-normal form'),
-													_1: {
-														ctor: '::',
-														_0: A3(
-															_debois$elm_mdl$Material_Options$styled,
-															_elm_lang$html$Html$body,
-															{
-																ctor: '::',
-																_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																_1: {ctor: '[]'}
-															},
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html$text(
-																	_user$project$Syntax$linearize(
-																		_user$project$NNF$convertToNNF(_p8))),
-																_1: {ctor: '[]'}
-															}),
-														_1: {
+													_0: A3(
+														_debois$elm_mdl$Material_Options$styled,
+														_elm_lang$html$Html$body,
+														{
 															ctor: '::',
-															_0: _user$project$Main$subTitle('No negations'),
+															_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
 															_1: {
 																ctor: '::',
-																_0: A3(
-																	_debois$elm_mdl$Material_Options$styled,
-																	_elm_lang$html$Html$body,
-																	{
-																		ctor: '::',
-																		_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																		_1: {ctor: '[]'}
-																	},
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html$text(
-																			_user$project$Syntax$linearize(noNegs)),
-																		_1: {ctor: '[]'}
-																	}),
+																_0: _debois$elm_mdl$Material_Color$text(_debois$elm_mdl$Material_Color$accent),
+																_1: {ctor: '[]'}
+															}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Waiting for valid input.'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												});
+										} else {
+											var _p8 = _p4._0;
+											var nnf = _user$project$NNF$convertToNNF(_p8);
+											var noNegs = _user$project$OmitNegations$removeAllNegations(nnf);
+											var simplified = _user$project$Solve$solve(noNegs);
+											var _p5 = _user$project$InfiniteProjection$leftInfProj(simplified);
+											var leftProj = _p5._0;
+											var _p6 = _user$project$InfiniteProjection$rightInfProj(simplified);
+											var rightProj = _p6._0;
+											var middleCases = _user$project$InfiniteProjection$constructF3(simplified);
+											return A2(
+												_debois$elm_mdl$Material_Options$div,
+												{ctor: '[]'},
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													model.showSteps ? {
+														ctor: '::',
+														_0: _user$project$Main$subTitle('Negation-normal form'),
+														_1: {
+															ctor: '::',
+															_0: A3(
+																_debois$elm_mdl$Material_Options$styled,
+																_elm_lang$html$Html$body,
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_debois$elm_mdl$Material_Options$css,
+																		'font-size',
+																		A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			_elm_lang$core$Basics$toString(model.fontSize),
+																			'px')),
+																	_1: {ctor: '[]'}
+																},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text(
+																		_user$project$Syntax$linearize(
+																			_user$project$NNF$convertToNNF(_p8))),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: _user$project$Main$subTitle('No negations'),
 																_1: {
 																	ctor: '::',
-																	_0: _user$project$Main$subTitle('Simplified'),
+																	_0: A3(
+																		_debois$elm_mdl$Material_Options$styled,
+																		_elm_lang$html$Html$body,
+																		{
+																			ctor: '::',
+																			_0: A2(
+																				_debois$elm_mdl$Material_Options$css,
+																				'font-size',
+																				A2(
+																					_elm_lang$core$Basics_ops['++'],
+																					_elm_lang$core$Basics$toString(model.fontSize),
+																					'px')),
+																			_1: {ctor: '[]'}
+																		},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(
+																				_user$project$Syntax$linearize(noNegs)),
+																			_1: {ctor: '[]'}
+																		}),
 																	_1: {
 																		ctor: '::',
-																		_0: A3(
-																			_debois$elm_mdl$Material_Options$styled,
-																			_elm_lang$html$Html$body,
-																			{
-																				ctor: '::',
-																				_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																				_1: {ctor: '[]'}
-																			},
-																			{
-																				ctor: '::',
-																				_0: _elm_lang$html$Html$text(
-																					_user$project$Syntax$linearize(simplified)),
-																				_1: {ctor: '[]'}
-																			}),
+																		_0: _user$project$Main$subTitle('Simplified'),
 																		_1: {
 																			ctor: '::',
-																			_0: _user$project$Main$subTitle('Left Infinite Projection'),
+																			_0: A3(
+																				_debois$elm_mdl$Material_Options$styled,
+																				_elm_lang$html$Html$body,
+																				{
+																					ctor: '::',
+																					_0: A2(
+																						_debois$elm_mdl$Material_Options$css,
+																						'font-size',
+																						A2(
+																							_elm_lang$core$Basics_ops['++'],
+																							_elm_lang$core$Basics$toString(model.fontSize),
+																							'px')),
+																					_1: {ctor: '[]'}
+																				},
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html$text(
+																						_user$project$Syntax$linearize(simplified)),
+																					_1: {ctor: '[]'}
+																				}),
 																			_1: {
 																				ctor: '::',
-																				_0: A3(
-																					_debois$elm_mdl$Material_Options$styled,
-																					_elm_lang$html$Html$body,
-																					{
-																						ctor: '::',
-																						_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																						_1: {ctor: '[]'}
-																					},
-																					{
-																						ctor: '::',
-																						_0: _elm_lang$html$Html$text(
-																							_user$project$Syntax$linearize(leftProj)),
-																						_1: {ctor: '[]'}
-																					}),
+																				_0: _user$project$Main$subTitle('Left Infinite Projection'),
 																				_1: {
 																					ctor: '::',
-																					_0: _user$project$Main$subTitle('Right Infinite Projection'),
+																					_0: A3(
+																						_debois$elm_mdl$Material_Options$styled,
+																						_elm_lang$html$Html$body,
+																						{
+																							ctor: '::',
+																							_0: A2(
+																								_debois$elm_mdl$Material_Options$css,
+																								'font-size',
+																								A2(
+																									_elm_lang$core$Basics_ops['++'],
+																									_elm_lang$core$Basics$toString(model.fontSize),
+																									'px')),
+																							_1: {ctor: '[]'}
+																						},
+																						{
+																							ctor: '::',
+																							_0: _elm_lang$html$Html$text(
+																								_user$project$Syntax$linearize(leftProj)),
+																							_1: {ctor: '[]'}
+																						}),
 																					_1: {
 																						ctor: '::',
-																						_0: A3(
-																							_debois$elm_mdl$Material_Options$styled,
-																							_elm_lang$html$Html$body,
-																							{
-																								ctor: '::',
-																								_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																								_1: {ctor: '[]'}
-																							},
-																							{
-																								ctor: '::',
-																								_0: _elm_lang$html$Html$text(
-																									_user$project$Syntax$linearize(rightProj)),
-																								_1: {ctor: '[]'}
-																							}),
+																						_0: _user$project$Main$subTitle('Right Infinite Projection'),
 																						_1: {
 																							ctor: '::',
-																							_0: _user$project$Main$subTitle('Middle case'),
+																							_0: A3(
+																								_debois$elm_mdl$Material_Options$styled,
+																								_elm_lang$html$Html$body,
+																								{
+																									ctor: '::',
+																									_0: A2(
+																										_debois$elm_mdl$Material_Options$css,
+																										'font-size',
+																										A2(
+																											_elm_lang$core$Basics_ops['++'],
+																											_elm_lang$core$Basics$toString(model.fontSize),
+																											'px')),
+																									_1: {ctor: '[]'}
+																								},
+																								{
+																									ctor: '::',
+																									_0: _elm_lang$html$Html$text(
+																										_user$project$Syntax$linearize(rightProj)),
+																									_1: {ctor: '[]'}
+																								}),
 																							_1: {
 																								ctor: '::',
-																								_0: A3(
-																									_debois$elm_mdl$Material_Options$styled,
-																									_elm_lang$html$Html$body,
-																									{
-																										ctor: '::',
-																										_0: A2(_debois$elm_mdl$Material_Options$css, 'font-size', '20px'),
-																										_1: {ctor: '[]'}
-																									},
-																									A2(
-																										_elm_lang$core$List$map,
-																										function (_p7) {
-																											return _elm_lang$html$Html$text(
-																												_elm_lang$core$Basics$toString(
-																													_user$project$Normalization$normalize(_p7)));
+																								_0: _user$project$Main$subTitle('Middle case'),
+																								_1: {
+																									ctor: '::',
+																									_0: A3(
+																										_debois$elm_mdl$Material_Options$styled,
+																										_elm_lang$html$Html$body,
+																										{
+																											ctor: '::',
+																											_0: A2(
+																												_debois$elm_mdl$Material_Options$css,
+																												'font-size',
+																												A2(
+																													_elm_lang$core$Basics_ops['++'],
+																													_elm_lang$core$Basics$toString(model.fontSize),
+																													'px')),
+																											_1: {ctor: '[]'}
 																										},
-																										middleCases)),
-																								_1: {ctor: '[]'}
+																										A2(
+																											_elm_lang$core$List$map,
+																											function (_p7) {
+																												return _elm_lang$html$Html$text(
+																													_elm_lang$core$Basics$toString(
+																														_user$project$Normalization$normalize(_p7)));
+																											},
+																											middleCases)),
+																									_1: {ctor: '[]'}
+																								}
 																							}
 																						}
 																					}
@@ -19235,16 +19517,16 @@ var _user$project$Main$view = function (model) {
 																}
 															}
 														}
-													}
-												} : {ctor: '[]'},
-												{
-													ctor: '::',
-													_0: A3(_user$project$Satisfiability$isSat, leftProj, rightProj, middleCases) ? _user$project$Main$goodResult('Satisfiable.') : _user$project$Main$badResult('Not satisfiable.'),
-													_1: {ctor: '[]'}
-												}));
-									}
-								}(),
-								_1: {ctor: '[]'}
+													} : {ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A3(_user$project$Satisfiability$isSat, leftProj, rightProj, middleCases) ? _user$project$Main$goodResult('Satisfiable.') : _user$project$Main$badResult('Not satisfiable.'),
+														_1: {ctor: '[]'}
+													}));
+										}
+									}(),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
