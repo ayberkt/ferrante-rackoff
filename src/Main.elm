@@ -15,8 +15,9 @@ import OmitNegations exposing (removeAllNegations)
 import Solve exposing (solve)
 import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
-import InfiniteProjection exposing (leftInfProj, rightInfProj)
+import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Normalization exposing (normalize)
+import Satisfiability exposing (isSat)
 import Debug exposing (log)
 import Json.Encode
 import Json.Decode
@@ -148,6 +149,7 @@ view model =
               simplified     = solve noNegs
               (leftProj,  _) = leftInfProj simplified
               (rightProj, _) = rightInfProj simplified
+              middleCases    = constructF3 simplified
           in
             Options.div
             []
@@ -176,13 +178,17 @@ view model =
               Html.body
               [ css "font-size" "20px" ]
               [ text (linearize rightProj) ]
+            , subTitle "Middle case"
+            , Options.styled
+              Html.body
+              [ css "font-size" "20px" ]
+              (List.map (text << toString << normalize) middleCases)
+              -- List.map text (List.map linearize middleCases)
             , subTitle "Result"
-            , text
-                (case (normalize leftProj, normalize rightProj) of
-                  (False,  False) -> "Not satisfiable"
-                  (False,   True) -> "Satisfiable due to right projection."
-                  (True,   False) -> "Satisfiable due to left projection."
-                  (True,    True) -> "Satisfiable due to both projections.")
+            , if isSat leftProj rightProj middleCases then
+                text "Satisfiable."
+              else
+                text "Not satisfiable."
             ]
     ]
     |> Material.Scheme.top
