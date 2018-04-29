@@ -15,6 +15,7 @@ import OmitNegations exposing (removeAllNegations)
 import Solve exposing (solve)
 import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
+import InfiniteProjection exposing (leftInfProj, rightInfProj)
 import Debug exposing (log)
 import Json.Encode
 import Json.Decode
@@ -141,9 +142,10 @@ view model =
               [ text "Waiting for valid input." ] ]
         Parsed p ->
           let
-              nnf         = convertToNNF p
-              noNegs      = removeAllNegations nnf
-              simplified  = solve noNegs
+              nnf           = convertToNNF p
+              noNegs        = removeAllNegations nnf
+              simplified    = solve noNegs
+              (leftProj, _) = leftInfProj simplified
           in
             Options.div
             []
@@ -162,6 +164,11 @@ view model =
               Html.body
               [ css "font-size" "20px" ]
               [ text (linearize simplified) ]
+            , subTitle "Left Infinite Projection"
+            , Options.styled
+              Html.body
+              [ css "font-size" "20px" ]
+              [ text (linearize leftProj) ]
             ]
     ]
     |> Material.Scheme.top
