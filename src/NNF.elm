@@ -23,8 +23,7 @@ convertToNNF p =
         Neg (Forall s p) ->
             Exists s (convertToNNF (Neg p))
 
-        Neg (Exists _ p) ->
-            Forall (VI "TODO") (convertToNNF (Neg p))
+        Neg (Exists s p) -> Neg (Exists s (convertToNNF p))
 
         Conj p1 p2 ->
             Conj (convertToNNF p1) (convertToNNF p2)
@@ -33,7 +32,7 @@ convertToNNF p =
             Disj (convertToNNF p1) (convertToNNF p2)
 
         Forall s p ->
-            Forall s (convertToNNF p)
+            Neg (Exists s (convertToNNF (Neg p)))
 
         Exists s p ->
             Exists s (convertToNNF p)
