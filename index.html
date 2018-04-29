@@ -11029,145 +11029,210 @@ var _user$project$Solve$normMuls = function (e) {
 			}
 	}
 };
-var _user$project$Solve$simplify = function (e) {
-	simplify:
+var _user$project$Solve$moveVarToLHS = function (rp) {
+	var _p1 = rp;
+	if (_p1.ctor === 'Less') {
+		var _p3 = _p1._1;
+		var _p2 = _p1._0;
+		return A2(_user$project$Syntax$occurs, 0, _p3) ? A2(
+			_user$project$Syntax$Less,
+			A2(_user$project$Syntax$Minus, _p2, _p3),
+			_user$project$Syntax$ConstRat(
+				A2(_user$project$Syntax$Div, 0, 1))) : A2(_user$project$Syntax$Less, _p2, _p3);
+	} else {
+		var _p5 = _p1._1;
+		var _p4 = _p1._0;
+		return A2(_user$project$Syntax$occurs, 0, _p5) ? A2(
+			_user$project$Syntax$Eq,
+			A2(_user$project$Syntax$Minus, _p4, _p5),
+			_user$project$Syntax$ConstRat(
+				A2(_user$project$Syntax$Div, 0, 1))) : A2(_user$project$Syntax$Eq, _p4, _p5);
+	}
+};
+var _user$project$Solve$isConstant = function (e) {
+	isConstant:
 	while (true) {
-		var _p1 = e;
-		switch (_p1.ctor) {
-			case 'Plus':
-				var _p3 = _p1._1;
-				var _p2 = _p1._0;
-				if (_elm_lang$core$Native_Utils.eq(_p2, _p3)) {
-					var _v2 = A2(
-						_user$project$Syntax$ConstFact,
-						A2(_user$project$Syntax$Div, 2, 1),
-						_p2);
-					e = _v2;
-					continue simplify;
-				} else {
-					var _v3 = A2(
-						_user$project$Syntax$Plus,
-						_user$project$Solve$simplify(_p2),
-						_user$project$Solve$simplify(_p3));
-					e = _v3;
-					continue simplify;
-				}
-			case 'Minus':
-				return A2(
-					_user$project$Syntax$Minus,
-					_user$project$Solve$simplify(_p1._0),
-					_user$project$Solve$simplify(_p1._1));
-			case 'Var':
-				return A2(_user$project$Syntax$Var, _p1._0, _p1._1);
+		var _p6 = e;
+		switch (_p6.ctor) {
 			case 'ConstRat':
-				return _user$project$Syntax$ConstRat(_p1._0);
+				return true;
+			case 'Var':
+				return false;
+			case 'ConstFact':
+				var _v3 = _p6._1;
+				e = _v3;
+				continue isConstant;
+			case 'Plus':
+				return _user$project$Solve$isConstant(_p6._0) && _user$project$Solve$isConstant(_p6._1);
 			default:
-				switch (_p1._1.ctor) {
-					case 'ConstRat':
-						var _p4 = _p1._0._0;
-						var _v4 = _user$project$Syntax$ConstRat(
-							A2(_user$project$Syntax$Div, _p4 * _p4, _p1._1._0._0 * _p1._1._0._1));
-						e = _v4;
-						continue simplify;
-					case 'ConstFact':
-						var _p5 = _p1._0._0;
-						var _v5 = A2(
-							_user$project$Syntax$ConstFact,
-							A2(_user$project$Syntax$Div, _p5 * _p5, _p1._1._0._0 * _p1._1._0._1),
-							_user$project$Solve$simplify(_p1._1._1));
-						e = _v5;
-						continue simplify;
-					default:
-						return _p1;
-				}
+				return _user$project$Solve$isConstant(_p6._0) && _user$project$Solve$isConstant(_p6._1);
 		}
 	}
 };
-var _user$project$Solve$solved = function (rp) {
-	var _p6 = rp;
-	if (_p6.ctor === 'Less') {
-		if (_p6._1.ctor === 'Var') {
-			return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
-		} else {
-			if (_p6._0.ctor === 'Var') {
-				return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
+var _user$project$Solve$removeConstantAdditions = function (e) {
+	var _p7 = e;
+	_v4_2:
+	do {
+		if (_p7.ctor === 'Less') {
+			if (_p7._0.ctor === 'Plus') {
+				var _p11 = _p7._1;
+				var _p10 = _p7._0._1;
+				var _p9 = _p7._0._0;
+				var _p8 = {
+					ctor: '_Tuple2',
+					_0: _user$project$Solve$isConstant(_p9),
+					_1: _user$project$Solve$isConstant(_p10)
+				};
+				_v5_2:
+				do {
+					if (_p8._0 === false) {
+						if (_p8._1 === true) {
+							return A2(
+								_user$project$Syntax$Less,
+								_p9,
+								A2(_user$project$Syntax$Minus, _p11, _p10));
+						} else {
+							break _v5_2;
+						}
+					} else {
+						if (_p8._1 === false) {
+							return A2(
+								_user$project$Syntax$Less,
+								_p9,
+								A2(_user$project$Syntax$Minus, _p11, _p9));
+						} else {
+							break _v5_2;
+						}
+					}
+				} while(false);
+				return e;
 			} else {
-				return (!A2(_user$project$Syntax$occurs, 0, _p6._0)) && (!A2(_user$project$Syntax$occurs, 0, _p6._1));
+				break _v4_2;
+			}
+		} else {
+			if (_p7._0.ctor === 'Plus') {
+				var _p15 = _p7._1;
+				var _p14 = _p7._0._1;
+				var _p13 = _p7._0._0;
+				var _p12 = {
+					ctor: '_Tuple2',
+					_0: _user$project$Solve$isConstant(_p13),
+					_1: _user$project$Solve$isConstant(_p14)
+				};
+				_v6_2:
+				do {
+					if (_p12._0 === false) {
+						if (_p12._1 === true) {
+							return A2(
+								_user$project$Syntax$Eq,
+								_p13,
+								A2(_user$project$Syntax$Minus, _p15, _p14));
+						} else {
+							break _v6_2;
+						}
+					} else {
+						if (_p12._1 === false) {
+							return A2(
+								_user$project$Syntax$Eq,
+								_p13,
+								A2(_user$project$Syntax$Minus, _p15, _p13));
+						} else {
+							break _v6_2;
+						}
+					}
+				} while(false);
+				return e;
+			} else {
+				break _v4_2;
+			}
+		}
+	} while(false);
+	return e;
+};
+var _user$project$Solve$solved = function (rp) {
+	var _p16 = rp;
+	if (_p16.ctor === 'Less') {
+		if (_p16._1.ctor === 'Var') {
+			return !A2(_user$project$Syntax$occurs, _p16._1._0, _p16._0);
+		} else {
+			if (_p16._0.ctor === 'Var') {
+				return !A2(_user$project$Syntax$occurs, _p16._0._0, _p16._1);
+			} else {
+				return (!A2(_user$project$Syntax$occurs, 0, _p16._0)) && (!A2(_user$project$Syntax$occurs, 0, _p16._1));
 			}
 		}
 	} else {
-		if (_p6._1.ctor === 'Var') {
-			return !A2(_user$project$Syntax$occurs, _p6._1._0, _p6._0);
+		if (_p16._1.ctor === 'Var') {
+			return !A2(_user$project$Syntax$occurs, _p16._1._0, _p16._0);
 		} else {
-			if (_p6._0.ctor === 'Var') {
-				return !A2(_user$project$Syntax$occurs, _p6._0._0, _p6._1);
+			if (_p16._0.ctor === 'Var') {
+				return !A2(_user$project$Syntax$occurs, _p16._0._0, _p16._1);
 			} else {
-				return (!A2(_user$project$Syntax$occurs, 0, _p6._0)) && (!A2(_user$project$Syntax$occurs, 0, _p6._1));
+				return (!A2(_user$project$Syntax$occurs, 0, _p16._0)) && (!A2(_user$project$Syntax$occurs, 0, _p16._1));
 			}
 		}
 	}
 };
-var _user$project$Solve$negateByMul = function (_p7) {
-	var _p8 = _p7;
-	return A2(_user$project$Syntax$Div, _p8._1, _p8._0);
+var _user$project$Solve$negateByMul = function (_p17) {
+	var _p18 = _p17;
+	return A2(_user$project$Syntax$Div, _p18._1, _p18._0);
 };
-var _user$project$Solve$solveRatPred = function (rp) {
-	var _p9 = rp;
-	if (_p9.ctor === 'Less') {
-		if (_p9._1.ctor === 'ConstFact') {
+var _user$project$Solve$omitCoefficients = function (rp) {
+	var _p19 = rp;
+	if (_p19.ctor === 'Less') {
+		if (_p19._1.ctor === 'ConstFact') {
 			return A2(
 				_user$project$Syntax$Less,
 				A2(
 					_user$project$Syntax$ConstFact,
-					_user$project$Solve$negateByMul(_p9._1._0),
-					_p9._0),
-				_p9._1._1);
+					_user$project$Solve$negateByMul(_p19._1._0),
+					_p19._0),
+				_p19._1._1);
 		} else {
-			if (_p9._0.ctor === 'ConstFact') {
+			if (_p19._0.ctor === 'ConstFact') {
 				return A2(
 					_user$project$Syntax$Less,
-					_p9._0._1,
+					_p19._0._1,
 					A2(
 						_user$project$Syntax$ConstFact,
-						_user$project$Solve$negateByMul(_p9._0._0),
-						_p9._1));
+						_user$project$Solve$negateByMul(_p19._0._0),
+						_p19._1));
 			} else {
-				return A2(
-					_user$project$Syntax$Less,
-					_user$project$Solve$simplify(_p9._0),
-					_user$project$Solve$simplify(_p9._1));
+				return A2(_user$project$Syntax$Less, _p19._0, _p19._1);
 			}
 		}
 	} else {
-		if (_p9._1.ctor === 'ConstFact') {
+		if (_p19._1.ctor === 'ConstFact') {
 			return A2(
 				_user$project$Syntax$Eq,
 				A2(
 					_user$project$Syntax$ConstFact,
-					_user$project$Solve$negateByMul(_p9._1._0),
-					_p9._0),
-				_p9._1._1);
+					_user$project$Solve$negateByMul(_p19._1._0),
+					_p19._0),
+				_p19._1._1);
 		} else {
-			if (_p9._0.ctor === 'ConstFact') {
+			if (_p19._0.ctor === 'ConstFact') {
 				return A2(
 					_user$project$Syntax$Eq,
-					_p9._0._1,
+					_p19._0._1,
 					A2(
 						_user$project$Syntax$ConstFact,
-						_user$project$Solve$negateByMul(_p9._0._0),
-						_p9._1));
+						_user$project$Solve$negateByMul(_p19._0._0),
+						_p19._1));
 			} else {
-				return A2(
-					_user$project$Syntax$Eq,
-					_user$project$Solve$simplify(_p9._0),
-					_user$project$Solve$simplify(_p9._1));
+				return A2(_user$project$Syntax$Eq, _p19._0, _p19._1);
 			}
 		}
 	}
 };
+var _user$project$Solve$solveRatPred = function (e) {
+	return _user$project$Solve$omitCoefficients(
+		_user$project$Solve$removeConstantAdditions(
+			_user$project$Solve$moveVarToLHS(e)));
+};
 var _user$project$Solve$solve = function (p) {
-	var _p10 = p;
-	switch (_p10.ctor) {
+	var _p20 = p;
+	switch (_p20.ctor) {
 		case 'Top':
 			return _user$project$Syntax$Top;
 		case 'Bot':
@@ -11175,31 +11240,31 @@ var _user$project$Solve$solve = function (p) {
 		case 'Conj':
 			return A2(
 				_user$project$Syntax$Conj,
-				_user$project$Solve$solve(_p10._0),
-				_user$project$Solve$solve(_p10._1));
+				_user$project$Solve$solve(_p20._0),
+				_user$project$Solve$solve(_p20._1));
 		case 'Disj':
 			return A2(
 				_user$project$Syntax$Disj,
-				_user$project$Solve$solve(_p10._0),
-				_user$project$Solve$solve(_p10._1));
+				_user$project$Solve$solve(_p20._0),
+				_user$project$Solve$solve(_p20._1));
 		case 'Forall':
 			return A2(
 				_user$project$Syntax$Forall,
-				_p10._0,
-				_user$project$Solve$solve(_p10._1));
+				_p20._0,
+				_user$project$Solve$solve(_p20._1));
 		case 'Exists':
 			return A2(
 				_user$project$Syntax$Exists,
-				_p10._0,
-				_user$project$Solve$solve(_p10._1));
+				_p20._0,
+				_user$project$Solve$solve(_p20._1));
 		case 'Neg':
 			return _user$project$Syntax$Neg(
-				_user$project$Solve$solve(_p10._0));
+				_user$project$Solve$solve(_p20._0));
 		case 'Pred':
 			return _user$project$Syntax$Pred(
-				_user$project$Solve$solveRatPred(_p10._0));
+				_user$project$Solve$solveRatPred(_p20._0));
 		default:
-			return _user$project$Syntax$Id(_p10._0);
+			return _user$project$Syntax$Id(_p20._0);
 	}
 };
 var _user$project$NNF$convertToNNF = function (p) {
