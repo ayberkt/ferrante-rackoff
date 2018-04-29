@@ -11,7 +11,7 @@ removeAllNegations : Prop -> Prop
 removeAllNegations p =
     case p of
         Neg (Pred (Less e1 e2)) ->
-            Disj (Pred (Less e2 e1)) (Pred (Eq e1 e2))
+            Disj (Pred (Greater e1 e2)) (Pred (Eq e1 e2))
 
         -- this case should not happen.
         Neg (Pred (Eq e1 e2)) ->

@@ -17,6 +17,7 @@ normalizeRatPred : RatPred -> Bool
 normalizeRatPred rp =
   case rp of
     Less e1 e2 -> (normalizeExpr e1) < (normalizeExpr e2)
+    Greater e1 e2 -> (normalizeExpr e1) > (normalizeExpr e2)
     Eq e1 e2 -> (normalizeExpr e1) == (normalizeExpr e2)
 
 normalize : Prop -> Bool

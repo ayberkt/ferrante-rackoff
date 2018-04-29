@@ -259,6 +259,14 @@ deBruijnRP ctx rp =
                 ( _, _ ) ->
                     Nothing
 
+        Greater e1 e2 ->
+            case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
+                ( Just e1_, Just e2_ ) ->
+                    Just (Greater e1_ e2_)
+
+                ( _, _ ) ->
+                    Nothing
+
         Eq e1 e2 ->
             case ( deBruijnExp ctx e1, deBruijnExp ctx e2 ) of
                 ( Just e1_, Just e2_ ) ->

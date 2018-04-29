@@ -26,6 +26,12 @@ solved rp =
         Less (Var i _) e1 ->
             not (occurs i e1)
 
+        Greater e1 (Var i _) ->
+            not (occurs i e1)
+
+        Greater (Var i _) e1 ->
+            not (occurs i e1)
+
         Eq e1 (Var i _) ->
             not (occurs i e1)
 
@@ -36,6 +42,9 @@ solved rp =
             (not (occurs 0 e1)) && (not (occurs 0 e2))
 
         Eq e1 e2 ->
+            (not (occurs 0 e1)) && (not (occurs 0 e2))
+
+        Greater e1 e2 ->
             (not (occurs 0 e1)) && (not (occurs 0 e2))
 
 
@@ -72,6 +81,39 @@ removeConstantAdditions e =
                 ( _, _ ) ->
                     e
 
+        Less (Minus e1 e2) e3 ->
+            case ( isConstant e1, isConstant e2 ) of
+                ( False, True ) ->
+                    Less e1 (Plus e3 e2)
+
+                ( True, False ) ->
+                    Less (ConstFact (Div -1 1) e2) (Minus e3 e1)
+
+                ( _, _ ) ->
+                    e
+
+        Greater (Plus e1 e2) e3 ->
+            case ( isConstant e1, isConstant e2 ) of
+                ( False, True ) ->
+                    Greater e1 (Minus e3 e2)
+
+                ( True, False ) ->
+                    Greater e1 (Minus e3 e1)
+
+                ( _, _ ) ->
+                    e
+
+        Greater (Minus e1 e2) e3 ->
+            case ( isConstant e1, isConstant e2 ) of
+                ( False, True ) ->
+                    Greater e1 (Plus e3 e2)
+
+                ( True, False ) ->
+                    Greater (ConstFact (Div -1 0) e2) (Minus e3 e1)
+
+                ( _, _ ) ->
+                    e
+
         Eq (Plus e1 e2) e3 ->
             case ( isConstant e1, isConstant e2 ) of
                 ( False, True ) ->
@@ -95,6 +137,12 @@ moveVarToLHS rp =
                 Less (Minus e1 e2) (ConstRat (Div 0 1))
             else
                 Less e1 e2
+
+        Greater e1 e2 ->
+            if occurs 0 e2 then
+                Greater (Minus e1 e2) (ConstRat (Div 0 1))
+            else
+                Greater e1 e2
 
         Eq e1 e2 ->
             if occurs 0 e2 then
@@ -150,6 +198,9 @@ omitCoefficients rp =
 
         Less e1 e2 ->
             Less e1 e2
+
+        Greater e1 e2 ->
+            Greater e1 e2
 
         Eq e1 e2 ->
             Eq e1 e2

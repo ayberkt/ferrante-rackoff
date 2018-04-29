@@ -30,6 +30,7 @@ type Expr
 type RatPred
     = Eq Expr Expr
     | Less Expr Expr
+    | Greater Expr Expr
 
 
 
@@ -109,6 +110,9 @@ linearizeRatPred rp =
         Less e1 e2 ->
             "(" ++ linearizeExpr e1 ++ "  <  " ++ linearizeExpr e2 ++ ")"
 
+        Greater e1 e2 ->
+            "(" ++ linearizeExpr e1 ++ "  >  " ++ linearizeExpr e2 ++ ")"
+
 
 
 -- Linearize a given `Prop` `p`.
@@ -143,16 +147,16 @@ linearize p =
             "⊥"
 
         Conj p1 p2 ->
-            "(" ++ (linearize p1) ++ "∧" ++ (linearize p2) ++ ")"
+            (linearize p1) ++ "∧" ++ linearize p2
 
         Disj p1 p2 ->
-            "(" ++ (linearize p1) ++ "∨" ++ (linearize p2) ++ ")"
+            (linearize p1) ++ "∨" ++ (linearize p2)
 
         Forall s p1 ->
-            "(" ++ "∀" ++ show s ++ ". " ++ (linearize p1) ++ ")"
+            "∀" ++ show s ++ ". " ++ (linearize p1)
 
         Exists s p1 ->
-            "(" ++ "∃" ++ show s ++ ". " ++ linearize p1 ++ ")"
+            "∃" ++ show s ++ ". " ++ linearize p1
 
         Neg p1 ->
             "¬" ++ linearize p1
