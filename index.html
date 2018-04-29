@@ -10936,63 +10936,60 @@ var _user$project$Styles$divStyle = _elm_lang$html$Html_Attributes$style(
 	});
 var _user$project$OmitNegations$removeAllNegations = function (p) {
 	var _p0 = p;
-	_v0_8:
-	do {
-		switch (_p0.ctor) {
-			case 'Conj':
-				return A2(
-					_user$project$Syntax$Conj,
-					_user$project$OmitNegations$removeAllNegations(_p0._0),
-					_user$project$OmitNegations$removeAllNegations(_p0._1));
-			case 'Disj':
-				return A2(
-					_user$project$Syntax$Disj,
-					_user$project$OmitNegations$removeAllNegations(_p0._0),
-					_user$project$OmitNegations$removeAllNegations(_p0._1));
-			case 'Forall':
-				return A2(
-					_user$project$Syntax$Forall,
-					_p0._0,
-					_user$project$OmitNegations$removeAllNegations(_p0._1));
-			case 'Exists':
-				return A2(
-					_user$project$Syntax$Exists,
-					_p0._0,
-					_user$project$OmitNegations$removeAllNegations(_p0._1));
-			case 'Neg':
-				switch (_p0._0.ctor) {
-					case 'Pred':
-						if (_p0._0._0.ctor === 'Less') {
-							var _p2 = _p0._0._0._1;
-							var _p1 = _p0._0._0._0;
-							return A2(
-								_user$project$Syntax$Disj,
-								_user$project$Syntax$Pred(
-									A2(_user$project$Syntax$Less, _p2, _p1)),
-								_user$project$Syntax$Pred(
-									A2(_user$project$Syntax$Eq, _p1, _p2)));
-						} else {
-							var _p4 = _p0._0._0._1;
-							var _p3 = _p0._0._0._0;
-							return A2(
-								_user$project$Syntax$Disj,
-								_user$project$Syntax$Pred(
-									A2(_user$project$Syntax$Less, _p3, _p4)),
-								_user$project$Syntax$Pred(
-									A2(_user$project$Syntax$Less, _p3, _p4)));
-						}
-					case 'Top':
-						return _user$project$Syntax$Bot;
-					case 'Bot':
-						return _user$project$Syntax$Top;
-					default:
-						break _v0_8;
-				}
-			default:
-				break _v0_8;
-		}
-	} while(false);
-	return _p0;
+	switch (_p0.ctor) {
+		case 'Conj':
+			return A2(
+				_user$project$Syntax$Conj,
+				_user$project$OmitNegations$removeAllNegations(_p0._0),
+				_user$project$OmitNegations$removeAllNegations(_p0._1));
+		case 'Disj':
+			return A2(
+				_user$project$Syntax$Disj,
+				_user$project$OmitNegations$removeAllNegations(_p0._0),
+				_user$project$OmitNegations$removeAllNegations(_p0._1));
+		case 'Forall':
+			return A2(
+				_user$project$Syntax$Forall,
+				_p0._0,
+				_user$project$OmitNegations$removeAllNegations(_p0._1));
+		case 'Exists':
+			return A2(
+				_user$project$Syntax$Exists,
+				_p0._0,
+				_user$project$OmitNegations$removeAllNegations(_p0._1));
+		case 'Neg':
+			switch (_p0._0.ctor) {
+				case 'Pred':
+					if (_p0._0._0.ctor === 'Less') {
+						var _p2 = _p0._0._0._1;
+						var _p1 = _p0._0._0._0;
+						return A2(
+							_user$project$Syntax$Disj,
+							_user$project$Syntax$Pred(
+								A2(_user$project$Syntax$Less, _p2, _p1)),
+							_user$project$Syntax$Pred(
+								A2(_user$project$Syntax$Eq, _p1, _p2)));
+					} else {
+						var _p4 = _p0._0._0._1;
+						var _p3 = _p0._0._0._0;
+						return A2(
+							_user$project$Syntax$Disj,
+							_user$project$Syntax$Pred(
+								A2(_user$project$Syntax$Less, _p3, _p4)),
+							_user$project$Syntax$Pred(
+								A2(_user$project$Syntax$Less, _p3, _p4)));
+					}
+				case 'Top':
+					return _user$project$Syntax$Bot;
+				case 'Bot':
+					return _user$project$Syntax$Top;
+				default:
+					return _user$project$Syntax$Neg(
+						_user$project$OmitNegations$removeAllNegations(_p0._0));
+			}
+		default:
+			return _p0;
+	}
 };
 var _user$project$Solve$normMuls = function (e) {
 	var _p0 = e;
@@ -11301,11 +11298,11 @@ var _user$project$NNF$convertToNNF = function (p) {
 								_user$project$NNF$convertToNNF(
 									_user$project$Syntax$Neg(_p0._0._1)));
 						case 'Exists':
-							return A2(
-								_user$project$Syntax$Forall,
-								_user$project$Syntax$VI('TODO'),
-								_user$project$NNF$convertToNNF(
-									_user$project$Syntax$Neg(_p0._0._1)));
+							return _user$project$Syntax$Neg(
+								A2(
+									_user$project$Syntax$Exists,
+									_p0._0._0,
+									_user$project$NNF$convertToNNF(_p0._0._1)));
 						default:
 							break _v0_9;
 					}
@@ -11320,10 +11317,12 @@ var _user$project$NNF$convertToNNF = function (p) {
 						_user$project$NNF$convertToNNF(_p0._0),
 						_user$project$NNF$convertToNNF(_p0._1));
 				case 'Forall':
-					return A2(
-						_user$project$Syntax$Forall,
-						_p0._0,
-						_user$project$NNF$convertToNNF(_p0._1));
+					return _user$project$Syntax$Neg(
+						A2(
+							_user$project$Syntax$Exists,
+							_p0._0,
+							_user$project$NNF$convertToNNF(
+								_user$project$Syntax$Neg(_p0._1))));
 				case 'Exists':
 					return A2(
 						_user$project$Syntax$Exists,
