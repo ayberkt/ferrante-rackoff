@@ -193,55 +193,36 @@ expr =
 
 deBruijnExp : List VarIdentifier -> Expr -> Maybe Expr
 deBruijnExp ctx e =
-    case e of
-        Plus e1 e2 ->
-            let
-                e1_ =
-                    deBruijnExp ctx e1
+  case e of
+    Plus e1 e2 ->
+      let
+        (e1_, e2_) = (deBruijnExp ctx e1, deBruijnExp ctx e2)
+      in
+        case (e1_, e2_) of
+          (Just e1__, Just e2__ ) -> Just (Plus e1__ e2__)
+          (_, _) -> Nothing
+    Minus e1 e2 ->
+      let
+        e1_ = deBruijnExp ctx e1
+        e2_ = deBruijnExp ctx e2
+      in
+        case ( e1_, e2_ ) of
+          (Just e1__, Just e2__) -> Just (Minus e1__ e2__)
+          (_, _) -> Nothing
+    Var _ s ->
+      case Util.indexOf ctx s of
+          Just i ->
+              Just (Var i s)
 
-                e2_ =
-                    deBruijnExp ctx e2
-            in
-                case ( e1_, e2_ ) of
-                    ( Just e1__, Just e2__ ) ->
-                        Just (Plus e1__ e2__)
-
-                    ( _, _ ) ->
-                        Nothing
-
-        Minus e1 e2 ->
-            let
-                e1_ =
-                    deBruijnExp ctx e1
-
-                e2_ =
-                    deBruijnExp ctx e2
-            in
-                case ( e1_, e2_ ) of
-                    ( Just e1__, Just e2__ ) ->
-                        Just (Minus e1__ e2__)
-
-                    ( _, _ ) ->
-                        Nothing
-
-        Var _ s ->
-            case Util.indexOf ctx s of
-                Just i ->
-                    Just (Var i s)
-
-                Nothing ->
-                    Nothing
-
-        ConstFact r e1 ->
-            (deBruijnExp ctx e1)
-                |> Maybe.andThen
-                    (\e1_ ->
-                        Just (ConstFact r e1_)
-                    )
-
-        -- TODO
-        e_ ->
-            Just e_
+          Nothing ->
+              Nothing
+    ConstFact r e1 ->
+      (deBruijnExp ctx e1)
+          |> Maybe.andThen
+              (\e1_ ->
+                  Just (ConstFact r e1_)
+              )
+    e_ -> Just e_
 
 
 
