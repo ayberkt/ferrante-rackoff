@@ -16,9 +16,6 @@ import PropositionParser exposing (parseProp)
 import Debug exposing (log)
 import Json.Encode
 import Json.Decode
-import Markdown as MD
-
-import MiniLatex.Driver as MiniLatex
 
 
 
