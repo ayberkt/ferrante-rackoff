@@ -50,6 +50,22 @@ infProj p ipk =
                 LeftInfProj ->
                     ( Bot, [ a ] )
 
+        Pred (Greater (Var _ _) a) ->
+            case ipk of
+                LeftInfProj ->
+                    ( Bot, [ a ] )
+
+                RightInfProj ->
+                    ( Top, [ a ] )
+
+        Pred (Greater a (Var _ x)) ->
+            case ipk of
+                RightInfProj ->
+                    ( Bot, [ a ] )
+
+                LeftInfProj ->
+                    ( Top, [ a ] )
+
         Pred (Eq (Var _ x) c) ->
             ( Bot, [ c ] )
 
