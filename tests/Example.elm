@@ -46,7 +46,7 @@ suite =
                         (removeAllNegations
                             (convertToNNF
                                 (Forall (VI "x")
-                                  (Neg (Conj (Disj Bot Top) Top))))
+                                  (Neg (Conj (Disj Bot Top) Top)))))
                         (Neg (Exists (VI "x") (Conj (Disj Bot Top) Top)))
             , test "Omit negations 2" <|
                 \() ->
@@ -89,14 +89,12 @@ suite =
                                         (Plus (injDiv 0 1) (injDiv 1 1))))))
             , test "Omit negations, pred 2" <|
                 \() ->
-                    Expect.equal
-                        (removeAllNegations
-                            (Neg (Pred (Less (injDiv 0 1) (injDiv 1 1))))
-                        )
-                        (Disj
-                            (Pred (Less (injDiv 1 1) (injDiv 0 1)))
-                            (Pred (Eq (injDiv 0 1) (injDiv 1 1)))
-                        )
+                  Expect.equal
+                    (removeAllNegations
+                      (Neg (Pred (Less (injDiv 0 1) (injDiv 1 1)))))
+                    (Disj
+                      (Pred (Greater (injDiv 0 1) (injDiv 1 1)))
+                      (Pred (Eq (injDiv 0 1) (injDiv 1 1))))
             , test "Omit negations, pred 3" <|
                 \() ->
                     Expect.equal
@@ -104,7 +102,7 @@ suite =
                             (Neg (Pred (Less (injDiv 0 1) (injDiv 1 1))))
                         )
                         (Disj
-                            (Pred (Less (injDiv 1 1) (injDiv 0 1)))
+                            (Pred (Greater (injDiv 0 1) (injDiv 1 1)))
                             (Pred (Eq (injDiv 0 1) (injDiv 1 1)))
                         )
             , test "Omit negations, pred 4" <|
