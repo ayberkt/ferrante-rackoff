@@ -10,6 +10,7 @@ import Solve exposing (solve)
 import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Maybe exposing (withDefault)
 import PropositionParser exposing (parseProp)
+import Satisfiability exposing (isSat)
 import Normalization exposing (normalizeExpr, normalizeRatPred, normalize)
 
 
@@ -424,6 +425,24 @@ normalizationTestCases =
                     Expect.equal
                         (normalize (parse "(\\/ false true)"))
                         True
+            ]
+        ]
+    ]
+
+satisfiabilityTestCases : List Test
+satisfiabilityTestCases =
+    [ describe "Satisfiability test suite"
+        [ describe "Satisfiability test cases"
+            [ test "Satisfiability case 1: simple." <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (< x (* 1/3 x)))"))
+                      True
+            , test "Satisfiability case 1: simple." <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (< x (* 1/3 x)))"))
+                      True
             ]
         ]
     ]
