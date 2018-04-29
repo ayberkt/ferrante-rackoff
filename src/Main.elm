@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (href, class, style)
+import Html.Attributes exposing (href, class, style, rel)
 import Material
 import Material.Scheme
 import Material.Button as Button
@@ -12,6 +12,14 @@ import Material.Color as Color
 import Material.List as L
 import NNF exposing (convertToNNF)
 import Syntax exposing (..)
+import PropositionParser exposing (parseProp)
+import Debug exposing (log)
+import Json.Encode
+import Json.Decode
+import Markdown as MD
+
+import MiniLatex.Driver as MiniLatex
+
 
 
 -- MODEL
@@ -23,17 +31,19 @@ type Input
 
 
 type alias Model =
-    { count : Int
-    , input : Input
-    , mdl   : Material.Model
+    { count     : Int
+    , inputText : String
+    , input     : Input
+    , mdl       : Material.Model
     }
 
 
 model : Model
 model =
-    { count = 0
-    , input = InvalidInput
-    , mdl   = Material.model
+    { count     = 0
+    , input     = InvalidInput
+    , inputText = ""
+    , mdl       = Material.model
     }
 
 
@@ -74,7 +84,12 @@ update msg model =
             )
 
         UpdateMessage s ->
-            ( { model | input = InvalidInput }, Cmd.none )
+          let
+              _ =  log "updating message"
+          in
+            case parseProp s of
+              Just p  -> ( { model | input = Parsed p,     inputText = s }, Cmd.none )
+              Nothing -> ( { model | input = InvalidInput, inputText = s }, Cmd.none )
 
         -- Boilerplate: Mdl action handler.
         Mdl msg_ ->
@@ -111,29 +126,28 @@ view model =
     , Textfield.render Mdl
         [ 2 ]
         model.mdl
-        [ Textfield.label "Proposition" ]
         [ Options.onInput UpdateMessage ]
+        [ Textfield.label "Proposition" ]
+    , Button.render Mdl
+        [ 0 ]
+        model.mdl
+        [ Options.onClick Increase, css "margin" "0 24px" ]
+        [ text "Start" ]
     , case model.input of
         InvalidInput ->
           Options.div
             []
             [ Options.styled Html.body
-              [ css "font-size" "20px" ]
-              [ text "Waiting for valid input" ] ]
+              [ css "font-size" "20px", Color.text Color.accent ]
+              [ text "Waiting for valid input." ] ]
         Parsed p ->
           Options.div
           []
-          [ Button.render Mdl
-              [ 0 ]
-              model.mdl
-              [ Options.onClick Increase
-              , css "margin" "0 24px"
-              ]
-              [ text "Start" ]
-          , subTitle "Negation-normal form"
-          , Options.div
-              []
-              [ Options.styled Html.body [ css "font-size" "20px" ] [ text "Foo bar" ] ]
+          [ subTitle "Negation-normal form"
+          , Options.styled
+            Html.body
+            [css "font-size" "20px" ]
+            [ text (linearize (convertToNNF p)) ]
           , subTitle "No negations"
           , subTitle "Simplified"
           ]
