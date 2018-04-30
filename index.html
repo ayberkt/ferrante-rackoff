@@ -19051,6 +19051,14 @@ var _user$project$Satisfiability$decideFinal = F3(
 			false,
 			A2(_elm_lang$core$List$map, _user$project$Normalization$normalize, ps));
 	});
+var _user$project$Satisfiability$decideSimple = function (sp) {
+	var middleCases = _user$project$InfiniteProjection$constructF3(sp);
+	var _p0 = _user$project$InfiniteProjection$rightInfProj(sp);
+	var rightProj = _p0._0;
+	var _p1 = _user$project$InfiniteProjection$leftInfProj(sp);
+	var leftProj = _p1._0;
+	return A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases);
+};
 var _user$project$Satisfiability$Prop = {ctor: 'Prop'};
 var _user$project$Satisfiability$NegatedExistential = function (a) {
 	return {ctor: 'NegatedExistential', _0: a};
@@ -19063,13 +19071,13 @@ var _user$project$Satisfiability$getInnermostExistential = F2(
 	function (sp, lastSeen) {
 		getInnermostExistential:
 		while (true) {
-			var _p0 = sp;
-			switch (_p0.ctor) {
+			var _p2 = sp;
+			switch (_p2.ctor) {
 				case 'Exists':
-					var _p1 = _p0._1;
-					var _v1 = _p1,
+					var _p3 = _p2._1;
+					var _v1 = _p3,
 						_v2 = _user$project$Satisfiability$Existential(
-						A2(_user$project$Syntax$Exists, _p0._0, _p1));
+						A2(_user$project$Syntax$Exists, _p2._0, _p3));
 					sp = _v1;
 					lastSeen = _v2;
 					continue getInnermostExistential;
@@ -19080,42 +19088,42 @@ var _user$project$Satisfiability$getInnermostExistential = F2(
 				case 'Top':
 					return lastSeen;
 				case 'Neg':
-					if (_p0._0.ctor === 'Exists') {
-						var _p2 = _p0._0._1;
-						var _v3 = _p2,
+					if (_p2._0.ctor === 'Exists') {
+						var _p4 = _p2._0._1;
+						var _v3 = _p4,
 							_v4 = _user$project$Satisfiability$NegatedExistential(
-							A2(_user$project$Syntax$Exists, _p0._0._0, _p2));
+							A2(_user$project$Syntax$Exists, _p2._0._0, _p4));
 						sp = _v3;
 						lastSeen = _v4;
 						continue getInnermostExistential;
 					} else {
-						var _v5 = _p0._0,
+						var _v5 = _p2._0,
 							_v6 = lastSeen;
 						sp = _v5;
 						lastSeen = _v6;
 						continue getInnermostExistential;
 					}
 				case 'Conj':
-					var _p3 = A2(_user$project$Satisfiability$getInnermostExistential, _p0._0, lastSeen);
-					if (_p3.ctor === 'NoExistentialFound') {
-						var _v8 = _p0._1,
+					var _p5 = A2(_user$project$Satisfiability$getInnermostExistential, _p2._0, lastSeen);
+					if (_p5.ctor === 'NoExistentialFound') {
+						var _v8 = _p2._1,
 							_v9 = lastSeen;
 						sp = _v8;
 						lastSeen = _v9;
 						continue getInnermostExistential;
 					} else {
-						return _p3;
+						return _p5;
 					}
 				case 'Disj':
-					var _p4 = A2(_user$project$Satisfiability$getInnermostExistential, _p0._0, lastSeen);
-					if (_p4.ctor === 'NoExistentialFound') {
-						var _v11 = _p0._1,
+					var _p6 = A2(_user$project$Satisfiability$getInnermostExistential, _p2._0, lastSeen);
+					if (_p6.ctor === 'NoExistentialFound') {
+						var _v11 = _p2._1,
 							_v12 = lastSeen;
 						sp = _v11;
 						lastSeen = _v12;
 						continue getInnermostExistential;
 					} else {
-						return _p4;
+						return _p6;
 					}
 				case 'Id':
 					return _user$project$Satisfiability$NoExistentialFound;
@@ -19124,27 +19132,40 @@ var _user$project$Satisfiability$getInnermostExistential = F2(
 			}
 		}
 	});
-var _user$project$Satisfiability$isSat = function (sp) {
-	var _p5 = A2(_user$project$Satisfiability$getInnermostExistential, sp, _user$project$Satisfiability$NoExistentialFound);
-	switch (_p5.ctor) {
+var _user$project$Satisfiability$decideInnermostExistential = function (sp) {
+	var _p7 = A2(_user$project$Satisfiability$getInnermostExistential, sp, _user$project$Satisfiability$NoExistentialFound);
+	switch (_p7.ctor) {
 		case 'Existential':
-			var _p8 = _p5._0;
-			var middleCases = _user$project$InfiniteProjection$constructF3(_p8);
-			var _p6 = _user$project$InfiniteProjection$rightInfProj(_p8);
-			var rightProj = _p6._0;
-			var _p7 = _user$project$InfiniteProjection$leftInfProj(_p8);
-			var leftProj = _p7._0;
-			return A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases);
+			var _p8 = _p7._0;
+			return {
+				ctor: '_Tuple2',
+				_0: _user$project$Satisfiability$decideSimple(_p8),
+				_1: _elm_lang$core$Maybe$Just(_p8)
+			};
 		case 'NegatedExistential':
-			var _p11 = _p5._0;
-			var middleCases = _user$project$InfiniteProjection$constructF3(_p11);
-			var _p9 = _user$project$InfiniteProjection$rightInfProj(_p11);
-			var rightProj = _p9._0;
-			var _p10 = _user$project$InfiniteProjection$leftInfProj(_p11);
-			var leftProj = _p10._0;
-			return !A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases);
+			var _p9 = _p7._0;
+			return {
+				ctor: '_Tuple2',
+				_0: !_user$project$Satisfiability$decideSimple(_p9),
+				_1: _elm_lang$core$Maybe$Just(_p9)
+			};
 		default:
-			return false;
+			return {
+				ctor: '_Tuple2',
+				_0: _user$project$Satisfiability$decideSimple(sp),
+				_1: _elm_lang$core$Maybe$Nothing
+			};
+	}
+};
+var _user$project$Satisfiability$isSat = function (sp) {
+	var _p10 = _user$project$Satisfiability$decideInnermostExistential(sp);
+	var result = _p10._0;
+	var maybeInnermost = _p10._1;
+	var _p11 = maybeInnermost;
+	if (_p11.ctor === 'Just') {
+		return result;
+	} else {
+		return result;
 	}
 };
 var _user$project$Main$badResult = function (t) {
@@ -19436,14 +19457,24 @@ var _user$project$Main$view = function (model) {
 													_1: {ctor: '[]'}
 												});
 										} else {
-											var _p8 = _p4._0;
-											var nnf = _user$project$NNF$convertToNNF(_p8);
+											var _p9 = _p4._0;
+											var nnf = _user$project$NNF$convertToNNF(_p9);
 											var noNegs = _user$project$OmitNegations$removeAllNegations(nnf);
-											var simplified = _user$project$Solve$solve(noNegs);
-											var _p5 = _user$project$InfiniteProjection$leftInfProj(simplified);
-											var leftProj = _p5._0;
-											var _p6 = _user$project$InfiniteProjection$rightInfProj(simplified);
-											var rightProj = _p6._0;
+											var simplified = function () {
+												var _p5 = A2(_user$project$Satisfiability$getInnermostExistential, noNegs, _user$project$Satisfiability$NoExistentialFound);
+												switch (_p5.ctor) {
+													case 'NoExistentialFound':
+														return _user$project$Syntax$Bot;
+													case 'NegatedExistential':
+														return _p5._0;
+													default:
+														return _p5._0;
+												}
+											}();
+											var _p6 = _user$project$InfiniteProjection$leftInfProj(simplified);
+											var leftProj = _p6._0;
+											var _p7 = _user$project$InfiniteProjection$rightInfProj(simplified);
+											var rightProj = _p7._0;
 											var middleCases = _user$project$InfiniteProjection$constructF3(simplified);
 											return A2(
 												_debois$elm_mdl$Material_Options$div,
@@ -19473,7 +19504,7 @@ var _user$project$Main$view = function (model) {
 																	ctor: '::',
 																	_0: _elm_lang$html$Html$text(
 																		_user$project$Syntax$linearize(
-																			_user$project$NNF$convertToNNF(_p8))),
+																			_user$project$NNF$convertToNNF(_p9))),
 																	_1: {ctor: '[]'}
 																}),
 															_1: {
@@ -19597,10 +19628,10 @@ var _user$project$Main$view = function (model) {
 																										},
 																										A2(
 																											_elm_lang$core$List$map,
-																											function (_p7) {
+																											function (_p8) {
 																												return _elm_lang$html$Html$text(
 																													_elm_lang$core$Basics$toString(
-																														_user$project$Normalization$normalize(_p7)));
+																														_user$project$Normalization$normalize(_p8)));
 																											},
 																											middleCases)),
 																									_1: {ctor: '[]'}
