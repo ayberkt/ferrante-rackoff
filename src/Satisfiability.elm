@@ -1,4 +1,4 @@
-module Satisfiability exposing (isSat, decideFinal)
+module Satisfiability exposing (isSat, decideFinal, getInnermostExistential, Result(..))
 
 import Normalization       exposing (normalize)
 import InfiniteProjection  exposing (leftInfProj, rightInfProj, constructF3)
@@ -42,23 +42,31 @@ getInnermostExistential sp lastSeen =
     Id _ -> NoExistentialFound
     Forall _ _ -> NoExistentialFound
 
+-- We take "simple" to mean a proposition either having one existential
+-- quantification or none at all.
+decideSimple sp =
+  let
+    (leftProj,  _)  = leftInfProj sp
+    (rightProj, _)  = rightInfProj sp
+    middleCases     = constructF3 sp
+  in
+    decideFinal leftProj rightProj middleCases
+
+decideInnermostExistential sp =
+    case getInnermostExistential sp NoExistentialFound of
+      Existential        sp -> (decideSimple sp, Just sp)
+      NegatedExistential sp -> (not (decideSimple sp), Just sp)
+      NoExistentialFound    -> (decideSimple sp, Nothing)
+
+-- TODO: implement the replace function so that existential quantifiers are
+-- popped when going backwards after handling the innermost existential.
+replace = "TODO"
+
 isSat : Prop -> Bool
 isSat sp =
-    case getInnermostExistential sp NoExistentialFound of
-      Existential sp ->
-        let
-          (leftProj,  _)  = leftInfProj sp
-          (rightProj, _)  = rightInfProj sp
-          middleCases     = constructF3 sp
-        in
-          decideFinal leftProj rightProj middleCases
-
-      NegatedExistential sp ->
-        let
-          (leftProj,  _)  = leftInfProj sp
-          (rightProj, _)  = rightInfProj sp
-          middleCases     = constructF3 sp
-        in
-          not (decideFinal leftProj rightProj middleCases)
-
-      NoExistentialFound -> False
+  let
+    (result, maybeInnermost) = decideInnermostExistential sp
+  in
+      case maybeInnermost of
+        Just innermost -> result
+        Nothing        -> result
