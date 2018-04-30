@@ -14,7 +14,7 @@ normalizeExpr e =
         andThen (\e1n ->
           normalizeExpr e2 |>
             andThen (\e2n ->
-              Just (e1n - e2n)))
+              Just (e1n + e2n)))
     Minus e1 e2 ->
       normalizeExpr e1 |>
         andThen (\e1n ->
