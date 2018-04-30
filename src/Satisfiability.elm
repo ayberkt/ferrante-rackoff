@@ -60,7 +60,7 @@ decideSimple sp =
   in
     decideFinal leftProj rightProj middleCases
 
-decideInnerMostExistential : Prop -> Result
+decideInnermostExistential : Prop -> Result
 decideInnermostExistential sp =
     case getInnermostExistential sp NoExistentialFound of
       Existential        sp -> (decideSimple sp, Just sp)
