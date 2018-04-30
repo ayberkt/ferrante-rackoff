@@ -14,7 +14,7 @@ import Syntax              exposing (..)
 
 holds p =
   case p of
-    Just True  -> False
+    Just True  -> True
     _          -> False
 
 decideFinal : Prop -> Prop -> List Prop -> DecisionResult
