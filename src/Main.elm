@@ -181,11 +181,7 @@ view model =
           let
               nnf            = convertToNNF p
               noNegs         = removeAllNegations nnf
-              simplified     =
-                case getInnermostExistential noNegs NoExistentialFound  of
-                  NoExistentialFound   -> Bot
-                  NegatedExistential p -> p
-                  Existential p        -> p
+              simplified     = solve noNegs
               (leftProj,  _) = leftInfProj simplified
               (rightProj, _) = rightInfProj simplified
               middleCases    = constructF3 simplified
@@ -227,10 +223,10 @@ view model =
           else
             [])
           ++
-          [ if decideFinal leftProj rightProj middleCases then
-                goodResult "Satisfiable."
-              else
-                badResult "Not satisfiable."
+          [ case isSat p of
+              Conclusion True  -> goodResult "Satisfiable."
+              Conclusion False -> badResult "Not satisfiable."
+              QuantifierFree p -> badResult "Requires further attention."
           ])
     ]
     |> Material.Scheme.top
