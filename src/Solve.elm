@@ -183,27 +183,14 @@ normMuls e =
 
 omitCoefficients : RatPred -> RatPred
 omitCoefficients rp =
-    case rp of
-        Less t (ConstFact c e1) ->
-            Less (ConstFact (negateByMul c) t) e1
-
-        Less (ConstFact c e1) t ->
-            Less e1 (ConstFact (negateByMul c) t)
-
-        Eq t (ConstFact c x) ->
-            Eq (ConstFact (negateByMul c) t) x
-
-        Eq (ConstFact c x) t ->
-            Eq x (ConstFact (negateByMul c) t)
-
-        Less e1 e2 ->
-            Less e1 e2
-
-        Greater e1 e2 ->
-            Greater e1 e2
-
-        Eq e1 e2 ->
-            Eq e1 e2
+  case rp of
+    Less t (ConstFact c e1) -> Less (ConstFact (negateByMul c) t) e1
+    Less (ConstFact c e1) t -> Less e1 (ConstFact (negateByMul c) t)
+    Eq t (ConstFact c x)    -> Eq x (ConstFact (negateByMul c) t)
+    Eq (ConstFact c x) t    -> Eq x (ConstFact (negateByMul c) t)
+    Less    e1 e2           -> Less e1 e2
+    Greater e1 e2           -> Greater e1 e2
+    Eq      e1 e2           -> Eq e1 e2
 
 
 solveRatPred : RatPred -> RatPred
@@ -218,31 +205,14 @@ solveRatPred =
 
 solve : Prop -> Prop
 solve p =
-    case p of
-        Top ->
-            Top
-
-        Bot ->
-            Bot
-
-        Conj p1 p2 ->
-            Conj (solve p1) (solve p2)
-
-        Disj p1 p2 ->
-            Disj (solve p1) (solve p2)
-
-        Forall s p1 ->
-            Forall s (solve p1)
-
-        Exists s p1 ->
-            Exists s (solve p1)
-
-        Neg p1 ->
-            Neg (solve p1)
-
-        -- this case should not happen.
-        Pred rp ->
-            Pred (solveRatPred rp)
-
-        Id x ->
-            Id x
+  case p of
+    Top -> Top
+    Bot -> Bot
+    Conj p1 p2 -> Conj (solve p1) (solve p2)
+    Disj p1 p2 -> Disj (solve p1) (solve p2)
+    Forall s p1 -> Forall s (solve p1)
+    Exists s p1 -> Exists s (solve p1)
+    Neg p1 -> Neg (solve p1)
+    -- this case should not happen.
+    Pred rp -> Pred (solveRatPred rp)
+    Id x -> Id x
