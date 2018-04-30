@@ -6,7 +6,7 @@ import Syntax              exposing (..)
 
 decideFinal : Prop -> Prop -> List Prop -> Bool
 decideFinal l r ps =
-  if (normalize l) || (normalize r) then
+  if normalize l || normalize r then
     True
   else
     List.foldl (||) False (List.map (normalize) ps)
