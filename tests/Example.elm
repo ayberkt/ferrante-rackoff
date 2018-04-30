@@ -127,22 +127,6 @@ suite =
                                 (injDiv 1 1)
                             )
                         )
-            , test "Solve constant, 4" <|
-                \() ->
-                    Expect.equal
-                        (solve
-                            (Pred
-                                (Eq (ConstFact (Div 3 1) (injDiv 1 1))
-                                    (ConstFact (Div 2 1) (injDiv 1 1))
-                                )
-                            )
-                        )
-                        (Pred
-                            (Eq
-                                (ConstFact (Div 1 2) (ConstFact (Div 3 1) (injDiv 1 1)))
-                                (injDiv 1 1)
-                            )
-                        )
             , test "Solve constant, 5" <|
                 \() ->
                     Expect.equal
@@ -435,7 +419,17 @@ satisfiabilityTestCases : List Test
 satisfiabilityTestCases =
     [ describe "Satisfiability test suite"
         [ describe "Satisfiability test cases"
-            [ test "Satisfiability case 1: simple." <|
+            [ test "Satisfiability case 1: propositional-1." <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(/\\ true true)"))
+                      (Conclusion True)
+            , test "Satisfiability case 1: propositional-2." <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(/\\ true false)"))
+                      (Conclusion False)
+            , test "Satisfiability case 1: simple." <|
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (< x (* 1/3 x)))"))
@@ -460,6 +454,11 @@ satisfiabilityTestCases =
                     Expect.equal
                       (isSat (parse "(exists x (/\\ (< x 3/1) (= x 5/1)))"))
                       (Conclusion False)
+            , test "Satisfiability case 5: rubric-1." <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (= (* 2/1 x) y))"))
+                      (Conclusion True)
             ]
         ]
     ]
