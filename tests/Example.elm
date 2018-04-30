@@ -10,7 +10,7 @@ import Solve exposing (solve)
 import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Maybe exposing (withDefault)
 import PropositionParser exposing (parseProp)
-import Satisfiability exposing (isSat)
+import Satisfiability exposing (isSat, replace)
 import Normalization exposing (normalizeExpr, normalizeRatPred, normalize)
 
 
@@ -219,6 +219,7 @@ suite =
             , describe "Solver case" solverTestCases
             , describe "Normalization case" normalizationTestCases
             , describe "Satisfiability case" satisfiabilityTestCases
+            , describe "Replace case" replaceTestCases
             ]
         ]
 
@@ -462,3 +463,27 @@ satisfiabilityTestCases =
             ]
         ]
     ]
+
+replaceTestCases : List Test
+replaceTestCases =
+  [ describe "Replace test suite"
+    [ test "Replace case 1: simple." <|
+        \() ->
+          Expect.equal
+            (replace (parse "(/\\ true (< 1/2 1/3))") Top Bot)
+            (parse "(/\\ false (< 1/2 1/3))")
+    , test "Replace case 2: simple." <|
+        \() ->
+          Expect.equal
+            (replace
+              (parse "(/\\ (\\/ true false) (< 1/2 1/3))")
+              (Disj Top Bot)
+              (Conj Bot Bot))
+            (parse "(/\\ (/\\ false false) (< 1/2 1/3))")
+    , test "Replace case 3: simple." <|
+        \() ->
+          Expect.equal
+            (replace (parse "(/\\ true (< 1/2 1/3))") Top Bot)
+            (parse "(/\\ false (< 1/2 1/3))")
+    ]
+  ]
