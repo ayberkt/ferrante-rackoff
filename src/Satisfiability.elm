@@ -1,4 +1,4 @@
-module Satisfiability exposing (isSat, decideFinal, getInnermostExistential, Result(..))
+module Satisfiability exposing (isSat, decideFinal, getInnermostExistential, replace, Result(..))
 
 import Normalization       exposing (normalize)
 import InfiniteProjection  exposing (leftInfProj, rightInfProj, constructF3)
@@ -60,7 +60,33 @@ decideInnermostExistential sp =
 
 -- TODO: implement the replace function so that existential quantifiers are
 -- popped when going backwards after handling the innermost existential.
-replace = "TODO"
+replace : Prop -> Prop -> Prop -> Prop
+replace p exProp new =
+  case p of
+    Neg p1 ->
+      if p1 == exProp then
+        Neg new
+      else
+        Neg (replace p exProp new)
+    Conj p1 p2 ->
+      case (p1 == exProp, p2 == exProp) of
+        (True,   True) -> Conj new new
+        (True,  False) -> Conj new p2
+        (False,  True) -> Conj p1  new
+        (False, False) -> Conj p1  p2
+    Disj p1 p2 ->
+      case (p1 == exProp, p2 == exProp) of
+        (True,   True) -> Conj new new
+        (True,  False) -> Conj new p2
+        (False,  True) -> Conj p1  new
+        (False, False) -> Conj p1  p2
+    Exists s p1 ->
+      if p1 == exProp then
+        Neg new
+      else
+        Neg (replace p exProp new)
+    Forall _ _ -> Bot -- this case should not happen.
+    other -> other
 
 isSat : Prop -> Bool
 isSat sp =
