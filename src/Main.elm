@@ -223,7 +223,7 @@ view model =
           else
             [])
           ++
-          [ case isSat p of
+          [ case isSat simplified of
               Conclusion True  -> goodResult "Satisfiable."
               Conclusion False -> badResult "Not satisfiable."
               QuantifierFree p -> badResult "Requires further attention."
