@@ -10,7 +10,7 @@ import Solve exposing (solve)
 import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Maybe exposing (withDefault)
 import PropositionParser exposing (parseProp)
-import Satisfiability exposing (isSat, replace)
+import Satisfiability exposing (isSat, replace, DecisionResult(..))
 import Normalization exposing (normalizeExpr, normalizeRatPred, normalize)
 
 
@@ -395,7 +395,7 @@ normalizationTestCases =
                 \() ->
                     Expect.equal
                         (normalizeExpr (Plus (ConstRat (Div 3 1))(ConstRat (Div 7 1))))
-                        10.0
+                        (Just 10.0)
             , test "Normalization case 2: `normalizeRatPred`." <|
                 \() ->
                     Expect.equal
@@ -403,7 +403,7 @@ normalizationTestCases =
                           (Less
                             (ConstRat (Div 1 1))
                             (Plus (injDiv 1 1) (injDiv 1 1))))
-                        True
+                        (Just True)
             , test "Normalization case 3: `normalizeRatPred`." <|
                 \() ->
                     Expect.equal
@@ -411,22 +411,22 @@ normalizationTestCases =
                           (Less
                             (Plus (injDiv 1 1) (injDiv 1 1))
                             (ConstRat (Div 1 1))))
-                        False
+                        (Just False)
             , test "Normalization case 4: `normalize`." <|
                 \() ->
                     Expect.equal
                         (normalize (parse "(/\\ true true)"))
-                        True
+                        (Just True)
             , test "Normalization case 5: `normalize`." <|
                 \() ->
                     Expect.equal
                         (normalize (parse "(/\\ false true)"))
-                        False
+                        (Just False)
             , test "Normalization case 6: `normalize`." <|
                 \() ->
                     Expect.equal
                         (normalize (parse "(\\/ false true)"))
-                        True
+                        (Just True)
             ]
         ]
     ]
@@ -439,27 +439,27 @@ satisfiabilityTestCases =
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (< x (* 1/3 x)))"))
-                      True
+                      (Conclusion True)
             , test "Satisfiability case 2: x != x/3." <|
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (= x (* 1/3 x)))"))
-                      False
+                      (Conclusion False)
             , test "Satisfiability case 3: TODO" <|
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (= (* 2/1 x) y))"))
-                      False
+                      (Conclusion False)
             , test "Satisfiability case 4: TODO" <|
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (< x 3/1))"))
-                      True
+                      (Conclusion True)
             , test "Satisfiability case 5: TODO" <|
                 \() ->
                     Expect.equal
                       (isSat (parse "(exists x (/\\ (< x 3/1) (= x 5/1)))"))
-                      False
+                      (Conclusion False)
             ]
         ]
     ]
