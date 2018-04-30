@@ -19040,10 +19040,7 @@ var _user$project$Normalization$normalize = function (p) {
 			return false;
 	}
 };
-var _user$project$Satisfiability$getInnermostExistential = function (sp) {
-	return sp;
-};
-var _user$project$Satisfiability$isSat = F3(
+var _user$project$Satisfiability$decideFinal = F3(
 	function (l, r, ps) {
 		return (_user$project$Normalization$normalize(l) || _user$project$Normalization$normalize(r)) ? true : A3(
 			_elm_lang$core$List$foldl,
@@ -19055,6 +19052,101 @@ var _user$project$Satisfiability$isSat = F3(
 			A2(_elm_lang$core$List$map, _user$project$Normalization$normalize, ps));
 	});
 var _user$project$Satisfiability$Prop = {ctor: 'Prop'};
+var _user$project$Satisfiability$NegatedExistential = function (a) {
+	return {ctor: 'NegatedExistential', _0: a};
+};
+var _user$project$Satisfiability$Existential = function (a) {
+	return {ctor: 'Existential', _0: a};
+};
+var _user$project$Satisfiability$NoExistentialFound = {ctor: 'NoExistentialFound'};
+var _user$project$Satisfiability$getInnermostExistential = F2(
+	function (sp, lastSeen) {
+		getInnermostExistential:
+		while (true) {
+			var _p0 = sp;
+			switch (_p0.ctor) {
+				case 'Exists':
+					var _p1 = _p0._1;
+					var _v1 = _p1,
+						_v2 = _user$project$Satisfiability$Existential(
+						A2(_user$project$Syntax$Exists, _p0._0, _p1));
+					sp = _v1;
+					lastSeen = _v2;
+					continue getInnermostExistential;
+				case 'Pred':
+					return lastSeen;
+				case 'Bot':
+					return lastSeen;
+				case 'Top':
+					return lastSeen;
+				case 'Neg':
+					if (_p0._0.ctor === 'Exists') {
+						var _p2 = _p0._0._1;
+						var _v3 = _p2,
+							_v4 = _user$project$Satisfiability$NegatedExistential(
+							A2(_user$project$Syntax$Exists, _p0._0._0, _p2));
+						sp = _v3;
+						lastSeen = _v4;
+						continue getInnermostExistential;
+					} else {
+						var _v5 = _p0._0,
+							_v6 = lastSeen;
+						sp = _v5;
+						lastSeen = _v6;
+						continue getInnermostExistential;
+					}
+				case 'Conj':
+					var _p3 = A2(_user$project$Satisfiability$getInnermostExistential, _p0._0, lastSeen);
+					if (_p3.ctor === 'NoExistentialFound') {
+						var _v8 = _p0._1,
+							_v9 = lastSeen;
+						sp = _v8;
+						lastSeen = _v9;
+						continue getInnermostExistential;
+					} else {
+						return _p3;
+					}
+				case 'Disj':
+					var _p4 = A2(_user$project$Satisfiability$getInnermostExistential, _p0._0, lastSeen);
+					if (_p4.ctor === 'NoExistentialFound') {
+						var _v11 = _p0._1,
+							_v12 = lastSeen;
+						sp = _v11;
+						lastSeen = _v12;
+						continue getInnermostExistential;
+					} else {
+						return _p4;
+					}
+				case 'Id':
+					return _user$project$Satisfiability$NoExistentialFound;
+				default:
+					return _user$project$Satisfiability$NoExistentialFound;
+			}
+		}
+	});
+var _user$project$Satisfiability$isSat = function (sp) {
+	var _p5 = A2(_user$project$Satisfiability$getInnermostExistential, sp, _user$project$Satisfiability$NoExistentialFound);
+	switch (_p5.ctor) {
+		case 'Existential':
+			var _p8 = _p5._0;
+			var middleCases = _user$project$InfiniteProjection$constructF3(_p8);
+			var _p6 = _user$project$InfiniteProjection$rightInfProj(_p8);
+			var rightProj = _p6._0;
+			var _p7 = _user$project$InfiniteProjection$leftInfProj(_p8);
+			var leftProj = _p7._0;
+			return A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases);
+		case 'NegatedExistential':
+			var _p11 = _p5._0;
+			var middleCases = _user$project$InfiniteProjection$constructF3(_p11);
+			var _p9 = _user$project$InfiniteProjection$rightInfProj(_p11);
+			var rightProj = _p9._0;
+			var _p10 = _user$project$InfiniteProjection$leftInfProj(_p11);
+			var leftProj = _p10._0;
+			return !A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases);
+		default:
+			return false;
+	}
+};
 var _user$project$Main$badResult = function (t) {
 	return A3(
 		_debois$elm_mdl$Material_Options$styled,
@@ -19526,7 +19618,7 @@ var _user$project$Main$view = function (model) {
 													} : {ctor: '[]'},
 													{
 														ctor: '::',
-														_0: A3(_user$project$Satisfiability$isSat, leftProj, rightProj, middleCases) ? _user$project$Main$goodResult('Satisfiable.') : _user$project$Main$badResult('Not satisfiable.'),
+														_0: A3(_user$project$Satisfiability$decideFinal, leftProj, rightProj, middleCases) ? _user$project$Main$goodResult('Satisfiable.') : _user$project$Main$badResult('Not satisfiable.'),
 														_1: {ctor: '[]'}
 													}));
 										}
