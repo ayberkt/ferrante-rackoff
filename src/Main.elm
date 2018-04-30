@@ -181,7 +181,11 @@ view model =
           let
               nnf            = convertToNNF p
               noNegs         = removeAllNegations nnf
-              simplified     = solve noNegs
+              simplified     =
+                case getInnermostExistential noNegs NoExistentialFound  of
+                  NoExistentialFound   -> Bot
+                  NegatedExistential p -> p
+                  Existential p        -> p
               (leftProj,  _) = leftInfProj simplified
               (rightProj, _) = rightInfProj simplified
               middleCases    = constructF3 simplified
