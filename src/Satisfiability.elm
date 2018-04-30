@@ -4,12 +4,15 @@ import Normalization       exposing (normalize)
 import InfiniteProjection  exposing (leftInfProj, rightInfProj, constructF3)
 import Syntax              exposing (..)
 
-decideFinal : Prop -> Prop -> List Prop -> Bool
+decideFinal : Prop -> Prop -> List Prop -> DecisionResult
 decideFinal l r ps =
-  if normalize l || normalize r then
-    True
-  else
-    List.foldl (||) False (List.map (normalize) ps)
+  case (normalize l, normalize r) of
+    (Just  True,  _) -> Conclusion True
+    (_, Just True) -> Conclusion True
+    (Just False,  Just  False) -> Conclusion False -- TODO: implement this case.
+    (Nothing, Nothing) -> Conclusion False
+    (Nothing, Just False) -> Conclusion False
+    (Just False, Nothing) -> Conclusion False
 
 type SimplifiedProp = Prop
 
@@ -60,11 +63,17 @@ decideSimple sp =
   in
     decideFinal leftProj rightProj middleCases
 
-decideInnermostExistential : Prop -> (Bool, Maybe Prop)
+decideInnermostExistential : Prop -> (DecisionResult, Maybe Prop)
 decideInnermostExistential sp =
     case getInnermostExistential sp NoExistentialFound of
-      Existential        sp -> (decideSimple sp, Just sp)
-      NegatedExistential sp -> (not (decideSimple sp), Just sp)
+      Existential        sp ->
+        case decideSimple sp of
+          Conclusion p      -> (Conclusion p, Just sp)
+          QuantifierFree p  -> (QuantifierFree p, Just sp)
+      NegatedExistential sp ->
+        case decideSimple sp of
+          Conclusion p      -> (Conclusion (not p), Just sp)
+          QuantifierFree p  -> (QuantifierFree p,   Just sp)
       NoExistentialFound    -> (decideSimple sp, Nothing)
 
 -- TODO: implement the replace function so that existential quantifiers are
@@ -97,7 +106,7 @@ replace p exProp new =
     Forall _ _ -> Bot -- this case should not happen.
     other -> other
 
-isSat : Prop -> Bool
+isSat : Prop -> DecisionResult
 isSat sp =
   let
     (result, maybeInnermost) = decideInnermostExistential sp
