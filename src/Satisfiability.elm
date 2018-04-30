@@ -22,7 +22,7 @@ decideFinal l r ps =
   case (normalize l, normalize r) of
     (Just  True,  _) -> Conclusion True
     (_, Just True) -> Conclusion True
-    (Just False,  Just  False) -> Conclusion False -- TODO: implement this case.
+    (Just False,  Just  False) -> Conclusion (List.any holds (List.map normalize ps))
     (Nothing, Nothing)    -> Conclusion (List.any holds (List.map normalize ps))
     (Nothing, Just False) -> Conclusion (List.any holds (List.map normalize ps))
     (Just False, Nothing) ->  Conclusion (List.any holds (List.map normalize ps))
@@ -74,7 +74,10 @@ decideSimple sp =
     (rightProj, _)  = rightInfProj sp
     middleCases     = constructF3 sp
   in
-    decideFinal leftProj rightProj middleCases
+    if List.any holds (List.map normalize middleCases) then
+      Conclusion True
+    else
+      decideFinal leftProj rightProj middleCases
 
 decideInnermostExistential : Prop -> (DecisionResult, Maybe Prop)
 decideInnermostExistential sp =
