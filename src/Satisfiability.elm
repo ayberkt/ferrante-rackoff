@@ -1,8 +1,21 @@
-module Satisfiability exposing (isSat, decideFinal, getInnermostExistential, replace, Result(..))
+module Satisfiability
+       exposing (
+         isSat
+       , decideFinal
+       , getInnermostExistential
+       , replace
+       , Result(..)
+       , DecisionResult(..)
+       )
 
 import Normalization       exposing (normalize)
 import InfiniteProjection  exposing (leftInfProj, rightInfProj, constructF3)
 import Syntax              exposing (..)
+
+holds p =
+  case p of
+    Just True  -> False
+    _          -> False
 
 decideFinal : Prop -> Prop -> List Prop -> DecisionResult
 decideFinal l r ps =
@@ -10,9 +23,9 @@ decideFinal l r ps =
     (Just  True,  _) -> Conclusion True
     (_, Just True) -> Conclusion True
     (Just False,  Just  False) -> Conclusion False -- TODO: implement this case.
-    (Nothing, Nothing) -> Conclusion False
-    (Nothing, Just False) -> Conclusion False
-    (Just False, Nothing) -> Conclusion False
+    (Nothing, Nothing)    -> Conclusion (List.any holds (List.map normalize ps))
+    (Nothing, Just False) -> Conclusion (List.any holds (List.map normalize ps))
+    (Just False, Nothing) ->  Conclusion (List.any holds (List.map normalize ps))
 
 type SimplifiedProp = Prop
 
