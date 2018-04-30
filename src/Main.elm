@@ -19,7 +19,7 @@ import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
 import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
 import Normalization exposing (normalize)
-import Satisfiability exposing (isSat)
+import Satisfiability exposing (..)
 import Debug exposing (log)
 import Json.Encode
 import Json.Decode
@@ -223,7 +223,7 @@ view model =
           else
             [])
           ++
-          [ if isSat leftProj rightProj middleCases then
+          [ if decideFinal leftProj rightProj middleCases then
                 goodResult "Satisfiable."
               else
                 badResult "Not satisfiable."
