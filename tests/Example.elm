@@ -218,6 +218,7 @@ suite =
                         4
             , describe "Solver case" solverTestCases
             , describe "Normalization case" normalizationTestCases
+            , describe "Satisfiability case" satisfiabilityTestCases
             ]
         ]
 
@@ -438,11 +439,26 @@ satisfiabilityTestCases =
                     Expect.equal
                       (isSat (parse "(exists x (< x (* 1/3 x)))"))
                       True
-            , test "Satisfiability case 1: simple." <|
+            , test "Satisfiability case 2: x != x/3." <|
                 \() ->
                     Expect.equal
-                      (isSat (parse "(exists x (< x (* 1/3 x)))"))
+                      (isSat (parse "(exists x (= x (* 1/3 x)))"))
+                      False
+            , test "Satisfiability case 3: TODO" <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (= (* 2/1 x) y))"))
+                      False
+            , test "Satisfiability case 4: TODO" <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (< x 3/1))"))
                       True
+            , test "Satisfiability case 5: TODO" <|
+                \() ->
+                    Expect.equal
+                      (isSat (parse "(exists x (/\\ (< x 3/1) (= x 5/1)))"))
+                      False
             ]
         ]
     ]
