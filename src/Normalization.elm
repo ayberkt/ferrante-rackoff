@@ -45,7 +45,7 @@ normalizeRatPred rp =
       normalizeExpr e1
         |> andThen (\e1n ->
       normalizeExpr e2
-        |> andThen (\e2n -> Just (e1n == e2n)))
+        |> andThen (\e2n -> Just ((e1n - e2n) < 0.1 && (e1n - e2n) > -0.1)))
 
 -- Evaluate a proposition to its Boolean value.
 normalize : Prop -> Maybe Bool
