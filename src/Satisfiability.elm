@@ -18,6 +18,14 @@ type Result =
   | Existential Prop
   | NegatedExistential Prop
 
+-- When we attempt to decide a formula, we have two possible outcomes: we
+-- either find out that the existential evaluate to a Boolean value or we
+-- get a quantifier-free formula which will now be a subformula of the outer
+-- existential quantification.
+type DecisionResult =
+    Conclusion Bool
+  | QuantifierFree Prop
+
 getInnermostExistential : Prop -> Result -> Result
 getInnermostExistential sp lastSeen =
   case sp of
