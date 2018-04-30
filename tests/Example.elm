@@ -464,6 +464,11 @@ satisfiabilityTestCases =
                     Expect.equal
                       (isSat (solve (parse "(exists x (= (* 2/1 x) 3/1))")))
                       (Conclusion True)
+            , test "Satisfiability case 5: rubric-2." <|
+                \() ->
+                    Expect.equal
+                      (isSat (solve (parse "(exists x (< x 3/1))")))
+                      (Conclusion True)
             ]
         ]
     ]
