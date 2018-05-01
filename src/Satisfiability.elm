@@ -17,18 +17,21 @@ holds p =
     Just True  -> True
     _          -> False
 
+-- Make a final decision.
 decideFinal : Prop -> Prop -> List Prop -> DecisionResult
 decideFinal l r ps =
   case (normalize l, normalize r) of
-    (Just  True,  _) -> Conclusion True
-    (_, Just True) -> Conclusion True
+    (Just  True,  _)           -> Conclusion True
+    (_, Just True)             -> Conclusion True
     (Just False,  Just  False) -> Conclusion (List.any holds (List.map normalize ps))
-    (Nothing, Nothing)    -> Conclusion (List.any holds (List.map normalize ps))
-    (Nothing, Just False) -> Conclusion (List.any holds (List.map normalize ps))
-    (Just False, Nothing) ->  Conclusion (List.any holds (List.map normalize ps))
+    (Nothing, Nothing)         ->
+      Conclusion (List.any holds (List.map normalize ps))
+    (Nothing, Just False)      ->
+      Conclusion (List.any holds (List.map normalize ps))
+    (Just False, Nothing)      ->
+      Conclusion (List.any holds (List.map normalize ps))
 
-type SimplifiedProp = Prop
-
+-- Type for the result of an existential search.
 type Result =
     NoExistentialFound
   | Existential Prop
@@ -42,6 +45,7 @@ type DecisionResult =
     Conclusion Bool
   | QuantifierFree Prop
 
+-- Get a list of all the existentials in a given proposition.
 getExistentials : Prop -> List Result
 getExistentials sp =
   case sp of
@@ -51,8 +55,8 @@ getExistentials sp =
     Bot                -> []
     Top                -> []
     Neg  sp1           -> getExistentials sp1
-    Conj sp1 sp2       -> (getExistentials sp1) ++ (getExistentials sp2)
-    Disj sp1 sp2 -> (getExistentials sp1) ++ (getExistentials sp2)
+    Conj sp1 sp2       -> getExistentials sp1 ++ getExistentials sp2
+    Disj sp1 sp2       -> getExistentials sp1 ++ getExistentials sp2
     -- The following two cases must not happen.
     Id _ -> []
     Forall _ _ -> []
@@ -100,5 +104,6 @@ replace p exProp new =
     Forall _ _ -> Bot -- this case should not happen.
     other -> other
 
+-- Check satisfiability.
 isSat : Prop -> DecisionResult
 isSat sp = decideSimple sp
