@@ -169,7 +169,7 @@ view model =
       [ Slider.onChange ChangeFontSize
       , css "margin" "0 24px"
       , Slider.value model.fontSize]
-    , case model.input of
+    , (case model.input of
         InvalidInput ->
           Options.div
             []
@@ -179,57 +179,77 @@ view model =
               [ text "Waiting for valid input." ] ]
         Parsed p ->
           let
-              nnf            = convertToNNF p
-              noNegs         = removeAllNegations nnf
-              simplified     = solve noNegs
-              (leftProj,  _) = leftInfProj simplified
-              (rightProj, _) = rightInfProj simplified
-              middleCases    = constructF3 simplified
+              existentials         = getExistentials p
+              indices  = List.range 1 (List.length existentials)
           in
             Options.div
-            []
-            ((if model.showSteps then
-              [ subTitle "Negation-normal form"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                [ text (linearize (convertToNNF p)) ]
-              , subTitle "No negations"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                [ text (linearize noNegs) ]
-              , subTitle "Simplified"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                [ text (linearize simplified) ]
-              , subTitle "Left Infinite Projection"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                [ text (linearize leftProj) ]
-              , subTitle "Right Infinite Projection"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                [ text (linearize rightProj) ]
-              , subTitle "Middle case"
-              , Options.styled
-                Html.body
-                [css "font-size" ((toString model.fontSize) ++ "px") ]
-                (List.map (text << toString << normalize) middleCases)
-            ]
-          else
-            [])
-          ++
-          [ case isSat simplified of
-              Conclusion True  -> goodResult "Satisfiable."
-              Conclusion False -> badResult "Not satisfiable."
-              QuantifierFree p -> badResult "Requires further attention."
-          ])
-    ]
-    |> Material.Scheme.top
+              []
+              (List.concat
+                (List.reverse
+                  (List.map2
+                    (\p i -> (genSimpleExplicationResult model p (toString i)))
+                    existentials
+                    indices))))
+    ] |> Material.Scheme.top
+
+genSimpleExplicationResult model r s =
+  case r of
+    Existential p -> genSimpleExplicationProp model p s
+    NegatedExistential p -> genSimpleExplicationProp model p s
+    NoExistentialFound -> [ ]
+
+genSimpleExplicationProp model p s =
+    let
+        nnf            = convertToNNF p
+        noNegs         = removeAllNegations nnf
+        simplified     = solve noNegs
+        (leftProj,  _) = leftInfProj simplified
+        (rightProj, _) = rightInfProj simplified
+        middleCases    = constructF3 simplified
+        steps          =
+          [ subTitle ("Negation-normal form  " ++ s)
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            [ text (linearize (convertToNNF p)) ]
+          , subTitle ("No negations  " ++ "(" ++ s ++ ")")
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            [ text (linearize noNegs) ]
+          , subTitle ("Simplified  " ++ "(" ++ s ++ ")")
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            [ text (linearize simplified) ]
+          , subTitle ("Left Infinite Projection" ++ "(" ++ s ++ ")")
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            [ text (linearize leftProj) ]
+          , subTitle ("Right Infinite Projection  " ++ "(" ++ s ++ ")")
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            [ text (linearize rightProj) ]
+          , subTitle ("Middle case  " ++ s)
+          , Options.styled
+            Html.body
+            [css "font-size" ((toString model.fontSize) ++ "px") ]
+            (List.map (text << toString << normalize) middleCases)
+        ]
+      in
+        case isSat simplified of
+          Conclusion True ->
+            if model.showSteps then
+              steps ++ [goodResult "Satisfiable"]
+            else
+              [goodResult "Satisfiable"]
+          _ ->
+            if model.showSteps then
+              steps ++ [badResult "Not satisfiable"]
+            else
+              [badResult "Not satisfiable"]
 
 
 
