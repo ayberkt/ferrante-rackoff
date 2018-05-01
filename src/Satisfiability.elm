@@ -3,6 +3,7 @@ module Satisfiability
          isSat
        , decideFinal
        , getInnermostExistential
+       , getExistentials
        , replace
        , Result(..)
        , DecisionResult(..)
@@ -65,6 +66,21 @@ getInnermostExistential sp lastSeen =
     -- The following two cases must not happen.
     Id _ -> NoExistentialFound
     Forall _ _ -> NoExistentialFound
+
+getExistentials : Prop -> List Result
+getExistentials sp =
+  case sp of
+    Exists s sp1       -> (Existential (Exists s sp1)) :: (getExistentials sp1)
+    Neg (Exists s sp1) -> (NegatedExistential (Exists s sp1)) :: (getExistentials sp1)
+    Pred _             -> []
+    Bot                -> []
+    Top                -> []
+    Neg  sp1           -> getExistentials sp1
+    Conj sp1 sp2       -> (getExistentials sp1) ++ (getExistentials sp2)
+    Disj sp1 sp2 -> (getExistentials sp1) ++ (getExistentials sp2)
+    -- The following two cases must not happen.
+    Id _ -> []
+    Forall _ _ -> []
 
 -- We take "simple" to mean a proposition either having one existential
 -- quantification or none at all.
