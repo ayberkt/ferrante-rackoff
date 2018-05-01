@@ -2,7 +2,6 @@ module Satisfiability
        exposing (
          isSat
        , decideFinal
-       , getInnermostExistential
        , getExistentials
        , replace
        , Result(..)
@@ -43,30 +42,6 @@ type DecisionResult =
     Conclusion Bool
   | QuantifierFree Prop
 
-getInnermostExistential : Prop -> Result -> Result
-getInnermostExistential sp lastSeen =
-  case sp of
-    Exists s sp1       ->
-      getInnermostExistential sp1 (Existential (Exists s sp1))
-    Neg (Exists s sp1) ->
-      getInnermostExistential sp1 (NegatedExistential (Exists s sp1))
-    Pred _             -> lastSeen
-    Bot                -> lastSeen
-    Top                -> lastSeen
-    Neg  sp1           -> getInnermostExistential sp1 lastSeen
-    Conj sp1 sp2       ->
-      case getInnermostExistential sp1 lastSeen of
-        NoExistentialFound -> getInnermostExistential sp2 lastSeen
-        other -> other
-    Disj sp1 sp2 ->
-      case getInnermostExistential sp1 lastSeen of
-        NoExistentialFound -> getInnermostExistential sp2 lastSeen
-        other -> other
-
-    -- The following two cases must not happen.
-    Id _ -> NoExistentialFound
-    Forall _ _ -> NoExistentialFound
-
 getExistentials : Prop -> List Result
 getExistentials sp =
   case sp of
@@ -94,19 +69,6 @@ decideSimple sp =
       Conclusion True
     else
       decideFinal leftProj rightProj middleCases
-
-decideInnermostExistential : Prop -> (DecisionResult, Maybe Prop)
-decideInnermostExistential sp =
-    case getInnermostExistential sp NoExistentialFound of
-      Existential        sp ->
-        case decideSimple sp of
-          Conclusion p      -> (Conclusion p, Just sp)
-          QuantifierFree p  -> (QuantifierFree p, Just sp)
-      NegatedExistential sp ->
-        case decideSimple sp of
-          Conclusion p      -> (Conclusion (not p), Just sp)
-          QuantifierFree p  -> (QuantifierFree p,   Just sp)
-      NoExistentialFound    -> (decideSimple sp, Nothing)
 
 -- TODO: implement the replace function so that existential quantifiers are
 -- popped when going backwards after handling the innermost existential.
@@ -139,10 +101,4 @@ replace p exProp new =
     other -> other
 
 isSat : Prop -> DecisionResult
-isSat sp =
-  let
-    (result, maybeInnermost) = decideInnermostExistential sp
-  in
-      case maybeInnermost of
-        Just innermost -> result
-        Nothing        -> result
+isSat sp = decideSimple sp
