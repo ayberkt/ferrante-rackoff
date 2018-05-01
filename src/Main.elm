@@ -17,7 +17,8 @@ import OmitNegations exposing (removeAllNegations)
 import Solve exposing (solve)
 import Syntax exposing (..)
 import PropositionParser exposing (parseProp)
-import InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
+import InfiniteProjection
+       exposing (leftInfProj, rightInfProj, constructF3, constructDisjunct)
 import Normalization exposing (normalize)
 import Satisfiability exposing (..)
 import Debug exposing (log)
@@ -236,7 +237,12 @@ genSimpleExplicationProp model p s =
           , Options.styled
             Html.body
             [css "font-size" ((toString model.fontSize) ++ "px") ]
-            (List.map (text << toString << normalize) middleCases)
+            [
+              text
+                ((linearize (constructDisjunct middleCases))
+                 ++ " which normalizes to "
+                 ++ (toString (normalize (constructDisjunct middleCases))))
+            ]
         ]
       in
         case isSat simplified of
