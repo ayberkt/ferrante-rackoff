@@ -69,9 +69,7 @@ boxed =
 
 
 type Msg
-    = Increase
-    | Reset
-    | UpdateMessage String
+    = UpdateMessage String
     | ChangeFontSize Float
     | ToggleSteps
     | Mdl (Material.Msg Msg)
@@ -83,42 +81,29 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        Increase ->
-            ( { model | count = model.count + 1 }
-            , Cmd.none
-            )
+  case msg of
+    UpdateMessage s ->
+      let
+          _ =  log "updating message"
+      in
+        case parseProp s of
+          Just p  -> ( { model | input = Parsed p,     inputText = s }, Cmd.none )
+          Nothing -> ( { model | input = InvalidInput, inputText = s }, Cmd.none )
 
-        Reset ->
-            ( { model | count = 0 }
-            , Cmd.none
-            )
+    ToggleSteps      ->
+      ( { model | showSteps = not model.showSteps }, Cmd.none )
+    ChangeFontSize f ->
+      ( { model | fontSize = f }, Cmd.none)
 
-        UpdateMessage s ->
-          let
-              _ =  log "updating message"
-          in
-            case parseProp s of
-              Just p  -> ( { model | input = Parsed p,     inputText = s }, Cmd.none )
-              Nothing -> ( { model | input = InvalidInput, inputText = s }, Cmd.none )
-
-        ToggleSteps -> ( { model | showSteps = not model.showSteps }, Cmd.none )
-
-        ChangeFontSize f -> ( { model | fontSize = f }, Cmd.none)
-
-        -- Boilerplate: Mdl action handler.
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
+    -- Boilerplate: Mdl action handler.
+    Mdl msg_ -> Material.update Mdl msg_ model
 
 
 
 -- VIEW
+type alias Mdl = Material.Model
 
-
-type alias Mdl =
-    Material.Model
-
-
+-- Generate an HTML h1 from a given string.
 title : String -> Html a
 title t =
     Options.styled Html.h1
@@ -126,6 +111,7 @@ title t =
         [ text t ]
 
 
+-- Generate a normal HTML h2 from a given string.
 subTitle : String -> Html a
 subTitle t =
     Options.styled Html.h2
@@ -133,12 +119,14 @@ subTitle t =
         [ text t ]
 
 
+-- Generate an HTML h2 for displaying a positive result.
 goodResult : String -> Html a
 goodResult t =
   Options.styled Html.h2
     [ Color.text (Color.color Color.LightGreen Color.S800) ]
     [ text t ]
 
+-- Generate an HTML h2 for displaying a negative result.
 badResult : String -> Html a
 badResult t =
   Options.styled Html.h2
@@ -155,11 +143,6 @@ view model =
         model.mdl
         [ Options.onInput UpdateMessage ]
         [ Textfield.label "Proposition" ]
-    , Button.render Mdl
-        [ 0 ]
-        model.mdl
-        [ Options.onClick Increase, css "margin" "0 24px" ]
-        [ text "Start" ]
     , Toggles.switch Mdl [0] model.mdl
         [ Options.onToggle ToggleSteps
         , Toggles.ripple
