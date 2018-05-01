@@ -166,21 +166,40 @@ view model =
               existentials         = getExistentials p
               indices  = List.range 1 (List.length existentials)
           in
-            Options.div
-              []
-              (List.concat
-                (List.reverse
-                  (List.map2
-                    (\p i -> (genSimpleExplicationResult model p (toString i)))
-                    existentials
-                    indices))))
+            case existentials of
+              [] -> Options.div []( genSimpleExplicationProp model p "")
+              _ ->
+                Options.div
+                  []
+                  (List.concat
+                    (List.reverse
+                      (List.map2
+                        (\p_ i -> (genSimpleExplicationResult model p p_ (toString i)))
+                        existentials
+                        indices))))
     ] |> Material.Scheme.top
 
-genSimpleExplicationResult model r s =
-  case r of
-    Existential p -> genSimpleExplicationProp model p s
-    NegatedExistential p -> genSimpleExplicationProp model p s
-    NoExistentialFound -> [ ]
+genSimpleExplicationResult model pOrig p s =
+  case p of
+    Existential        p_ -> genSimpleExplicationProp model p_ s
+    NegatedExistential p_ -> genSimpleExplicationProp model p_ s
+    NoExistentialFound    -> genSimpleExplicationProp model pOrig s
+
+-- genExplicationResult model ps p =
+  -- let
+      -- psr = List.reverse ps
+  -- in
+    -- case psr of
+      -- []                       -> Tuple.first (genSimpleExplication p)
+      -- [Existential p_]         -> Tuple.first (genSimpleExplication p_)
+      -- [NegatedExistential p_]  -> Tuple.first (genSimpleExplication p_)
+      -- ((Existential p_)::ps_)   ->
+        -- case genSimpleExplication psr of
+          -- (Just exp, middleDisjunct) ->
+            -- exp ++
+            -- (genExplicationResult (List.map (\x -> replace x p_ middleDisjunct ps))
+          -- (Nothing,  middleDisjunct) ->
+            -- (genExplicationResult (List.map (\x -> replace x p_ middleDisjunct ps))
 
 genSimpleExplicationProp model p s =
     let
@@ -190,6 +209,7 @@ genSimpleExplicationProp model p s =
         (leftProj,  _) = leftInfProj simplified
         (rightProj, _) = rightInfProj simplified
         middleCases    = constructF3 simplified
+        middleDisj     = constructDisjunct middleCases
         steps          =
           [ subTitle ("Negation-normal form  " ++ s)
           , Options.styled

@@ -1,4 +1,5 @@
-module InfiniteProjection exposing (leftInfProj, rightInfProj, constructF3)
+module InfiniteProjection
+      exposing (leftInfProj, rightInfProj, constructF3, constructDisjunct)
 
 import Syntax exposing (Prop(..), RatPred(..), Expr(..), Rat(..))
 import Set
@@ -123,39 +124,34 @@ infProj p ipk =
                 ( p1LInfProj, replaced )
 
 
-leftInfProj =
-    \x -> infProj x LeftInfProj
-
-
-rightInfProj =
-    \x -> infProj x RightInfProj
+-- Just special cases.
+leftInfProj  = \x -> infProj x LeftInfProj
+rightInfProj = \x -> infProj x RightInfProj
 
 
 listProduct : List a -> List a -> List ( a, a )
 listProduct xs ys =
-    List.concat (List.map (\x -> List.map (\y -> ( x, y )) ys) xs)
+  List.concat (List.map (\x -> List.map (\y -> ( x, y )) ys) xs)
 
 
 bigVee : List Expr -> (( Expr, Expr ) -> Expr) -> Prop -> List Prop
 bigVee ps f pfree =
-    List.map (\( x, y ) -> subst pfree 0 (f ( x, y ))) (listProduct ps ps)
+  List.map (\( x, y ) -> subst pfree 0 (f ( x, y ))) (listProduct ps ps)
+
+constructDisjunct : List Prop -> Prop
+constructDisjunct ps = List.foldr (Disj) Bot ps
 
 
 constructF3 : Prop -> List Prop
 constructF3 p =
-    case p of
-        Exists vi p1 ->
-            let
-                ( _, replaced1 ) =
-                    leftInfProj (Exists vi p1)
-
-                ( _, replaced2 ) =
-                    rightInfProj (Exists vi p1)
-            in
-                bigVee
-                    (nub (replaced1 ++ replaced2) [])
-                    (\( x, y ) -> (ConstFact (Div 1 2) (Plus x y)))
-                    p1
-
-        p_ ->
-            [ p_ ]
+  case p of
+    Exists vi p1 ->
+      let
+        ( _, replaced1 ) = leftInfProj (Exists vi p1)
+        ( _, replaced2 ) = rightInfProj (Exists vi p1)
+      in
+        bigVee
+            (nub (replaced1 ++ replaced2) [])
+            (\( x, y ) -> (ConstFact (Div 1 2) (Plus x y)))
+            p1
+    p_ -> [ p_ ]
